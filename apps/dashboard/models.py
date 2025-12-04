@@ -7,7 +7,7 @@ import socket
 
 
 # Custom DNS Server Configuration
-DNS_SERVERS = getattr(settings, 'DNS_SERVERS', ['10.113.32.32'])
+DNS_SERVERS = getattr(settings, 'DNS_SERVERS', ['10.103.32.32'])
 DNS_TIMEOUT = getattr(settings, 'DNS_TIMEOUT', 5)
 
 
@@ -128,10 +128,10 @@ class IPHostnameCache(models.Model):
         Resolve IP to hostname using custom DNS server
         
         Usage:
-            hostname = IPHostnameCache.resolve_with_custom_dns('10.113.28.17', '10.113.32.32')
+            hostname = IPHostnameCache.resolve_with_custom_dns('10.103.28.17', '10.103.32.32')
             
         This is equivalent to:
-            nslookup 10.113.28.17 10.113.32.32
+            nslookup 10.103.28.17 10.103.32.32
         """
         import time
         start_time = time.time()
