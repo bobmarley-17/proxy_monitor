@@ -1,22 +1,21 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from . import views
 
-router = DefaultRouter()
-router.register(r'requests', views.ProxyRequestViewSet, basename='proxy-requests')
-router.register(r'domains', views.DomainStatsViewSet, basename='domain-stats')
-router.register(r'alerts', views.AlertViewSet, basename='alerts')
+app_name = 'dashboard'
 
 urlpatterns = [
-    # Pages
-    path('', views.dashboard_view, name='dashboard'),
+    # Page views
+    path('', views.index, name='index'),
+    path('analytics/', views.analytics, name='analytics'),
     path('requests/', views.requests_view, name='requests'),
-    path('analytics/', views.analytics_view, name='analytics'),
     path('blocklist/', views.blocklist_view, name='blocklist'),
-    path('settings/', views.settings_view, name='settings'),
-    
-    # API
-    path('api/', include(router.urls)),
-    path('api/analytics/', views.AnalyticsAPIView.as_view(), name='analytics-api'),
-    path('api/stats/', views.StatsAPIView.as_view(), name='stats-api'),
+
+    # API endpoints
+    path('api/traffic-stats/', views.api_traffic_stats, name='api_traffic_stats'),
+    path('api/recent-requests/', views.api_recent_requests, name='api_recent_requests'),
+    path('api/domain-stats/', views.api_domain_stats, name='api_domain_stats'),
+    path('api/ip-stats/', views.api_ip_stats, name='api_ip_stats'),
+    path('api/alerts/', views.api_alerts, name='api_alerts'),
+    path('api/resolve/', views.api_resolve_ip, name='api_resolve_ip'),
+    path('api/dns-cache/', views.api_dns_cache, name='api_dns_cache'),
 ]

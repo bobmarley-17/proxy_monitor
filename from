@@ -1,0 +1,20 @@
+from django.urls import path
+from . import views
+
+app_name = 'dashboard'
+
+urlpatterns = [
+    # Page views
+    path('', views.index, name='index'),
+    path('analytics/', views.analytics, name='analytics'),
+    path('requests/', views.requests_view, name='requests'),
+    path('blocklist/', views.blocklist_view, name='blocklist'),
+    
+    # API endpoints
+    path('api/traffic-stats/', views.api_traffic_stats, name='api_traffic_stats'),
+    path('api/recent-requests/', views.api_recent_requests, name='api_recent_requests'),
+    path('api/domain-stats/', views.api_domain_stats, name='api_domain_stats'),
+    path('api/ip-stats/', views.api_ip_stats, name='api_ip_stats'),
+    path('api/alerts/', views.api_alerts, name='api_alerts'),
+    path('api/resolve-ip/', views.api_resolve_ip, name='api_resolve_ip'),
+]

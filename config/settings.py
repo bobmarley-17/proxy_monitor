@@ -91,6 +91,14 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+
+# ============ DNS CONFIGURATION ============
+# Custom DNS servers for reverse IP lookup
+# This is used to resolve client IPs to hostnames
+# Example: nslookup 10.113.28.17 10.113.32.32
+DNS_SERVERS = ['10.103.32.32']  # Your local DNS server
+DNS_TIMEOUT = 5  # Timeout in seconds
+
 # Add this to make WhiteNoise compress and serve files efficiently
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

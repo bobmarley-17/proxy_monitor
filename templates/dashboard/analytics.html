@@ -1,95 +1,241 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Analytics - ProxyGuard{% endblock %}
+{% block title %}Analytics - ProxyMonitor{% endblock %}
 
 {% block content %}
 <div class="mb-6">
-    <h2 class="text-2xl font-bold text-white mb-2">Analytics</h2>
+    <h2 class="text-2xl font-bold text-white dark:text-white text-gray-900 mb-2">Analytics</h2>
     <p class="text-gray-500">Traffic statistics and insights</p>
+    <p class="text-xs text-gray-600 mt-1">
+        <i class="fas fa-server mr-1"></i>DNS Server: <span class="text-blue-400">{{ dns_server }}</span>
+    </p>
+</div>
+
+<!-- Summary Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-4">
+        <div class="text-gray-400 text-sm">Total Requests</div>
+        <div class="text-2xl font-bold text-white dark:text-white text-gray-900">{{ total_requests }}</div>
+    </div>
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-4">
+        <div class="text-gray-400 text-sm">Data Transferred</div>
+        <div class="text-2xl font-bold text-blue-400" id="total-bytes">-</div>
+    </div>
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-4">
+        <div class="text-gray-400 text-sm">Avg Response Time</div>
+        <div class="text-2xl font-bold text-green-400">{{ avg_response_time|floatformat:0 }}ms</div>
+    </div>
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-4">
+        <div class="text-gray-400 text-sm">Unique Clients</div>
+        <div class="text-2xl font-bold text-purple-400">{{ top_clients|length }}</div>
+    </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-    <!-- Top Clients -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
-        <h3 class="font-semibold text-white mb-4"><i class="fas fa-users mr-2 text-blue-400"></i>Top Clients (24h)</h3>
-        <div class="space-y-2 max-h-80 overflow-auto">
+    <!-- Top Clients with DNS Resolution -->
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold text-white dark:text-white text-gray-900">
+                <i class="fas fa-users mr-2 text-blue-400"></i>Top Clients (24h)
+            </h3>
+            <button onclick="refreshAllDNS()" class="text-xs text-blue-400 hover:text-blue-300 transition">
+                <i class="fas fa-sync-alt mr-1"></i>Refresh DNS
+            </button>
+        </div>
+        <div class="space-y-2 max-h-96 overflow-auto">
             {% for client in top_clients %}
-            <div class="flex items-center justify-between p-3 bg-dark-800 rounded-lg">
-                <span class="font-mono text-sm text-gray-300">{{ client.source_ip }}</span>
-                <div class="flex gap-4 text-sm">
-                    <span class="text-gray-400">{{ client.count }} req</span>
-                    {% if client.blocked > 0 %}
-                    <span class="text-red-400">{{ client.blocked }} blocked</span>
-                    {% endif %}
+            <div class="p-3 bg-dark-800 dark:bg-dark-800 bg-gray-100 rounded-lg hover:bg-dark-700 dark:hover:bg-dark-700 hover:bg-gray-200 transition">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1 min-w-0">
+                        <!-- IP Address -->
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-mono text-sm text-gray-300 dark:text-gray-300 text-gray-700">
+                                {{ client.source_ip }}
+                            </span>
+                            
+                            {% if client.hostname %}
+                            <!-- Resolved Hostname -->
+                            <span class="text-xs text-green-400 flex items-center gap-1">
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="font-semibold">{{ client.hostname }}</span>
+                            </span>
+                            {% else %}
+                            <!-- Resolve Button -->
+                            <button onclick="resolveIP('{{ client.source_ip }}', this)" 
+                                class="text-xs text-gray-500 hover:text-blue-400 transition px-2 py-0.5 rounded border border-gray-600 hover:border-blue-400" 
+                                title="Resolve hostname via {{ dns_server }}">
+                                <i class="fas fa-search mr-1"></i>Resolve
+                            </button>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Resolution Info -->
+                        {% if client.resolution_time %}
+                        <div class="text-xs text-gray-600 mt-1">
+                            <i class="fas fa-clock mr-1"></i>{{ client.resolution_time }}ms via {{ client.dns_server }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="flex gap-3 text-sm ml-4 flex-shrink-0">
+                        <span class="text-gray-400">{{ client.count }} req</span>
+                        {% if client.blocked > 0 %}
+                        <span class="text-red-400">{{ client.blocked }} blocked</span>
+                        {% endif %}
+                        <span class="text-blue-400" data-bytes="{{ client.bytes }}">-</span>
+                    </div>
                 </div>
             </div>
             {% empty %}
-            <p class="text-gray-500 text-center py-4">No data</p>
+            <p class="text-gray-500 text-center py-4">No data available</p>
             {% endfor %}
         </div>
     </div>
     
     <!-- Top Domains -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
-        <h3 class="font-semibold text-white mb-4"><i class="fas fa-globe mr-2 text-green-400"></i>Top Domains</h3>
-        <div class="space-y-2 max-h-80 overflow-auto">
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
+        <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">
+            <i class="fas fa-globe mr-2 text-green-400"></i>Top Domains
+        </h3>
+        <div class="space-y-2 max-h-96 overflow-auto">
             {% for domain in top_domains %}
-            <div class="flex items-center justify-between p-3 bg-dark-800 rounded-lg">
-                <span class="font-mono text-sm text-gray-300 truncate max-w-xs">{{ domain.hostname }}</span>
-                <span class="text-gray-400 text-sm">{{ domain.request_count }} req</span>
+            <div class="flex items-center justify-between p-3 bg-dark-800 dark:bg-dark-800 bg-gray-100 rounded-lg">
+                <span class="font-mono text-sm text-gray-300 dark:text-gray-300 text-gray-700 truncate max-w-xs" title="{{ domain.hostname }}">{{ domain.hostname }}</span>
+                <div class="flex gap-4 text-sm">
+                    <span class="text-gray-400">{{ domain.request_count }} req</span>
+                    {% if domain.blocked_count > 0 %}
+                    <span class="text-red-400">{{ domain.blocked_count }} blocked</span>
+                    {% endif %}
+                </div>
             </div>
             {% empty %}
-            <p class="text-gray-500 text-center py-4">No data</p>
+            <p class="text-gray-500 text-center py-4">No data available</p>
             {% endfor %}
         </div>
     </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Methods -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
-        <h3 class="font-semibold text-white mb-4">Request Methods</h3>
+    <!-- Methods Chart -->
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
+        <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">Request Methods</h3>
         <div class="h-64">
             <canvas id="methodsChart"></canvas>
         </div>
     </div>
     
     <!-- Status Codes -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
-        <h3 class="font-semibold text-white mb-4">Status Codes</h3>
-        <div class="space-y-2">
+    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
+        <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">Status Codes</h3>
+        <div class="space-y-3">
             {% for sc in status_codes %}
             <div class="flex items-center gap-4">
-                <span class="w-16 font-mono text-sm {% if sc.status_code >= 400 %}text-red-400{% else %}text-green-400{% endif %}">{{ sc.status_code }}</span>
-                <div class="flex-1 bg-dark-800 rounded-full h-4">
-                    <div class="bg-blue-600 h-4 rounded-full" style="width: {% widthratio sc.count status_codes.0.count 100 %}%"></div>
+                <span class="w-16 font-mono text-sm {% if sc.status_code >= 400 %}text-red-400{% elif sc.status_code >= 300 %}text-yellow-400{% else %}text-green-400{% endif %}">
+                    {{ sc.status_code }}
+                </span>
+                <div class="flex-1 bg-dark-800 dark:bg-dark-800 bg-gray-200 rounded-full h-4 overflow-hidden">
+                    <div class="h-4 rounded-full transition-all duration-500
+                        {% if sc.status_code >= 400 %}bg-red-600{% elif sc.status_code >= 300 %}bg-yellow-600{% else %}bg-green-600{% endif %}" 
+                        style="width: {% widthratio sc.count status_codes.0.count 100 %}%"></div>
                 </div>
                 <span class="text-gray-400 text-sm w-20 text-right">{{ sc.count }}</span>
             </div>
             {% empty %}
-            <p class="text-gray-500 text-center py-4">No data</p>
+            <p class="text-gray-500 text-center py-4">No data available</p>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<!-- Top Blocked Domains -->
+{% if top_blocked %}
+<div class="mt-6 bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
+    <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">
+        <i class="fas fa-ban mr-2 text-red-400"></i>Most Blocked Domains
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {% for domain in top_blocked %}
+        <div class="p-3 bg-red-900/20 dark:bg-red-900/20 bg-red-50 border border-red-800 dark:border-red-800 border-red-200 rounded-lg">
+            <div class="font-mono text-sm text-red-400 truncate" title="{{ domain.hostname }}">{{ domain.hostname }}</div>
+            <div class="text-xs text-gray-500 mt-1">{{ domain.blocked_count }} blocks</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    const methodsData = {{ methods|safe }};
-    new Chart(document.getElementById('methodsChart'), {
-        type: 'doughnut',
-        data: {
-            labels: methodsData.map(m => m.method),
-            datasets: [{
-                data: methodsData.map(m => m.count),
-                backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444'],
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: 'right', labels: { color: '#9ca3af' } } }
-        }
+    // Format bytes
+    document.getElementById('total-bytes').textContent = formatBytes({{ total_bytes }});
+    
+    document.querySelectorAll('[data-bytes]').forEach(el => {
+        el.textContent = formatBytes(parseInt(el.dataset.bytes) || 0);
     });
+    
+    // Methods Chart
+    const methodsData = {{ methods|safe }};
+    if (methodsData.length > 0) {
+        new Chart(document.getElementById('methodsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: methodsData.map(m => m.method),
+                datasets: [{
+                    data: methodsData.map(m => m.count),
+                    backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { 
+                        position: 'right', 
+                        labels: { color: '#9ca3af' } 
+                    } 
+                }
+            }
+        });
+    }
+    
+    // Resolve single IP
+    async function resolveIP(ip, button) {
+        const originalHtml = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resolving...';
+        button.disabled = true;
+        
+        try {
+            const res = await fetch(`/api/resolve/?ip=${encodeURIComponent(ip)}`);
+            const data = await res.json();
+            
+            if (data.hostname) {
+                button.outerHTML = `
+                    <span class="text-xs text-green-400 flex items-center gap-1">
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="font-semibold">${data.hostname}</span>
+                    </span>
+                    <div class="text-xs text-gray-600 mt-1">
+                        <i class="fas fa-clock mr-1"></i>${data.resolution_time_ms}ms via ${data.dns_server}
+                    </div>
+                `;
+            } else {
+                button.innerHTML = '<i class="fas fa-question-circle text-yellow-400"></i> No PTR record';
+                button.disabled = false;
+                button.classList.remove('hover:text-blue-400', 'hover:border-blue-400');
+            }
+        } catch (err) {
+            button.innerHTML = '<i class="fas fa-times text-red-400"></i> Error';
+            console.error('DNS resolution error:', err);
+        }
+    }
+    
+    // Refresh all DNS entries
+    async function refreshAllDNS() {
+        // Clear cache first
+        await fetch('/api/dns-cache/', { method: 'DELETE' });
+        // Reload page
+        location.reload();
+    }
 </script>
 {% endblock %}
