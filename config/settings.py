@@ -177,3 +177,9 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
+
+
+# Login settings
+LOGIN_URL = 'dashboard:login'
+LOGIN_REDIRECT_URL = 'dashboard:index'
+LOGOUT_REDIRECT_URL = 'dashboard:login'

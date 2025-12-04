@@ -51,7 +51,7 @@
                             <span class="font-mono text-sm text-gray-300 dark:text-gray-300 text-gray-700">
                                 {{ client.source_ip }}
                             </span>
-                            
+
                             {% if client.hostname %}
                             <!-- Resolved Hostname -->
                             <span class="text-xs text-green-400 flex items-center gap-1">
@@ -60,14 +60,14 @@
                             </span>
                             {% else %}
                             <!-- Resolve Button -->
-                            <button onclick="resolveIP('{{ client.source_ip }}', this)" 
-                                class="text-xs text-gray-500 hover:text-blue-400 transition px-2 py-0.5 rounded border border-gray-600 hover:border-blue-400" 
+                            <button onclick="resolveIP('{{ client.source_ip }}', this)"
+                                class="text-xs text-gray-500 hover:text-blue-400 transition px-2 py-0.5 rounded border border-gray-600 hover:border-blue-400"
                                 title="Resolve hostname via {{ dns_server }}">
                                 <i class="fas fa-search mr-1"></i>Resolve
                             </button>
                             {% endif %}
                         </div>
-                        
+
                         <!-- Resolution Info -->
                         {% if client.resolution_time %}
                         <div class="text-xs text-gray-600 mt-1">
@@ -75,7 +75,7 @@
                         </div>
                         {% endif %}
                     </div>
-                    
+
                     <!-- Stats -->
                     <div class="flex gap-3 text-sm ml-4 flex-shrink-0">
                         <span class="text-gray-400">{{ client.count }} req</span>
@@ -91,7 +91,7 @@
             {% endfor %}
         </div>
     </div>
-    
+
     <!-- Top Domains -->
     <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
         <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">
@@ -123,7 +123,7 @@
             <canvas id="methodsChart"></canvas>
         </div>
     </div>
-    
+
     <!-- Status Codes -->
     <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
         <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">Status Codes</h3>
@@ -135,7 +135,7 @@
                 </span>
                 <div class="flex-1 bg-dark-800 dark:bg-dark-800 bg-gray-200 rounded-full h-4 overflow-hidden">
                     <div class="h-4 rounded-full transition-all duration-500
-                        {% if sc.status_code >= 400 %}bg-red-600{% elif sc.status_code >= 300 %}bg-yellow-600{% else %}bg-green-600{% endif %}" 
+                        {% if sc.status_code >= 400 %}bg-red-600{% elif sc.status_code >= 300 %}bg-yellow-600{% else %}bg-green-600{% endif %}"
                         style="width: {% widthratio sc.count status_codes.0.count 100 %}%"></div>
                 </div>
                 <span class="text-gray-400 text-sm w-20 text-right">{{ sc.count }}</span>
@@ -147,20 +147,48 @@
     </div>
 </div>
 
-<!-- Top Blocked Domains -->
+<!-- Most Blocked Domains - Simple List -->
 {% if top_blocked %}
 <div class="mt-6 bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
     <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">
         <i class="fas fa-ban mr-2 text-red-400"></i>Most Blocked Domains
     </h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {% for domain in top_blocked %}
-        <div class="p-3 bg-red-900/20 dark:bg-red-900/20 bg-red-50 border border-red-800 dark:border-red-800 border-red-200 rounded-lg">
-            <div class="font-mono text-sm text-red-400 truncate" title="{{ domain.hostname }}">{{ domain.hostname }}</div>
-            <div class="text-xs text-gray-500 mt-1">{{ domain.blocked_count }} blocks</div>
-        </div>
-        {% endfor %}
-    </div>
+    <table class="w-full text-sm">
+        <thead>
+            <tr class="text-gray-500 text-xs uppercase border-b border-gray-700">
+                <th class="text-left py-2 px-2">Domain</th>
+                <th class="text-right py-2 px-2">Requests</th>
+                <th class="text-right py-2 px-2">Blocked</th>
+                <th class="text-right py-2 px-2">Block Rate</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800">
+            {% for domain in top_blocked %}
+            <tr class="hover:bg-dark-800 dark:hover:bg-dark-800 hover:bg-gray-100 transition">
+                <td class="py-2 px-2">
+                    <span class="font-mono text-gray-300 dark:text-gray-300 text-gray-700" title="{{ domain.hostname }}">
+                        {{ domain.hostname|truncatechars:40 }}
+                    </span>
+                </td>
+                <td class="py-2 px-2 text-gray-400 text-right">{{ domain.request_count }}</td>
+                <td class="py-2 px-2 text-red-400 font-bold text-right">{{ domain.blocked_count }}</td>
+                <td class="py-2 px-2 text-right">
+                    {% if domain.request_count > 0 %}
+                    <span class="text-xs px-2 py-0.5 rounded 
+                        {% widthratio domain.blocked_count domain.request_count 100 as block_pct %}
+                        {% if block_pct >= 80 %}bg-red-900/50 text-red-400
+                        {% elif block_pct >= 50 %}bg-yellow-900/50 text-yellow-400
+                        {% else %}bg-gray-700 text-gray-400{% endif %}">
+                        {% widthratio domain.blocked_count domain.request_count 100 %}%
+                    </span>
+                    {% else %}
+                    <span class="text-gray-500">-</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endif %}
 {% endblock %}
@@ -169,11 +197,11 @@
 <script>
     // Format bytes
     document.getElementById('total-bytes').textContent = formatBytes({{ total_bytes }});
-    
+
     document.querySelectorAll('[data-bytes]').forEach(el => {
         el.textContent = formatBytes(parseInt(el.dataset.bytes) || 0);
     });
-    
+
     // Methods Chart
     const methodsData = {{ methods|safe }};
     if (methodsData.length > 0) {
@@ -189,26 +217,26 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { 
-                    legend: { 
-                        position: 'right', 
-                        labels: { color: '#9ca3af' } 
-                    } 
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#9ca3af' }
+                    }
                 }
             }
         });
     }
-    
+
     // Resolve single IP
     async function resolveIP(ip, button) {
         const originalHtml = button.innerHTML;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resolving...';
         button.disabled = true;
-        
+
         try {
             const res = await fetch(`/api/resolve/?ip=${encodeURIComponent(ip)}`);
             const data = await res.json();
-            
+
             if (data.hostname) {
                 button.outerHTML = `
                     <span class="text-xs text-green-400 flex items-center gap-1">
@@ -229,7 +257,7 @@
             console.error('DNS resolution error:', err);
         }
     }
-    
+
     // Refresh all DNS entries
     async function refreshAllDNS() {
         // Clear cache first

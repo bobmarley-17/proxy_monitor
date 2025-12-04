@@ -13,7 +13,7 @@ django.setup()
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from apps.dashboard.models import ProxyRequest, DomainStats
-from apps.blocklist.models import BlockedDomain
+from apps.blocklist.models import BlockedDomain, BlockedIP, BlockedPort, BlockRule
 
 BUFFER_SIZE = 65536 * 2
 
@@ -22,112 +22,139 @@ class ProxyServer:
     def __init__(self, host='0.0.0.0', port=8088):
         self.host = host
         self.port = int(port)
-        self.blocked = set()
-        self.blocked_domains_map = {}
         self.channel_layer = get_channel_layer()
 
     def load_blocklist(self):
-        """Load blocked domains from database"""
+        """Load and display blocklist stats"""
         try:
-            blocked_entries = BlockedDomain.objects.filter(is_active=True)
-            self.blocked = set(blocked_entries.values_list('domain', flat=True))
-            self.blocked_domains_map = {b.domain: b.id for b in blocked_entries}
-            print(f"📋 Loaded {len(self.blocked)} blocked patterns:")
-            for domain in self.blocked:
-                print(f"   - {domain}")
+            domain_count = BlockedDomain.objects.filter(is_active=True).count()
+            ip_count = BlockedIP.objects.filter(is_active=True).count()
+            port_count = BlockedPort.objects.filter(is_active=True).count()
+            rule_count = BlockRule.objects.filter(is_active=True).count()
+
+            print(f"\n📋 Blocklist Loaded:")
+            print(f"   🌐 Blocked Domains: {domain_count}")
+            print(f"   🔢 Blocked IPs: {ip_count}")
+            print(f"   🚪 Blocked Ports: {port_count}")
+            print(f"   📜 Custom Rules: {rule_count}")
+
+            # Show blocked domains
+            domains = BlockedDomain.objects.filter(is_active=True)[:5]
+            if domains:
+                print(f"\n   Blocked Domains (top 5):")
+                for d in domains:
+                    print(f"      - {d.domain} [{d.category}]")
+
+            # Show blocked IPs
+            ips = BlockedIP.objects.filter(is_active=True)[:5]
+            if ips:
+                print(f"\n   Blocked IPs (top 5):")
+                for ip in ips:
+                    cidr = f"/{ip.cidr_prefix}" if ip.cidr_prefix else ""
+                    print(f"      - {ip.ip_address}{cidr} ({ip.ip_type})")
+
+            # Show blocked ports
+            ports = BlockedPort.objects.filter(is_active=True)[:5]
+            if ports:
+                print(f"\n   Blocked Ports (top 5):")
+                for p in ports:
+                    port_range = f"{p.port}-{p.port_end}" if p.port_end else str(p.port)
+                    print(f"      - {port_range} ({p.port_type}, {p.protocol})")
+
+            # Show custom rules
+            rules = BlockRule.objects.filter(is_active=True).order_by('priority')[:5]
+            if rules:
+                print(f"\n   Custom Rules (top 5):")
+                print(f"   {'Pri':<5} {'Name':<30} {'Action':<8}")
+                print(f"   {'-'*50}")
+                for r in rules:
+                    print(f"   {r.priority:<5} {r.name[:29]:<30} {r.action.upper():<8}")
+
         except Exception as e:
             print(f"Error loading blocklist: {e}")
-            self.blocked = set()
-            self.blocked_domains_map = {}
 
-    def reload_blocklist(self):
-        """Reload blocklist from database"""
-        self.load_blocklist()
-
-    def is_blocked(self, h):
-        """Check if hostname should be blocked
-        
-        Supports patterns:
-        - Exact match: youtube.com
-        - Subdomain wildcard: *.youtube.com (blocks youtube.com and all subdomains)
-        - Contains wildcard: *cric* (blocks anything containing 'cric')
-        - Starts with: cric* (blocks anything starting with 'cric')
-        - Ends with: *cric (blocks anything ending with 'cric')
+    def check_blocked(self, hostname, src_ip, dst_ip, src_port, dst_port):
         """
-        if not h:
-            return False, None
+        Check all blocking rules in order:
+        1. Custom Rules (priority-based, can allow or block)
+        2. Blocked Domains
+        3. Blocked IPs (source and destination)
+        4. Blocked Ports (source and destination)
+        
+        Returns: (is_blocked, block_type, reason, rule)
+        """
+        try:
+            # 1. Check Custom Rules first (priority-based)
+            action, rule = BlockRule.check_request(
+                hostname=hostname,
+                source_ip=src_ip,
+                dest_ip=dst_ip,
+                source_port=src_port,
+                dest_port=dst_port
+            )
 
-        # Clean hostname - remove port and convert to lowercase
-        h = h.lower().split(':')[0].strip()
+            if action == 'allow':
+                # Explicit allow - skip all other checks
+                print(f"✅ ALLOWED by rule: {rule.name}")
+                return False, None, None, None
+            elif action == 'block':
+                reason = rule.reason or f"Blocked by rule: {rule.name}"
+                return True, 'rule', reason, rule
+            elif action == 'log':
+                # Log only - don't block but record
+                print(f"📝 LOGGED by rule: {rule.name}")
 
-        for domain in self.blocked:
-            pattern = domain.lower().strip()
+            # 2. Check Domain blocking
+            if hostname:
+                is_blocked, domain_rule = BlockedDomain.is_blocked(hostname)
+                if is_blocked:
+                    reason = domain_rule.reason or f"Domain blocked: {hostname}"
+                    return True, 'domain', reason, domain_rule
 
-            # Skip empty patterns
-            if not pattern:
-                continue
+            # 3. Check Source IP blocking
+            if src_ip:
+                is_blocked, ip_rule = BlockedIP.is_blocked(src_ip, 'source')
+                if is_blocked:
+                    reason = ip_rule.reason or f"Source IP blocked: {src_ip}"
+                    return True, 'src_ip', reason, ip_rule
 
-            # Pattern: *cric* (contains)
-            if pattern.startswith('*') and pattern.endswith('*') and len(pattern) > 2:
-                search_term = pattern[1:-1]  # Remove * from both ends
-                if search_term in h:
-                    print(f"🚫 BLOCKED: {h} contains '{search_term}' (pattern: {pattern})")
-                    return True, self.blocked_domains_map.get(domain)
-            
-            # Pattern: *.youtube.com (subdomain wildcard)
-            elif pattern.startswith('*.') and not pattern.endswith('*'):
-                base_domain = pattern[2:]  # Remove *. prefix
-                
-                # Match exact base domain
-                if h == base_domain:
-                    print(f"🚫 BLOCKED: {h} matches {pattern} (exact base)")
-                    return True, self.blocked_domains_map.get(domain)
-                
-                # Match subdomains
-                if h.endswith('.' + base_domain):
-                    print(f"🚫 BLOCKED: {h} matches {pattern} (subdomain)")
-                    return True, self.blocked_domains_map.get(domain)
-            
-            # Pattern: cric* (starts with)
-            elif pattern.endswith('*') and not pattern.startswith('*'):
-                prefix = pattern[:-1]  # Remove * from end
-                if h.startswith(prefix):
-                    print(f"🚫 BLOCKED: {h} starts with '{prefix}' (pattern: {pattern})")
-                    return True, self.blocked_domains_map.get(domain)
-            
-            # Pattern: *cric (ends with)
-            elif pattern.startswith('*') and not pattern.endswith('*') and not pattern.startswith('*.'):
-                suffix = pattern[1:]  # Remove * from start
-                if h.endswith(suffix):
-                    print(f"🚫 BLOCKED: {h} ends with '{suffix}' (pattern: {pattern})")
-                    return True, self.blocked_domains_map.get(domain)
-            
-            # Exact match: youtube.com
-            elif h == pattern:
-                print(f"🚫 BLOCKED: {h} matches {pattern} (exact)")
-                return True, self.blocked_domains_map.get(domain)
-            
-            # Parent domain match: youtube.com also blocks www.youtube.com
-            elif h.endswith('.' + pattern):
-                print(f"🚫 BLOCKED: {h} matches {pattern} (parent domain)")
-                return True, self.blocked_domains_map.get(domain)
+            # 4. Check Destination IP blocking
+            if dst_ip:
+                is_blocked, ip_rule = BlockedIP.is_blocked(dst_ip, 'destination')
+                if is_blocked:
+                    reason = ip_rule.reason or f"Destination IP blocked: {dst_ip}"
+                    return True, 'dst_ip', reason, ip_rule
 
-        return False, None
+            # 5. Check Source Port blocking
+            if src_port:
+                try:
+                    is_blocked, port_rule = BlockedPort.is_blocked(int(src_port), 'source')
+                    if is_blocked:
+                        reason = port_rule.reason or f"Source port blocked: {src_port}"
+                        return True, 'src_port', reason, port_rule
+                except (ValueError, TypeError):
+                    pass
 
-    def increment_hit_count(self, domain_id):
-        """Increment hit count for blocked domain"""
-        if domain_id:
-            try:
-                BlockedDomain.objects.filter(id=domain_id).update(hit_count=F('hit_count') + 1)
-            except Exception as e:
-                print(f"Error updating hit count: {e}")
+            # 6. Check Destination Port blocking
+            if dst_port:
+                try:
+                    is_blocked, port_rule = BlockedPort.is_blocked(int(dst_port), 'destination')
+                    if is_blocked:
+                        reason = port_rule.reason or f"Destination port blocked: {dst_port}"
+                        return True, 'dst_port', reason, port_rule
+                except (ValueError, TypeError):
+                    pass
+
+        except Exception as e:
+            print(f"Error checking blocklist: {e}")
+
+        return False, None, None, None
 
     def start(self):
         """Start the proxy server"""
         self.load_blocklist()
         srv = None
 
-        # Try IPv6 dual-stack first, fall back to IPv4
         try:
             srv = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
             srv.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
@@ -137,7 +164,6 @@ class ProxyServer:
             print(f"\n{'='*60}")
             print(f"  🌐 PROXY SERVER STARTED (Dual Stack IPv4/IPv6)")
             print(f"  📍 Listening on: {self.host}:{self.port}")
-            print(f"  🚫 Blocked patterns: {len(self.blocked)}")
             print(f"{'='*60}\n")
         except Exception as e:
             print(f"⚠️ IPv6 dual-stack failed ({e}), using IPv4...")
@@ -147,9 +173,8 @@ class ProxyServer:
             srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             srv.bind((self.host, self.port))
             print(f"\n{'='*60}")
-            print(f"  🌐 PROXY SERVER STARTED (IPv4 Only)")
+            print(f"  🌐 PROXY SERVER STARTED (IPv4)")
             print(f"  📍 Listening on: {self.host}:{self.port}")
-            print(f"  🚫 Blocked patterns: {len(self.blocked)}")
             print(f"{'='*60}\n")
 
         srv.listen(200)
@@ -168,13 +193,12 @@ class ProxyServer:
         """Handle incoming client connection"""
         start = time.time()
 
-        # Extract source IP and port
         if len(addr) == 2:
             src_ip, src_port = addr
         else:
             src_ip, src_port = addr[0], addr[1]
 
-        # Normalize IPv6-mapped IPv4 addresses
+        # Normalize IPv6-mapped IPv4
         if isinstance(src_ip, str) and src_ip.startswith('::ffff:'):
             src_ip = src_ip[7:]
 
@@ -185,7 +209,6 @@ class ProxyServer:
                 client.close()
                 return
 
-            # Parse the request
             try:
                 first_line = data.split(b'\r\n')[0].decode('utf-8', errors='ignore')
                 parts = first_line.split()
@@ -207,7 +230,7 @@ class ProxyServer:
         except socket.timeout:
             pass
         except Exception as e:
-            print(f"Client handler error: {e}")
+            print(f"Client error: {e}")
         finally:
             try:
                 client.close()
@@ -224,16 +247,30 @@ class ProxyServer:
                 host = target
                 port = 443
 
-            # Check if blocked
-            is_blocked, blocked_id = self.is_blocked(host)
+            # Resolve destination IP
+            try:
+                dst_ip = socket.gethostbyname(host)
+            except:
+                dst_ip = "0.0.0.0"
+
+            # Check blocking rules
+            is_blocked, block_type, reason, rule = self.check_blocked(
+                hostname=host,
+                src_ip=src_ip,
+                dst_ip=dst_ip,
+                src_port=src_port,
+                dst_port=port
+            )
+
             if is_blocked:
-                self.send_blocked(client, host)
-                self.increment_hit_count(blocked_id)
-                self.log('CONNECT', host, 403, True, start, src_ip, src_port, "0.0.0.0", 0, 0)
+                print(f"🚫 BLOCKED [{block_type}]: {src_ip}:{src_port} → {dst_ip}:{port} ({host})")
+                print(f"   Reason: {reason}")
+                self.send_blocked(client, host, reason)
+                self.log('CONNECT', host, 403, True, start, src_ip, src_port, dst_ip, port, 0, block_type)
                 client.close()
                 return
 
-            # Connect to target server
+            # Connect to target
             server = socket.create_connection((host, port), timeout=15)
 
             try:
@@ -242,14 +279,12 @@ class ProxyServer:
             except:
                 dst_ip, dst_port = host, port
 
-            # Send connection established
             client.sendall(b'HTTP/1.1 200 Connection Established\r\n\r\n')
-            self.log('CONNECT', host, 200, False, start, src_ip, src_port, dst_ip, dst_port, 0)
+            self.log('CONNECT', host, 200, False, start, src_ip, src_port, dst_ip, dst_port, 0, None)
 
             client.settimeout(None)
             server.settimeout(None)
 
-            # Tunnel data between client and server
             def forward(source, destination):
                 try:
                     while True:
@@ -277,7 +312,7 @@ class ProxyServer:
             t2.join()
 
         except Exception as e:
-            print(f"CONNECT error for {target}: {e}")
+            print(f"CONNECT error: {e}")
             try:
                 client.sendall(b'HTTP/1.1 502 Bad Gateway\r\n\r\n')
             except:
@@ -286,10 +321,9 @@ class ProxyServer:
     def handle_http(self, client, data, method, target, src_ip, src_port, start):
         """Handle HTTP requests"""
         try:
-            # Parse URL
             if target.startswith('http://'):
                 target = target[7:]
-            
+
             if '/' in target:
                 host_part, path = target.split('/', 1)
                 path = '/' + path
@@ -304,12 +338,26 @@ class ProxyServer:
                 host = host_part
                 port = 80
 
-            # Check if blocked
-            is_blocked, blocked_id = self.is_blocked(host)
+            # Resolve destination IP
+            try:
+                dst_ip = socket.gethostbyname(host)
+            except:
+                dst_ip = "0.0.0.0"
+
+            # Check blocking rules
+            is_blocked, block_type, reason, rule = self.check_blocked(
+                hostname=host,
+                src_ip=src_ip,
+                dst_ip=dst_ip,
+                src_port=src_port,
+                dst_port=port
+            )
+
             if is_blocked:
-                self.send_blocked(client, host)
-                self.increment_hit_count(blocked_id)
-                self.log(method, host, 403, True, start, src_ip, src_port, "0.0.0.0", 0, 0)
+                print(f"🚫 BLOCKED [{block_type}]: {src_ip}:{src_port} → {dst_ip}:{port} ({host})")
+                print(f"   Reason: {reason}")
+                self.send_blocked(client, host, reason)
+                self.log(method, host, 403, True, start, src_ip, src_port, dst_ip, port, 0, block_type)
                 client.close()
                 return
 
@@ -332,7 +380,7 @@ class ProxyServer:
             except:
                 dst_ip, dst_port = host, port
 
-            # Send request to server
+            # Send request
             server.sendall(data)
 
             # Receive and forward response
@@ -345,68 +393,100 @@ class ProxyServer:
                 client.sendall(response)
 
             server.close()
-            self.log(method, host, 200, False, start, src_ip, src_port, dst_ip, dst_port, total_size)
+            self.log(method, host, 200, False, start, src_ip, src_port, dst_ip, dst_port, total_size, None)
 
         except Exception as e:
-            print(f"HTTP error for {target}: {e}")
+            print(f"HTTP error: {e}")
             try:
                 client.sendall(b'HTTP/1.1 502 Bad Gateway\r\n\r\n')
             except:
                 pass
 
-    def send_blocked(self, client, host):
+    def send_blocked(self, client, host, reason=""):
         """Send blocked page to client"""
         body = f'''<!DOCTYPE html>
 <html>
 <head>
     <title>Access Blocked</title>
     <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
         }}
         .container {{
             text-align: center;
-            padding: 60px;
-            background: rgba(30, 41, 59, 0.8);
+            padding: 50px;
+            background: rgba(30, 41, 59, 0.95);
             border-radius: 24px;
             border: 1px solid #334155;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             max-width: 500px;
+            margin: 20px;
         }}
-        .icon {{
-            font-size: 80px;
+        .icon {{ 
+            font-size: 80px; 
             margin-bottom: 20px;
+            animation: pulse 2s infinite;
         }}
-        h1 {{
-            color: #ef4444;
-            margin-bottom: 10px;
+        @keyframes pulse {{
+            0%, 100% {{ transform: scale(1); }}
+            50% {{ transform: scale(1.1); }}
+        }}
+        h1 {{ 
+            color: #ef4444; 
+            margin-bottom: 10px; 
             font-size: 32px;
+            font-weight: 700;
         }}
-        p {{
-            color: #94a3b8;
-            font-size: 18px;
-            margin-bottom: 30px;
+        p {{ 
+            color: #94a3b8; 
+            font-size: 16px; 
+            margin-bottom: 25px;
+            line-height: 1.6;
         }}
         .domain {{
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             padding: 15px 30px;
             border-radius: 12px;
             display: inline-block;
-            font-family: monospace;
+            font-family: 'SF Mono', Monaco, monospace;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }}
-        .footer {{
-            margin-top: 30px;
-            color: #64748b;
+        .reason {{
+            padding: 15px 20px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            color: #fca5a5;
             font-size: 14px;
+            margin-bottom: 20px;
+        }}
+        .reason strong {{
+            color: #f87171;
+        }}
+        .footer {{ 
+            color: #64748b; 
+            font-size: 12px;
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+            margin-top: 10px;
+        }}
+        .info {{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 11px;
+            color: #475569;
         }}
     </style>
 </head>
@@ -416,8 +496,16 @@ class ProxyServer:
         <h1>Access Blocked</h1>
         <p>This website has been blocked by your network administrator.</p>
         <div class="domain">{host}</div>
+        <div class="reason">
+            <strong>Reason:</strong> {reason or 'Policy violation'}
+        </div>
         <div class="footer">
-            If you believe this is an error, please contact your administrator.
+            If you believe this is an error, please contact your network administrator.
+            <div class="info">
+                <span>ProxyMonitor</span>
+                <span>•</span>
+                <span>{time.strftime('%Y-%m-%d %H:%M:%S')}</span>
+            </div>
         </div>
     </div>
 </body>
@@ -425,43 +513,46 @@ class ProxyServer:
         try:
             response = f'HTTP/1.1 403 Forbidden\r\n'
             response += f'Content-Type: text/html; charset=utf-8\r\n'
-            response += f'Content-Length: {len(body)}\r\n'
+            response += f'Content-Length: {len(body.encode("utf-8"))}\r\n'
             response += f'Connection: close\r\n'
+            response += f'X-Blocked-By: ProxyMonitor\r\n'
             response += f'\r\n'
             response += body
             client.sendall(response.encode('utf-8'))
         except:
             pass
 
-    def log(self, method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size):
+    def log(self, method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size, block_type):
         """Log request asynchronously"""
         threading.Thread(
             target=self._log_db,
-            args=(method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size),
+            args=(method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size, block_type),
             daemon=True
         ).start()
 
-    def _log_db(self, method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size):
+    def _log_db(self, method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size, block_type):
         """Save request to database"""
         try:
             # Console log
             icon = '🚫' if blocked else '✅'
-            print(f"{icon} {method:8} {host[:40]:40} {src_ip}:{src_port} -> {dst_ip}:{dst_port}")
+            block_info = f" [{block_type}]" if block_type else ""
+            elapsed = int((time.time() - start) * 1000)
+            print(f"{icon} {method:8} {host[:40]:40} {src_ip}:{src_port} → {dst_ip}:{dst_port} {elapsed}ms{block_info}")
 
             # Update domain stats
-            updated = DomainStats.objects.filter(hostname=host).update(
+            stats, created = DomainStats.objects.get_or_create(
+                hostname=host,
+                defaults={
+                    'request_count': 0,
+                    'total_bytes': 0,
+                    'blocked_count': 0
+                }
+            )
+            DomainStats.objects.filter(hostname=host).update(
                 request_count=F('request_count') + 1,
                 total_bytes=F('total_bytes') + size,
                 blocked_count=F('blocked_count') + (1 if blocked else 0)
             )
-            
-            if not updated:
-                DomainStats.objects.create(
-                    hostname=host,
-                    request_count=1,
-                    total_bytes=size,
-                    blocked_count=1 if blocked else 0
-                )
 
             # Create request log
             req = ProxyRequest.objects.create(
@@ -470,7 +561,7 @@ class ProxyServer:
                 hostname=host,
                 status_code=status,
                 blocked=blocked,
-                response_time=int((time.time() - start) * 1000),
+                response_time=elapsed,
                 content_length=size,
                 source_ip=src_ip,
                 source_port=int(src_port),
@@ -485,7 +576,7 @@ class ProxyServer:
             print(f"Log Error: {e}")
 
     def notify(self, req):
-        """Send WebSocket notification for new request"""
+        """Send WebSocket notification for real-time updates"""
         try:
             from apps.dashboard.serializers import ProxyRequestListSerializer
             data = ProxyRequestListSerializer(req).data
@@ -509,7 +600,10 @@ def run_proxy(port=8088):
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='Proxy Server')
-    parser.add_argument('--port', type=int, default=8088, help='Port to listen on')
+    parser = argparse.ArgumentParser(description='ProxyMonitor - Proxy Server')
+    parser.add_argument('--host', type=str, default='0.0.0.0', help='Host to bind')
+    parser.add_argument('--port', type=int, default=8088, help='Port to bind')
     args = parser.parse_args()
-    run_proxy(args.port)
+    
+    server = ProxyServer(host=args.host, port=args.port)
+    server.start()

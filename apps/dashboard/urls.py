@@ -1,15 +1,20 @@
 from django.urls import path
 from . import views
+from . import auth_views
 
 app_name = 'dashboard'
 
 urlpatterns = [
-    # Page views
+    # Auth
+    path('login/', auth_views.login_view, name='login'),
+    path('logout/', auth_views.logout_view, name='logout'),
+    
+    # Dashboard pages
     path('', views.index, name='index'),
     path('analytics/', views.analytics, name='analytics'),
     path('requests/', views.requests_view, name='requests'),
     path('blocklist/', views.blocklist_view, name='blocklist'),
-
+    
     # API endpoints
     path('api/traffic-stats/', views.api_traffic_stats, name='api_traffic_stats'),
     path('api/recent-requests/', views.api_recent_requests, name='api_recent_requests'),

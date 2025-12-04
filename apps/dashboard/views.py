@@ -1,28 +1,28 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Count, Avg, Sum, Q
 from django.db.models.functions import TruncHour
+from django.contrib.auth.decorators import login_required
 from datetime import timedelta
 import json
 
 from .models import ProxyRequest, DomainStats, TrafficStats, Alert, IPHostnameCache
 
 
+@login_required(login_url='dashboard:login')
 def index(request):
     """Dashboard home page"""
     now = timezone.now()
     last_24h = now - timedelta(hours=24)
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # Get total statistics (all time)
     total_stats = ProxyRequest.objects.aggregate(
         total_requests=Count('id'),
         blocked_requests=Count('id', filter=Q(blocked=True)),
         total_bytes=Sum('content_length')
     )
 
-    # Get 24h statistics
     stats_24h = ProxyRequest.objects.filter(
         timestamp__gte=last_24h
     ).aggregate(
@@ -32,12 +32,10 @@ def index(request):
         avg_response_time=Avg('response_time')
     )
 
-    # Get unique IPs count (today)
     unique_ips = ProxyRequest.objects.filter(
         timestamp__gte=today_start
     ).values('source_ip').distinct().count()
 
-    # Get hourly data for chart (last 24 hours)
     hourly_data = ProxyRequest.objects.filter(
         timestamp__gte=last_24h
     ).annotate(
@@ -47,7 +45,6 @@ def index(request):
         blocked=Count('id', filter=Q(blocked=True)),
     ).order_by('hour')
 
-    # Convert hourly data to JSON-serializable format
     hourly_data_list = []
     for item in hourly_data:
         hourly_data_list.append({
@@ -56,14 +53,12 @@ def index(request):
             'blocked': item['blocked'] or 0,
         })
 
-    # Get request methods distribution (last 24 hours)
     methods_data = ProxyRequest.objects.filter(
         timestamp__gte=last_24h
     ).values('method').annotate(
         count=Count('id')
     ).order_by('-count')
 
-    # Convert methods data to list
     methods_list = []
     for item in methods_data:
         if item['method']:
@@ -72,16 +67,13 @@ def index(request):
                 'count': item['count']
             })
 
-    # Get recent requests
     recent_requests = ProxyRequest.objects.all().order_by('-timestamp')[:20]
 
-    # Get recent alerts
     try:
         recent_alerts = Alert.objects.filter(is_read=False)[:5]
     except Exception:
         recent_alerts = []
 
-    # Check if we have data for charts
     has_chart_data = len(hourly_data_list) > 0
     has_methods_data = len(methods_list) > 0
 
@@ -99,19 +91,21 @@ def index(request):
         'has_methods_data': has_methods_data,
         'recent_requests': recent_requests,
         'recent_alerts': recent_alerts,
+        'page': 'dashboard',
     }
 
     return render(request, 'dashboard/index.html', context)
 
 
+@login_required(login_url='dashboard:login')
 def analytics(request):
     """Analytics page with traffic data"""
     from django.conf import settings
-    
+
     hours = int(request.GET.get('hours', 24))
     now = timezone.now()
     time_boundary = now - timedelta(hours=hours)
-    
+
     dns_server = getattr(settings, 'DNS_SERVERS', ['8.8.8.8'])[0]
 
     total_stats = ProxyRequest.objects.filter(
@@ -122,7 +116,6 @@ def analytics(request):
         avg_response_time=Avg('response_time')
     )
 
-    # Get top clients with hostname resolution
     top_clients_qs = ProxyRequest.objects.filter(
         timestamp__gte=time_boundary
     ).values('source_ip').annotate(
@@ -154,10 +147,12 @@ def analytics(request):
     ).order_by('-request_count')[:20]
 
     top_blocked = ProxyRequest.objects.filter(
-        timestamp__gte=time_boundary,
-        blocked=True
+        timestamp__gte=time_boundary
     ).values('hostname').annotate(
-        blocked_count=Count('id')
+        request_count=Count('id'),
+        blocked_count=Count('id', filter=Q(blocked=True))
+    ).filter(
+        blocked_count__gt=0
     ).order_by('-blocked_count')[:10]
 
     methods_data = ProxyRequest.objects.filter(
@@ -186,11 +181,13 @@ def analytics(request):
         'methods': json.dumps(methods_list),
         'status_codes': list(status_codes),
         'selected_hours': hours,
+        'page': 'analytics',
     }
 
     return render(request, 'dashboard/analytics.html', context)
 
 
+@login_required(login_url='dashboard:login')
 def requests_view(request):
     """View recent requests"""
     page = int(request.GET.get('page', 1))
@@ -236,33 +233,35 @@ def requests_view(request):
         'filter_hostname': hostname_filter,
         'filter_source_ip': source_ip_filter,
         'methods': list(methods),
+        'page': 'requests',
     }
 
     return render(request, 'dashboard/requests.html', context)
 
 
+@login_required(login_url='dashboard:login')
 def blocklist_view(request):
     """Blocklist management page"""
     try:
         from apps.blocklist.models import BlockedDomain, BlockedIP, BlockedPort, BlockRule
-        
+
         blocked_domains = BlockedDomain.objects.all().order_by('-created_at')[:100]
         blocked_ips = BlockedIP.objects.all().order_by('-created_at')[:100]
         blocked_ports = BlockedPort.objects.all().order_by('-created_at')[:100]
         block_rules = BlockRule.objects.all().order_by('priority', '-created_at')[:100]
-        
+
         domain_count = BlockedDomain.objects.filter(is_active=True).count()
         ip_count = BlockedIP.objects.filter(is_active=True).count()
         port_count = BlockedPort.objects.filter(is_active=True).count()
         rule_count = BlockRule.objects.filter(is_active=True).count()
-        
+
         total_hits = (
             (BlockedDomain.objects.aggregate(Sum('hit_count'))['hit_count__sum'] or 0) +
             (BlockedIP.objects.aggregate(Sum('hit_count'))['hit_count__sum'] or 0) +
             (BlockedPort.objects.aggregate(Sum('hit_count'))['hit_count__sum'] or 0) +
             (BlockRule.objects.aggregate(Sum('hit_count'))['hit_count__sum'] or 0)
         )
-        
+
     except Exception as e:
         print(f"Blocklist error: {e}")
         blocked_domains = []
@@ -281,6 +280,7 @@ def blocklist_view(request):
         'port_count': port_count,
         'rule_count': rule_count,
         'total_hits': total_hits,
+        'page': 'blocklist',
     }
 
     return render(request, 'dashboard/blocklist.html', context)
@@ -288,6 +288,7 @@ def blocklist_view(request):
 
 # ============ API Endpoints ============
 
+@login_required(login_url='dashboard:login')
 def api_traffic_stats(request):
     """API endpoint for real-time traffic statistics"""
     hours = int(request.GET.get('hours', 24))
@@ -343,6 +344,7 @@ def api_traffic_stats(request):
     return JsonResponse(data)
 
 
+@login_required(login_url='dashboard:login')
 def api_recent_requests(request):
     """API endpoint for recent requests"""
     limit = int(request.GET.get('limit', 10))
@@ -372,6 +374,7 @@ def api_recent_requests(request):
     return JsonResponse(data)
 
 
+@login_required(login_url='dashboard:login')
 def api_domain_stats(request):
     """API endpoint for domain statistics"""
     limit = int(request.GET.get('limit', 20))
@@ -392,6 +395,7 @@ def api_domain_stats(request):
     return JsonResponse({'domains': list(domains)})
 
 
+@login_required(login_url='dashboard:login')
 def api_ip_stats(request):
     """API endpoint for IP statistics"""
     limit = int(request.GET.get('limit', 20))
@@ -420,6 +424,7 @@ def api_ip_stats(request):
     return JsonResponse({'ips': results})
 
 
+@login_required(login_url='dashboard:login')
 def api_alerts(request):
     """API endpoint for alerts"""
     limit = int(request.GET.get('limit', 20))
@@ -459,10 +464,11 @@ def api_alerts(request):
     return JsonResponse(data)
 
 
+@login_required(login_url='dashboard:login')
 def api_resolve_ip(request):
     """API endpoint to resolve IP to hostname"""
     from django.conf import settings
-    
+
     ip = request.GET.get('ip', '')
     dns_server = request.GET.get('dns_server') or getattr(settings, 'DNS_SERVERS', ['8.8.8.8'])[0]
 
@@ -471,13 +477,13 @@ def api_resolve_ip(request):
 
     try:
         hostname = IPHostnameCache.resolve_with_custom_dns(ip, dns_server)
-        
+
         try:
             cache = IPHostnameCache.objects.get(ip_address=ip)
             resolution_time_ms = cache.resolution_time_ms
         except IPHostnameCache.DoesNotExist:
             resolution_time_ms = 0
-            
+
     except Exception:
         hostname = None
         resolution_time_ms = 0
@@ -490,12 +496,13 @@ def api_resolve_ip(request):
     })
 
 
+@login_required(login_url='dashboard:login')
 def api_dns_cache(request):
     """API endpoint to manage DNS cache"""
     if request.method == 'DELETE':
         IPHostnameCache.objects.all().delete()
         return JsonResponse({'status': 'ok', 'message': 'DNS cache cleared'})
-    
+
     entries = IPHostnameCache.objects.all()[:100]
     data = {
         'entries': [
