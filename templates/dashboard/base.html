@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ProxyGuard{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { 700: '#334155', 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-dark-950 text-gray-200 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-dark-900 border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-full mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center gap-8">
+                    <!-- Logo -->
+                    <a href="/" class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold text-white">ProxyGuard</h1>
+                            <p class="text-xs text-gray-500">Network Monitor</p>
+                        </div>
+                    </a>
+                    
+                    <!-- Nav Links -->
+                    <div class="hidden md:flex items-center gap-1">
+                        <a href="/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+                            {% if page == 'dashboard' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
+                            <i class="fas fa-chart-line mr-2"></i>Dashboard
+                        </a>
+                        <a href="/requests/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+                            {% if page == 'requests' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
+                            <i class="fas fa-list mr-2"></i>Requests
+                        </a>
+                        <a href="/analytics/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+                            {% if page == 'analytics' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
+                            <i class="fas fa-chart-bar mr-2"></i>Analytics
+                        </a>
+                        <a href="/blocklist/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+                            {% if page == 'blocklist' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
+                            <i class="fas fa-ban mr-2"></i>Blocklist
+                            <span class="ml-1 px-1.5 py-0.5 bg-red-600 text-white text-xs rounded">{{ blocked_domains_count }}</span>
+                        </a>
+                        <a href="/admin/" target="_blank" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition">
+                            <i class="fas fa-cog mr-2"></i>Admin
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <!-- Search -->
+                    <div class="hidden lg:block relative">
+                        <input type="text" id="global-search" placeholder="Search..." 
+                            class="w-64 bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <i class="fas fa-search absolute right-3 top-2.5 text-gray-500"></i>
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-green-900/30 border border-green-800 rounded-lg">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-sm text-green-400" id="ws-status">Live</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- WebSocket Script -->
+    <script>
+        function formatBytes(b) {
+            if (!b) return '0 B';
+            const k = 1024, s = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(b) / Math.log(k));
+            return (b / Math.pow(k, i)).toFixed(1) + ' ' + s[i];
+        }
+        
+        // WebSocket connection
+        let ws;
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://${window.location.host}/ws/dashboard/`);
+            ws.onopen = () => {
+                document.getElementById('ws-status').textContent = 'Live';
+                document.getElementById('ws-status').classList.remove('text-red-400');
+                document.getElementById('ws-status').classList.add('text-green-400');
+            };
+            ws.onclose = () => {
+                document.getElementById('ws-status').textContent = 'Disconnected';
+                document.getElementById('ws-status').classList.remove('text-green-400');
+                document.getElementById('ws-status').classList.add('text-red-400');
+                setTimeout(connectWebSocket, 3000);
+            };
+            ws.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                if (data.type === 'new_request' && typeof handleNewRequest === 'function') {
+                    handleNewRequest(data.request);
+                }
+            };
+        }
+        connectWebSocket();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

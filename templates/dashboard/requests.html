@@ -1,0 +1,92 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Requests - ProxyGuard{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-white mb-2">Request Log</h2>
+    <p class="text-gray-500">View and filter all proxy requests</p>
+</div>
+
+<!-- Filters -->
+<div class="bg-dark-900 rounded-xl border border-gray-800 p-4 mb-6">
+    <form method="get" class="flex flex-wrap gap-4">
+        <input type="text" name="hostname" value="{{ filter_hostname }}" placeholder="Filter by hostname..."
+            class="flex-1 min-w-[200px] bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+        <input type="text" name="source_ip" value="{{ filter_source_ip }}" placeholder="Filter by source IP..."
+            class="w-48 bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+        <select name="method" class="bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+            <option value="">All Methods</option>
+            {% for m in methods %}
+            <option value="{{ m }}" {% if filter_method == m %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+        </select>
+        <select name="status" class="bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+            <option value="">All Status</option>
+            <option value="success" {% if filter_status == 'success' %}selected{% endif %}>Success</option>
+            <option value="blocked" {% if filter_status == 'blocked' %}selected{% endif %}>Blocked</option>
+            <option value="error" {% if filter_status == 'error' %}selected{% endif %}>Error</option>
+        </select>
+        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            <i class="fas fa-search mr-2"></i>Filter
+        </button>
+        <a href="/requests/" class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition">Clear</a>
+    </form>
+</div>
+
+<!-- Results -->
+<div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+    <div class="p-4 border-b border-gray-800">
+        <span class="text-gray-400">Showing {{ requests|length }} requests</span>
+    </div>
+    <div class="overflow-auto max-h-[70vh]">
+        <table class="w-full text-sm">
+            <thead class="bg-dark-950 sticky top-0">
+                <tr class="text-gray-500 text-xs uppercase">
+                    <th class="px-4 py-3 text-left">Time</th>
+                    <th class="px-4 py-3 text-left">Method</th>
+                    <th class="px-4 py-3 text-left">Host</th>
+                    <th class="px-4 py-3 text-left">Source</th>
+                    <th class="px-4 py-3 text-left">Destination</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                    <th class="px-4 py-3 text-right">Response</th>
+                    <th class="px-4 py-3 text-right">Size</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800">
+                {% for req in requests %}
+                <tr class="hover:bg-dark-800/50 {% if req.blocked %}bg-red-900/10{% endif %}">
+                    <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{{ req.timestamp|date:"M d, H:i:s" }}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 rounded text-xs font-mono
+                            {% if req.method == 'GET' %}bg-green-900/50 text-green-400
+                            {% elif req.method == 'POST' %}bg-blue-900/50 text-blue-400
+                            {% elif req.method == 'CONNECT' %}bg-purple-900/50 text-purple-400
+                            {% else %}bg-gray-700 text-gray-400{% endif %}">
+                            {{ req.method }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 font-mono text-gray-300 max-w-xs truncate" title="{{ req.hostname }}">{{ req.hostname }}</td>
+                    <td class="px-4 py-3 font-mono text-gray-500 text-xs">{{ req.source_ip|default:"-" }}:{{ req.source_port|default:"-" }}</td>
+                    <td class="px-4 py-3 font-mono text-gray-500 text-xs">
+                        {% if req.destination_ip %}{{ req.destination_ip }}:{{ req.destination_port }}{% else %}-{% endif %}
+                    </td>
+                    <td class="px-4 py-3">
+                        {% if req.blocked %}
+                        <span class="text-red-400"><i class="fas fa-ban mr-1"></i>Blocked</span>
+                        {% elif req.status_code >= 400 %}
+                        <span class="text-yellow-400">{{ req.status_code }}</span>
+                        {% else %}
+                        <span class="text-green-400">{{ req.status_code }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-right text-gray-500 text-xs">{{ req.response_time }}ms</td>
+                    <td class="px-4 py-3 text-right text-gray-500 text-xs">{{ req.content_length|filesizeformat }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="px-4 py-8 text-center text-gray-500">No requests found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

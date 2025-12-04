@@ -1,0 +1,149 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Blocklist - ProxyGuard{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <div>
+        <h2 class="text-2xl font-bold text-white mb-2">Blocklist Management</h2>
+        <p class="text-gray-500">Manage blocked domains and rules</p>
+    </div>
+    <button onclick="showAddModal()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+        <i class="fas fa-plus mr-2"></i>Add Domain
+    </button>
+</div>
+
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-4">
+        <div class="text-gray-400 text-sm">Total Blocked Domains</div>
+        <div class="text-2xl font-bold text-white">{{ blocked_domains|length }}</div>
+    </div>
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-4">
+        <div class="text-gray-400 text-sm">Active Rules</div>
+        <div class="text-2xl font-bold text-green-400">{{ blocked_domains_count }}</div>
+    </div>
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-4">
+        <div class="text-gray-400 text-sm">Categories</div>
+        <div class="text-2xl font-bold text-blue-400">{{ categories|length }}</div>
+    </div>
+</div>
+
+<!-- Blocklist Table -->
+<div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+    <div class="overflow-auto max-h-[60vh]">
+        <table class="w-full text-sm">
+            <thead class="bg-dark-950 sticky top-0">
+                <tr class="text-gray-500 text-xs uppercase">
+                    <th class="px-4 py-3 text-left">Domain</th>
+                    <th class="px-4 py-3 text-left">Category</th>
+                    <th class="px-4 py-3 text-left">Hits</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                    <th class="px-4 py-3 text-left">Added</th>
+                    <th class="px-4 py-3 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800" id="blocklist-table">
+                {% for domain in blocked_domains %}
+                <tr class="hover:bg-dark-800/50" id="domain-{{ domain.id }}">
+                    <td class="px-4 py-3 font-mono text-gray-300">{{ domain.domain }}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 rounded text-xs bg-gray-700 text-gray-300">{{ domain.category }}</span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-400">{{ domain.hit_count }}</td>
+                    <td class="px-4 py-3">
+                        {% if domain.is_active %}
+                        <span class="text-green-400"><i class="fas fa-check-circle mr-1"></i>Active</span>
+                        {% else %}
+                        <span class="text-gray-500"><i class="fas fa-pause-circle mr-1"></i>Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-gray-500 text-xs">{{ domain.created_at|date:"M d, Y" }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <button onclick="toggleDomain({{ domain.id }})" class="px-2 py-1 text-gray-400 hover:text-white">
+                            <i class="fas fa-power-off"></i>
+                        </button>
+                        <button onclick="deleteDomain({{ domain.id }})" class="px-2 py-1 text-red-400 hover:text-red-300">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No blocked domains</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div id="add-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center">
+    <div class="bg-dark-900 rounded-xl border border-gray-800 w-full max-w-md mx-4 p-6">
+        <h3 class="text-lg font-semibold text-white mb-4">Add Blocked Domain</h3>
+        <form id="add-form">
+            <input type="text" id="domain-input" placeholder="example.com" required
+                class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 mb-4 focus:outline-none focus:border-blue-500">
+            <select id="category-input" class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 mb-4">
+                <option value="manual">Manual</option>
+                <option value="ads">Advertising</option>
+                <option value="malware">Malware</option>
+                <option value="adult">Adult Content</option>
+                <option value="social">Social Media</option>
+            </select>
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Add</button>
+                <button type="button" onclick="hideAddModal()" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showAddModal() {
+        document.getElementById('add-modal').classList.remove('hidden');
+        document.getElementById('add-modal').classList.add('flex');
+    }
+    
+    function hideAddModal() {
+        document.getElementById('add-modal').classList.add('hidden');
+        document.getElementById('add-modal').classList.remove('flex');
+    }
+    
+    document.getElementById('add-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const domain = document.getElementById('domain-input').value;
+        const category = document.getElementById('category-input').value;
+        
+        const res = await fetch('/api/blocklist/domains/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+            body: JSON.stringify({domain, category, is_active: true})
+        });
+        
+        if (res.ok) {
+            location.reload();
+        } else {
+            alert('Error adding domain');
+        }
+    };
+    
+    async function toggleDomain(id) {
+        await fetch(`/api/blocklist/domains/${id}/toggle/`, {
+            method: 'POST',
+            headers: {'X-CSRFToken': '{{ csrf_token }}'}
+        });
+        location.reload();
+    }
+    
+    async function deleteDomain(id) {
+        if (confirm('Delete this domain?')) {
+            await fetch(`/api/blocklist/domains/${id}/`, {
+                method: 'DELETE',
+                headers: {'X-CSRFToken': '{{ csrf_token }}'}
+            });
+            document.getElementById(`domain-${id}`).remove();
+        }
+    }
+</script>
+{% endblock %}

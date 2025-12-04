@@ -1,0 +1,95 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Analytics - ProxyGuard{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-white mb-2">Analytics</h2>
+    <p class="text-gray-500">Traffic statistics and insights</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- Top Clients -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+        <h3 class="font-semibold text-white mb-4"><i class="fas fa-users mr-2 text-blue-400"></i>Top Clients (24h)</h3>
+        <div class="space-y-2 max-h-80 overflow-auto">
+            {% for client in top_clients %}
+            <div class="flex items-center justify-between p-3 bg-dark-800 rounded-lg">
+                <span class="font-mono text-sm text-gray-300">{{ client.source_ip }}</span>
+                <div class="flex gap-4 text-sm">
+                    <span class="text-gray-400">{{ client.count }} req</span>
+                    {% if client.blocked > 0 %}
+                    <span class="text-red-400">{{ client.blocked }} blocked</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 text-center py-4">No data</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Top Domains -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+        <h3 class="font-semibold text-white mb-4"><i class="fas fa-globe mr-2 text-green-400"></i>Top Domains</h3>
+        <div class="space-y-2 max-h-80 overflow-auto">
+            {% for domain in top_domains %}
+            <div class="flex items-center justify-between p-3 bg-dark-800 rounded-lg">
+                <span class="font-mono text-sm text-gray-300 truncate max-w-xs">{{ domain.hostname }}</span>
+                <span class="text-gray-400 text-sm">{{ domain.request_count }} req</span>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 text-center py-4">No data</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Methods -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+        <h3 class="font-semibold text-white mb-4">Request Methods</h3>
+        <div class="h-64">
+            <canvas id="methodsChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Status Codes -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+        <h3 class="font-semibold text-white mb-4">Status Codes</h3>
+        <div class="space-y-2">
+            {% for sc in status_codes %}
+            <div class="flex items-center gap-4">
+                <span class="w-16 font-mono text-sm {% if sc.status_code >= 400 %}text-red-400{% else %}text-green-400{% endif %}">{{ sc.status_code }}</span>
+                <div class="flex-1 bg-dark-800 rounded-full h-4">
+                    <div class="bg-blue-600 h-4 rounded-full" style="width: {% widthratio sc.count status_codes.0.count 100 %}%"></div>
+                </div>
+                <span class="text-gray-400 text-sm w-20 text-right">{{ sc.count }}</span>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 text-center py-4">No data</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const methodsData = {{ methods|safe }};
+    new Chart(document.getElementById('methodsChart'), {
+        type: 'doughnut',
+        data: {
+            labels: methodsData.map(m => m.method),
+            datasets: [{
+                data: methodsData.map(m => m.count),
+                backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444'],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'right', labels: { color: '#9ca3af' } } }
+        }
+    });
+</script>
+{% endblock %}
