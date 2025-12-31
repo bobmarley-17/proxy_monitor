@@ -2,72 +2,74 @@
 {% block title %}Dashboard - ProxyMonitor{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <h2 class="text-2xl font-bold text-white">Dashboard</h2>
-    <p class="text-gray-500">Real-time network monitoring</p>
+<!-- Page Header -->
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-white">Dashboard</h1>
+    <p class="text-gray-400 mt-1">Real-time network monitoring overview</p>
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
     <!-- Total Requests -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+    <div class="stats-card bg-dark-900 rounded-xl border border-gray-800 p-5 hover:border-gray-700 transition-all">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-400 text-sm">Total Requests</p>
-                <p class="text-3xl font-bold text-white mt-1">{{ total_requests|default:0 }}</p>
-                <p class="text-xs text-green-400 mt-1">
-                    <i class="fas fa-arrow-up mr-1"></i>+{{ requests_24h|default:0 }} last 24h
+                <p class="text-sm font-medium text-gray-400">Total Requests</p>
+                <p class="text-3xl font-bold text-white mt-2">{{ total_requests|default:0 }}</p>
+                <p class="text-xs font-medium text-green-400 mt-2 flex items-center gap-1">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+{{ requests_24h|default:0 }} last 24h</span>
                 </p>
             </div>
-            <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
+            <div class="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20">
                 <i class="fas fa-exchange-alt text-blue-400 text-xl"></i>
             </div>
         </div>
     </div>
 
     <!-- Blocked -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+    <div class="stats-card bg-dark-900 rounded-xl border border-gray-800 p-5 hover:border-gray-700 transition-all">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-400 text-sm">Blocked</p>
-                <p class="text-3xl font-bold text-red-400 mt-1">{{ blocked_requests|default:0 }}</p>
-                <p class="text-xs text-red-400 mt-1">
+                <p class="text-sm font-medium text-gray-400">Blocked Requests</p>
+                <p class="text-3xl font-bold text-red-400 mt-2">{{ blocked_requests|default:0 }}</p>
+                <p class="text-xs font-medium text-gray-500 mt-2">
                     {{ today_blocked|default:0 }} blocked today
                 </p>
             </div>
-            <div class="w-12 h-12 bg-red-600/20 rounded-xl flex items-center justify-center">
-                <i class="fas fa-ban text-red-400 text-xl"></i>
+            <div class="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center border border-red-500/20">
+                <i class="fas fa-shield-alt text-red-400 text-xl"></i>
             </div>
         </div>
     </div>
 
     <!-- Data Transfer -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+    <div class="stats-card bg-dark-900 rounded-xl border border-gray-800 p-5 hover:border-gray-700 transition-all">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-400 text-sm">Data Transfer</p>
-                <p class="text-3xl font-bold text-green-400 mt-1">{{ total_bytes_formatted }}</p>
-                <p class="text-xs text-gray-500 mt-1">
+                <p class="text-sm font-medium text-gray-400">Data Transfer</p>
+                <p class="text-3xl font-bold text-emerald-400 mt-2">{{ total_bytes_formatted }}</p>
+                <p class="text-xs font-medium text-gray-500 mt-2">
                     {{ today_bytes_formatted }} today
                 </p>
             </div>
-            <div class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
-                <i class="fas fa-database text-green-400 text-xl"></i>
+            <div class="w-14 h-14 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20">
+                <i class="fas fa-database text-emerald-400 text-xl"></i>
             </div>
         </div>
     </div>
 
     <!-- Unique Clients -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+    <div class="stats-card bg-dark-900 rounded-xl border border-gray-800 p-5 hover:border-gray-700 transition-all">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-400 text-sm">Unique Clients</p>
-                <p class="text-3xl font-bold text-purple-400 mt-1">{{ unique_clients|default:0 }}</p>
-                <p class="text-xs text-gray-500 mt-1">
-                    Active IPs today
+                <p class="text-sm font-medium text-gray-400">Active Clients</p>
+                <p class="text-3xl font-bold text-purple-400 mt-2">{{ unique_clients|default:0 }}</p>
+                <p class="text-xs font-medium text-gray-500 mt-2">
+                    Unique IPs today
                 </p>
             </div>
-            <div class="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center">
+            <div class="w-14 h-14 bg-purple-500/10 rounded-xl flex items-center justify-center border border-purple-500/20">
                 <i class="fas fa-users text-purple-400 text-xl"></i>
             </div>
         </div>
@@ -75,94 +77,116 @@
 </div>
 
 <!-- Charts Row -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     <!-- Traffic Chart -->
-    <div class="lg:col-span-2 bg-dark-900 rounded-xl border border-gray-800 p-5">
-        <h3 class="text-lg font-semibold text-white mb-4">
-            <i class="fas fa-chart-area mr-2 text-blue-400"></i>Traffic Overview (24h)
-        </h3>
-        <div class="h-64">
+    <div class="lg:col-span-2 bg-dark-900 rounded-xl border border-gray-800 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                <i class="fas fa-chart-area text-blue-400"></i>
+                Traffic Overview
+            </h3>
+            <span class="text-xs text-gray-500 bg-dark-800 px-3 py-1 rounded-full">Last 24 hours</span>
+        </div>
+        <div class="h-72">
             <canvas id="trafficChart"></canvas>
         </div>
     </div>
 
     <!-- Methods Chart -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
-        <h3 class="text-lg font-semibold text-white mb-4">
-            <i class="fas fa-chart-pie mr-2 text-green-400"></i>Request Methods
-        </h3>
-        <div class="h-64">
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                <i class="fas fa-chart-pie text-emerald-400"></i>
+                Methods
+            </h3>
+        </div>
+        <div class="h-72">
             <canvas id="methodsChart"></canvas>
         </div>
     </div>
 </div>
 
 <!-- Recent Requests -->
-<div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
-    <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-white">
-            <i class="fas fa-stream mr-2 text-yellow-400"></i>Live Requests
+<div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+    <div class="flex justify-between items-center p-6 border-b border-gray-800">
+        <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+            <i class="fas fa-stream text-amber-400"></i>
+            Live Requests
         </h3>
-        <a href="{% url 'dashboard:requests' %}" class="text-sm text-blue-400 hover:text-blue-300">
-            View All <i class="fas fa-arrow-right ml-1"></i>
+        <a href="{% url 'dashboard:requests' %}" class="text-sm text-blue-400 hover:text-blue-300 font-medium flex items-center gap-2 transition-colors">
+            View All
+            <i class="fas fa-arrow-right"></i>
         </a>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+        <table class="w-full">
             <thead>
-                <tr class="text-gray-500 text-xs uppercase border-b border-gray-800">
-                    <th class="text-left py-3 px-2">Time</th>
-                    <th class="text-left py-3 px-2">Method</th>
-                    <th class="text-left py-3 px-2">Host</th>
-                    <th class="text-left py-3 px-2">Source</th>
-                    <th class="text-left py-3 px-2">Status</th>
-                    <th class="text-right py-3 px-2">Response</th>
+                <tr class="bg-dark-800/50">
+                    <th class="text-left py-4 px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">Time</th>
+                    <th class="text-left py-4 px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">Method</th>
+                    <th class="text-left py-4 px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">Host</th>
+                    <th class="text-left py-4 px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">Source</th>
+                    <th class="text-left py-4 px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                    <th class="text-right py-4 px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">Response</th>
                 </tr>
             </thead>
-            <tbody id="requests-table" class="divide-y divide-gray-800">
+            <tbody id="requests-table" class="divide-y divide-gray-800/50">
                 {% for req in recent_requests %}
-                <tr class="hover:bg-dark-800 transition">
-                    <td class="py-2 px-2 text-gray-400 font-mono text-xs">
-                        {{ req.timestamp|time:"H:i:s" }}
+                <tr class="hover:bg-dark-800/30 transition-colors">
+                    <td class="py-4 px-6">
+                        <span class="font-mono text-sm text-gray-300">{{ req.timestamp|time:"H:i:s" }}</span>
                     </td>
-                    <td class="py-2 px-2">
-                        <span class="px-2 py-0.5 rounded text-xs font-medium
-                            {% if req.method == 'CONNECT' %}bg-purple-900/50 text-purple-400
-                            {% elif req.method == 'GET' %}bg-green-900/50 text-green-400
-                            {% elif req.method == 'POST' %}bg-blue-900/50 text-blue-400
-                            {% else %}bg-gray-700 text-gray-400{% endif %}">
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold
+                            {% if req.method == 'CONNECT' %}bg-purple-500/15 text-purple-400 border border-purple-500/20
+                            {% elif req.method == 'GET' %}bg-emerald-500/15 text-emerald-400 border border-emerald-500/20
+                            {% elif req.method == 'POST' %}bg-blue-500/15 text-blue-400 border border-blue-500/20
+                            {% elif req.method == 'PUT' %}bg-amber-500/15 text-amber-400 border border-amber-500/20
+                            {% elif req.method == 'DELETE' %}bg-red-500/15 text-red-400 border border-red-500/20
+                            {% else %}bg-gray-500/15 text-gray-400 border border-gray-500/20{% endif %}">
                             {{ req.method }}
                         </span>
                     </td>
-                    <td class="py-2 px-2 text-gray-300 max-w-xs truncate" title="{{ req.hostname }}">
-                        {{ req.hostname|truncatechars:40 }}
+                    <td class="py-4 px-6">
+                        <span class="text-sm text-white font-medium truncate max-w-xs block" title="{{ req.hostname }}">
+                            {{ req.hostname|truncatechars:45 }}
+                        </span>
                     </td>
-                    <td class="py-2 px-2 text-gray-400 font-mono text-xs">
-                        {{ req.source_ip }}:{{ req.source_port }}
+                    <td class="py-4 px-6">
+                        <span class="font-mono text-sm text-gray-400">{{ req.source_ip }}</span>
+                        <span class="text-gray-600">:</span>
+                        <span class="font-mono text-xs text-gray-500">{{ req.source_port }}</span>
                     </td>
-                    <td class="py-2 px-2">
+                    <td class="py-4 px-6">
                         {% if req.blocked %}
-                        <span class="px-2 py-0.5 rounded text-xs bg-red-900/50 text-red-400">Blocked</span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-red-500/15 text-red-400 border border-red-500/20">
+                            <i class="fas fa-ban mr-1.5"></i>Blocked
+                        </span>
                         {% else %}
-                        <span class="px-2 py-0.5 rounded text-xs 
-                            {% if req.status_code >= 200 and req.status_code < 300 %}bg-green-900/50 text-green-400
-                            {% elif req.status_code >= 300 and req.status_code < 400 %}bg-blue-900/50 text-blue-400
-                            {% elif req.status_code >= 400 %}bg-red-900/50 text-red-400
-                            {% else %}bg-gray-700 text-gray-400{% endif %}">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold
+                            {% if req.status_code >= 200 and req.status_code < 300 %}bg-emerald-500/15 text-emerald-400 border border-emerald-500/20
+                            {% elif req.status_code >= 300 and req.status_code < 400 %}bg-blue-500/15 text-blue-400 border border-blue-500/20
+                            {% elif req.status_code >= 400 %}bg-red-500/15 text-red-400 border border-red-500/20
+                            {% else %}bg-gray-500/15 text-gray-400 border border-gray-500/20{% endif %}">
                             {{ req.status_code }}
                         </span>
                         {% endif %}
                     </td>
-                    <td class="py-2 px-2 text-right text-gray-500 text-xs">
-                        {{ req.response_time }}ms
+                    <td class="py-4 px-6 text-right">
+                        <span class="text-sm text-gray-400">{{ req.response_time }}<span class="text-gray-500 ml-0.5">ms</span></span>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="py-8 text-center text-gray-500">
-                        <i class="fas fa-inbox text-4xl mb-3 block opacity-50"></i>
-                        No requests yet
+                    <td colspan="6" class="py-16 text-center">
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 bg-dark-800 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-inbox text-3xl text-gray-600"></i>
+                            </div>
+                            <p class="text-gray-400 font-medium">No requests yet</p>
+                            <p class="text-sm text-gray-500 mt-1">Requests will appear here in real-time</p>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -172,14 +196,65 @@
 </div>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+    .stats-card {
+        position: relative;
+        overflow: hidden;
+    }
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .stats-card:hover::before {
+        opacity: 1;
+    }
+    
+    /* Light mode overrides */
+    html:not(.dark) .stats-card {
+        background: #ffffff !important;
+        border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .stats-card:hover {
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    html:not(.dark) .stats-card p.text-white {
+        color: #0f172a !important;
+    }
+    html:not(.dark) .stats-card p.text-gray-400 {
+        color: #64748b !important;
+    }
+    html:not(.dark) .stats-card p.text-gray-500 {
+        color: #94a3b8 !important;
+    }
+</style>
+{% endblock %}
+
 {% block extra_js %}
 <script>
-    // Parse data from Django
     const hourlyData = {{ hourly_data|safe }};
     const methodData = {{ method_stats|safe }};
-    
-    console.log('Hourly Data:', hourlyData);
-    console.log('Method Data:', methodData);
+    const isDark = document.documentElement.classList.contains('dark');
+
+    // Chart colors
+    const chartColors = {
+        grid: isDark ? '#1f2937' : '#e5e7eb',
+        text: isDark ? '#9ca3af' : '#6b7280',
+        blue: '#3b82f6',
+        red: '#ef4444',
+        green: '#10b981',
+        purple: '#8b5cf6',
+        yellow: '#f59e0b',
+        cyan: '#06b6d4'
+    };
 
     // Traffic Chart
     const trafficCtx = document.getElementById('trafficChart');
@@ -193,57 +268,78 @@
                     labels: hourlyData.map(d => d.hour),
                     datasets: [
                         {
-                            label: 'Total',
+                            label: 'Total Requests',
                             data: hourlyData.map(d => d.total),
-                            borderColor: '#3b82f6',
+                            borderColor: chartColors.blue,
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             fill: true,
                             tension: 0.4,
-                            borderWidth: 2
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            pointHoverRadius: 5
                         },
                         {
                             label: 'Blocked',
                             data: hourlyData.map(d => d.blocked),
-                            borderColor: '#ef4444',
+                            borderColor: chartColors.red,
                             backgroundColor: 'rgba(239, 68, 68, 0.1)',
                             fill: true,
                             tension: 0.4,
-                            borderWidth: 2
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            pointHoverRadius: 5
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
                     plugins: {
                         legend: {
                             position: 'top',
-                            labels: { color: '#9ca3af', usePointStyle: true }
+                            align: 'end',
+                            labels: { 
+                                color: chartColors.text, 
+                                usePointStyle: true,
+                                padding: 20,
+                                font: { size: 12, weight: '500' }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                            titleColor: isDark ? '#f1f5f9' : '#0f172a',
+                            bodyColor: isDark ? '#cbd5e1' : '#475569',
+                            borderColor: isDark ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8
                         }
                     },
                     scales: {
                         x: {
-                            grid: { color: '#1f2937' },
-                            ticks: { color: '#6b7280' }
+                            grid: { color: chartColors.grid, drawBorder: false },
+                            ticks: { color: chartColors.text, font: { size: 11 } }
                         },
                         y: {
                             beginAtZero: true,
-                            grid: { color: '#1f2937' },
-                            ticks: { color: '#6b7280' }
+                            grid: { color: chartColors.grid, drawBorder: false },
+                            ticks: { color: chartColors.text, font: { size: 11 } }
                         }
                     }
                 }
             });
         } else {
             trafficCtx.parentElement.innerHTML = `
-                <div class="h-full flex items-center justify-center text-gray-500">
+                <div class="h-full flex items-center justify-center">
                     <div class="text-center">
-                        <i class="fas fa-chart-line text-4xl mb-3 opacity-50"></i>
-                        <p>No traffic data in last 24 hours</p>
-                        <p class="text-xs mt-1">Data will appear once requests are made</p>
+                        <div class="w-16 h-16 bg-dark-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-line text-3xl text-gray-600"></i>
+                        </div>
+                        <p class="text-gray-400 font-medium">No traffic data</p>
+                        <p class="text-sm text-gray-500 mt-1">Data will appear once requests are made</p>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
     }
 
@@ -256,67 +352,80 @@
                 labels: methodData.map(m => m.method),
                 datasets: [{
                     data: methodData.map(m => m.count),
-                    backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'],
-                    borderWidth: 0
+                    backgroundColor: [chartColors.blue, chartColors.green, chartColors.purple, chartColors.yellow, chartColors.red, chartColors.cyan],
+                    borderWidth: 0,
+                    hoverOffset: 4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '65%',
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: '#9ca3af', usePointStyle: true, padding: 15 }
+                        labels: { 
+                            color: chartColors.text, 
+                            usePointStyle: true, 
+                            padding: 20,
+                            font: { size: 12, weight: '500' }
+                        }
                     }
-                },
-                cutout: '60%'
+                }
             }
         });
     } else if (methodsCtx) {
         methodsCtx.parentElement.innerHTML = `
-            <div class="h-full flex items-center justify-center text-gray-500">
+            <div class="h-full flex items-center justify-center">
                 <div class="text-center">
-                    <i class="fas fa-chart-pie text-4xl mb-3 opacity-50"></i>
-                    <p>No method data yet</p>
+                    <div class="w-16 h-16 bg-dark-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-pie text-3xl text-gray-600"></i>
+                    </div>
+                    <p class="text-gray-400 font-medium">No method data</p>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
-    // Handle new WebSocket requests
+    // Handle WebSocket updates
     function handleNewRequest(req) {
         const tbody = document.getElementById('requests-table');
         if (!tbody) return;
 
-        const statusClass = req.blocked ? 'bg-red-900/50 text-red-400' :
-            req.status_code >= 200 && req.status_code < 300 ? 'bg-green-900/50 text-green-400' :
-            req.status_code >= 400 ? 'bg-red-900/50 text-red-400' : 'bg-gray-700 text-gray-400';
+        const methodColors = {
+            'CONNECT': 'bg-purple-500/15 text-purple-400 border border-purple-500/20',
+            'GET': 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20',
+            'POST': 'bg-blue-500/15 text-blue-400 border border-blue-500/20',
+            'PUT': 'bg-amber-500/15 text-amber-400 border border-amber-500/20',
+            'DELETE': 'bg-red-500/15 text-red-400 border border-red-500/20'
+        };
 
-        const methodClass = req.method === 'CONNECT' ? 'bg-purple-900/50 text-purple-400' :
-            req.method === 'GET' ? 'bg-green-900/50 text-green-400' :
-            req.method === 'POST' ? 'bg-blue-900/50 text-blue-400' : 'bg-gray-700 text-gray-400';
+        const statusColors = req.blocked ? 'bg-red-500/15 text-red-400 border border-red-500/20' :
+            req.status_code >= 200 && req.status_code < 300 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' :
+            req.status_code >= 400 ? 'bg-red-500/15 text-red-400 border border-red-500/20' : 
+            'bg-gray-500/15 text-gray-400 border border-gray-500/20';
 
-        const time = new Date(req.timestamp).toLocaleTimeString('en-US', { 
-            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false 
+        const time = new Date(req.timestamp).toLocaleTimeString('en-US', {
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
         });
 
         const row = document.createElement('tr');
-        row.className = 'hover:bg-dark-800 transition fade-in';
+        row.className = 'hover:bg-dark-800/30 transition-colors fade-in';
         row.innerHTML = `
-            <td class="py-2 px-2 text-gray-400 font-mono text-xs">${time}</td>
-            <td class="py-2 px-2"><span class="px-2 py-0.5 rounded text-xs font-medium ${methodClass}">${req.method}</span></td>
-            <td class="py-2 px-2 text-gray-300 max-w-xs truncate">${req.hostname}</td>
-            <td class="py-2 px-2 text-gray-400 font-mono text-xs">${req.source_ip}:${req.source_port || ''}</td>
-            <td class="py-2 px-2"><span class="px-2 py-0.5 rounded text-xs ${statusClass}">${req.blocked ? 'Blocked' : req.status_code}</span></td>
-            <td class="py-2 px-2 text-right text-gray-500 text-xs">${req.response_time}ms</td>
+            <td class="py-4 px-6"><span class="font-mono text-sm text-gray-300">${time}</span></td>
+            <td class="py-4 px-6"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${methodColors[req.method] || 'bg-gray-500/15 text-gray-400'}">${req.method}</span></td>
+            <td class="py-4 px-6"><span class="text-sm text-white font-medium truncate max-w-xs block">${req.hostname}</span></td>
+            <td class="py-4 px-6"><span class="font-mono text-sm text-gray-400">${req.source_ip}</span><span class="text-gray-600">:</span><span class="font-mono text-xs text-gray-500">${req.source_port || ''}</span></td>
+            <td class="py-4 px-6"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${statusColors}">${req.blocked ? '<i class="fas fa-ban mr-1.5"></i>Blocked' : req.status_code}</span></td>
+            <td class="py-4 px-6 text-right"><span class="text-sm text-gray-400">${req.response_time}<span class="text-gray-500 ml-0.5">ms</span></span></td>
         `;
 
         tbody.insertBefore(row, tbody.firstChild);
+        while (tbody.children.length > 20) tbody.removeChild(tbody.lastChild);
+    }
 
-        // Keep only 20 rows
-        while (tbody.children.length > 20) {
-            tbody.removeChild(tbody.lastChild);
-        }
+    // Update chart theme on toggle
+    function updateChartTheme() {
+        location.reload(); // Simplest way to refresh charts with new colors
     }
 </script>
 {% endblock %}

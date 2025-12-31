@@ -2,78 +2,255 @@
 {% block title %}Settings - ProxyMonitor{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <h2 class="text-2xl font-bold text-white">Settings</h2>
-    <p class="text-gray-500">Manage your account settings</p>
+<!-- Page Header -->
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-white">Settings</h1>
+    <p class="text-gray-400 mt-1">Manage your account and preferences</p>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Profile -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-6">
-        <h3 class="text-lg font-semibold text-white mb-4">Profile Information</h3>
-        <form method="POST">
+    <!-- Profile Information -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+        <div class="p-6 border-b border-gray-800">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                <i class="fas fa-user text-blue-400"></i>
+                Profile Information
+            </h3>
+        </div>
+        <form method="POST" class="p-6">
             {% csrf_token %}
             <input type="hidden" name="action" value="update_profile">
-            <div class="space-y-4">
+            <div class="space-y-5">
                 <div>
-                    <label class="text-gray-400 text-sm">Username</label>
-                    <input type="text" value="{{ request.user.username }}" disabled 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-500">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                    <input type="text" value="{{ request.user.username }}" disabled
+                           class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed">
+                    <p class="text-xs text-gray-500 mt-1.5">Username cannot be changed</p>
                 </div>
+                
                 <div>
-                    <label class="text-gray-400 text-sm">Email</label>
-                    <input type="email" name="email" value="{{ request.user.email }}" 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                    <input type="email" name="email" value="{{ request.user.email }}"
+                           class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                           placeholder="user@example.com">
                 </div>
+                
                 <div>
-                    <label class="text-gray-400 text-sm">Role</label>
-                    <input type="text" value="{{ request.user.profile.get_role_display }}" disabled 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-500">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Role</label>
+                    <div class="flex items-center gap-3 px-4 py-3 bg-dark-800 border border-gray-700 rounded-xl">
+                        {% if request.user.profile.role == 'admin' %}
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-red-500/15 text-red-400 border border-red-500/20">
+                            <i class="fas fa-shield-alt text-[10px]"></i>
+                            Admin
+                        </span>
+                        {% elif request.user.profile.role == 'operator' %}
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/20">
+                            <i class="fas fa-cog text-[10px]"></i>
+                            Operator
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-gray-500/15 text-gray-400 border border-gray-500/20">
+                            <i class="fas fa-eye text-[10px]"></i>
+                            Viewer
+                        </span>
+                        {% endif %}
+                        <span class="text-gray-500 text-sm">{{ request.user.profile.get_role_display }}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1.5">Contact an administrator to change your role</p>
                 </div>
+                
                 <div>
-                    <label class="text-gray-400 text-sm">Department</label>
-                    <input type="text" name="department" value="{{ request.user.profile.department|default:'' }}" 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Department</label>
+                    <input type="text" name="department" value="{{ request.user.profile.department|default:'' }}"
+                           class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                           placeholder="e.g., IT, Security, Engineering">
                 </div>
+                
                 <div>
-                    <label class="text-gray-400 text-sm">Phone</label>
-                    <input type="text" name="phone" value="{{ request.user.profile.phone|default:'' }}" 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Phone</label>
+                    <input type="text" name="phone" value="{{ request.user.profile.phone|default:'' }}"
+                           class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                           placeholder="+1 (555) 123-4567">
                 </div>
             </div>
-            <button type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+            
+            <button type="submit" 
+                    class="mt-6 w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+                <i class="fas fa-save"></i>
                 Save Changes
             </button>
         </form>
     </div>
 
     <!-- Change Password -->
-    <div class="bg-dark-900 rounded-xl border border-gray-800 p-6">
-        <h3 class="text-lg font-semibold text-white mb-4">Change Password</h3>
-        <form method="POST">
+    <div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+        <div class="p-6 border-b border-gray-800">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                <i class="fas fa-lock text-amber-400"></i>
+                Change Password
+            </h3>
+        </div>
+        <form method="POST" class="p-6" id="passwordForm">
             {% csrf_token %}
             <input type="hidden" name="action" value="change_password">
-            <div class="space-y-4">
+            <div class="space-y-5">
                 <div>
-                    <label class="text-gray-400 text-sm">Current Password</label>
-                    <input type="password" name="current_password" required 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Current Password</label>
+                    <div class="relative">
+                        <input type="password" name="current_password" id="currentPassword" required
+                               class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 pr-12 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                               placeholder="Enter current password">
+                        <button type="button" onclick="togglePassword('currentPassword')" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
+                
                 <div>
-                    <label class="text-gray-400 text-sm">New Password</label>
-                    <input type="password" name="new_password" required 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">New Password</label>
+                    <div class="relative">
+                        <input type="password" name="new_password" id="newPassword" required
+                               class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 pr-12 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                               placeholder="Enter new password">
+                        <button type="button" onclick="togglePassword('newPassword')" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1.5">Minimum 6 characters required</p>
                 </div>
+                
                 <div>
-                    <label class="text-gray-400 text-sm">Confirm New Password</label>
-                    <input type="password" name="confirm_password" required 
-                           class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Confirm New Password</label>
+                    <div class="relative">
+                        <input type="password" name="confirm_password" id="confirmPassword" required
+                               class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 pr-12 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                               placeholder="Confirm new password">
+                        <button type="button" onclick="togglePassword('confirmPassword')" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
+                
+                <!-- Password Match Indicator -->
+                <div id="passwordMatch" class="hidden p-3 rounded-xl text-sm"></div>
             </div>
-            <button type="submit" class="mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+            
+            <button type="submit" 
+                    class="mt-6 w-full sm:w-auto px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-amber-600/20 flex items-center justify-center gap-2">
+                <i class="fas fa-key"></i>
                 Change Password
             </button>
         </form>
     </div>
 </div>
+
+<!-- Account Info -->
+<div class="mt-6 bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+    <div class="p-6 border-b border-gray-800">
+        <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+            <i class="fas fa-info-circle text-gray-400"></i>
+            Account Information
+        </h3>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-dark-800 rounded-xl p-4">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">User ID</p>
+                <p class="text-white font-mono font-medium">{{ request.user.id }}</p>
+            </div>
+            <div class="bg-dark-800 rounded-xl p-4">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Date Joined</p>
+                <p class="text-white font-medium">{{ request.user.date_joined|date:"M d, Y" }}</p>
+            </div>
+            <div class="bg-dark-800 rounded-xl p-4">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Last Login</p>
+                <p class="text-white font-medium">{{ request.user.last_login|date:"M d, Y H:i"|default:"Never" }}</p>
+            </div>
+            <div class="bg-dark-800 rounded-xl p-4">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Account Status</p>
+                {% if request.user.is_active %}
+                <p class="text-emerald-400 font-medium flex items-center gap-1.5">
+                    <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                    Active
+                </p>
+                {% else %}
+                <p class="text-red-400 font-medium flex items-center gap-1.5">
+                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                    Inactive
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = field.nextElementSibling.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Password match checker
+const newPass = document.getElementById('newPassword');
+const confirmPass = document.getElementById('confirmPassword');
+const matchIndicator = document.getElementById('passwordMatch');
+
+function checkPasswordMatch() {
+    const newVal = newPass.value;
+    const confirmVal = confirmPass.value;
+    
+    if (newVal || confirmVal) {
+        matchIndicator.classList.remove('hidden');
+        
+        if (newVal === confirmVal && newVal.length >= 6) {
+            matchIndicator.className = 'p-3 rounded-xl text-sm bg-emerald-500/15 text-emerald-400 border border-emerald-500/20';
+            matchIndicator.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Passwords match';
+        } else if (newVal !== confirmVal && confirmVal) {
+            matchIndicator.className = 'p-3 rounded-xl text-sm bg-red-500/15 text-red-400 border border-red-500/20';
+            matchIndicator.innerHTML = '<i class="fas fa-times-circle mr-2"></i>Passwords do not match';
+        } else if (newVal.length > 0 && newVal.length < 6) {
+            matchIndicator.className = 'p-3 rounded-xl text-sm bg-amber-500/15 text-amber-400 border border-amber-500/20';
+            matchIndicator.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Password must be at least 6 characters';
+        } else {
+            matchIndicator.classList.add('hidden');
+        }
+    } else {
+        matchIndicator.classList.add('hidden');
+    }
+}
+
+newPass.addEventListener('input', checkPasswordMatch);
+confirmPass.addEventListener('input', checkPasswordMatch);
+
+// Form validation
+document.getElementById('passwordForm').addEventListener('submit', function(e) {
+    const newPassword = newPass.value;
+    const confirmPassword = confirmPass.value;
+    
+    if (newPassword !== confirmPassword) {
+        e.preventDefault();
+        showToast('Passwords do not match!', 'error');
+        return false;
+    }
+    
+    if (newPassword.length < 6) {
+        e.preventDefault();
+        showToast('Password must be at least 6 characters!', 'error');
+        return false;
+    }
+});
+</script>
 {% endblock %}
