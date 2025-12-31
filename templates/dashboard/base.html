@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -20,32 +24,455 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .fade-in { animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
         
-        /* Dropdown styles */
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Scrollbars - Dark */
+        .dark ::-webkit-scrollbar { width: 8px; height: 8px; }
+        .dark ::-webkit-scrollbar-track { background: #0f172a; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        /* Scrollbars - Light */
+        html:not(.dark) ::-webkit-scrollbar { width: 8px; height: 8px; }
+        html:not(.dark) ::-webkit-scrollbar-track { background: #f1f5f9; }
+        html:not(.dark) ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Dropdown */
         .dropdown { position: relative; }
-        .dropdown-menu { 
-            display: none; 
-            position: absolute; 
-            right: 0; 
-            top: 100%; 
-            margin-top: 0.5rem;
-            min-width: 200px;
-            z-index: 100;
-        }
-        .dropdown:hover .dropdown-menu,
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; min-width: 240px; z-index: 100; }
         .dropdown.active .dropdown-menu { display: block; }
+
+        /* Toast */
+        .toast { position: fixed; top: 80px; right: 20px; z-index: 9999; animation: slideIn 0.3s ease; }
+        
+        /* Spinner */
+        .spinner { border: 2px solid transparent; border-top-color: #3b82f6; border-radius: 50%; width: 16px; height: 16px; animation: spin 0.8s linear infinite; }
+
+        /* ============================================
+           THEME TOGGLE - Premium Design
+           ============================================ */
+        .theme-toggle {
+            width: 52px;
+            height: 28px;
+            border-radius: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .dark .theme-toggle {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05);
+        }
+        
+        html:not(.dark) .theme-toggle {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.8);
+        }
+        
+        .theme-toggle-circle {
+            position: absolute;
+            top: 3px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.68, -0.3, 0.32, 1.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .dark .theme-toggle-circle {
+            left: 27px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+        }
+        
+        html:not(.dark) .theme-toggle-circle {
+            left: 3px;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: #fff7ed;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
+        }
+
+        /* ============================================
+           DARK THEME (Default) - Keep as is
+           ============================================ */
+        /* Dark theme is already well styled */
+
+        /* ============================================
+           LIGHT THEME - Professional Redesign
+           ============================================ */
+        
+        /* === BASE === */
+        html:not(.dark) {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-hover: #e2e8f0;
+            --border-primary: #e2e8f0;
+            --border-secondary: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-tertiary: #475569;
+            --text-muted: #64748b;
+            --text-faint: #94a3b8;
+            --accent-blue: #2563eb;
+            --accent-green: #059669;
+            --accent-red: #dc2626;
+            --accent-yellow: #d97706;
+            --accent-purple: #7c3aed;
+        }
+        
+        html:not(.dark) body {
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* === BACKGROUNDS === */
+        html:not(.dark) .bg-dark-950 { background: var(--bg-secondary) !important; }
+        html:not(.dark) .bg-dark-900 { background: var(--bg-primary) !important; }
+        html:not(.dark) .bg-dark-800 { background: var(--bg-secondary) !important; }
+        html:not(.dark) .bg-dark-700 { background: var(--bg-tertiary) !important; }
+
+        /* === BORDERS === */
+        html:not(.dark) .border-gray-800,
+        html:not(.dark) .border-gray-700 { 
+            border-color: var(--border-primary) !important; 
+        }
+
+        /* === TEXT - COMPREHENSIVE === */
+        html:not(.dark) .text-white { color: var(--text-primary) !important; }
+        html:not(.dark) .text-gray-100 { color: var(--text-primary) !important; }
+        html:not(.dark) .text-gray-200 { color: var(--text-primary) !important; }
+        html:not(.dark) .text-gray-300 { color: var(--text-secondary) !important; }
+        html:not(.dark) .text-gray-400 { color: var(--text-tertiary) !important; }
+        html:not(.dark) .text-gray-500 { color: var(--text-muted) !important; }
+        html:not(.dark) .text-gray-600 { color: var(--text-faint) !important; }
+
+        /* Colored text - Enhanced for light bg */
+        html:not(.dark) .text-blue-400,
+        html:not(.dark) .text-blue-500 { color: var(--accent-blue) !important; }
+        html:not(.dark) .text-green-400,
+        html:not(.dark) .text-green-500 { color: var(--accent-green) !important; }
+        html:not(.dark) .text-red-400,
+        html:not(.dark) .text-red-500 { color: var(--accent-red) !important; }
+        html:not(.dark) .text-yellow-400,
+        html:not(.dark) .text-yellow-500 { color: var(--accent-yellow) !important; }
+        html:not(.dark) .text-purple-400,
+        html:not(.dark) .text-purple-500 { color: var(--accent-purple) !important; }
+        html:not(.dark) .text-orange-400,
+        html:not(.dark) .text-orange-500 { color: #ea580c !important; }
+        html:not(.dark) .text-cyan-400 { color: #0891b2 !important; }
+        html:not(.dark) .text-pink-400 { color: #db2777 !important; }
+
+        /* === NAVIGATION === */
+        html:not(.dark) nav.bg-dark-900 {
+            background: var(--bg-primary) !important;
+            border-bottom: 1px solid var(--border-primary) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+        }
+        
+        html:not(.dark) nav a.text-gray-400 { 
+            color: var(--text-tertiary) !important;
+            font-weight: 500;
+        }
+        html:not(.dark) nav a.text-gray-400:hover { 
+            color: var(--text-primary) !important;
+            background: var(--bg-tertiary) !important;
+        }
+        html:not(.dark) nav .bg-blue-600\/20 { 
+            background: rgba(37, 99, 235, 0.08) !important;
+        }
+        html:not(.dark) nav .text-blue-400 {
+            color: var(--accent-blue) !important;
+            font-weight: 600;
+        }
+
+        /* === HOVER STATES === */
+        html:not(.dark) .hover\:text-white:hover { color: var(--text-primary) !important; }
+        html:not(.dark) .hover\:bg-dark-800:hover,
+        html:not(.dark) .hover\:bg-dark-700:hover,
+        html:not(.dark) .hover\:bg-gray-800:hover { 
+            background: var(--bg-hover) !important; 
+        }
+
+        /* === FORMS === */
+        html:not(.dark) input:not([type="checkbox"]):not([type="radio"]),
+        html:not(.dark) select,
+        html:not(.dark) textarea {
+            background: var(--bg-primary) !important;
+            border: 1px solid var(--border-secondary) !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        html:not(.dark) input:focus,
+        html:not(.dark) select:focus,
+        html:not(.dark) textarea:focus {
+            border-color: var(--accent-blue) !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12), 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            outline: none !important;
+        }
+        
+        html:not(.dark) input::placeholder,
+        html:not(.dark) textarea::placeholder {
+            color: var(--text-faint) !important;
+        }
+        
+        html:not(.dark) input:disabled {
+            background: var(--bg-tertiary) !important;
+            color: var(--text-muted) !important;
+            cursor: not-allowed;
+        }
+
+        /* === DROPDOWN MENU === */
+        html:not(.dark) .dropdown-menu {
+            background: var(--bg-primary) !important;
+            border: 1px solid var(--border-primary) !important;
+            border-radius: 12px !important;
+            box-shadow: 
+                0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 20px 25px -5px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        html:not(.dark) .dropdown-menu .bg-dark-900 { background: var(--bg-secondary) !important; }
+        html:not(.dark) .dropdown-menu .bg-dark-800 { background: var(--bg-primary) !important; }
+        html:not(.dark) .dropdown-menu .border-gray-700 { border-color: var(--border-primary) !important; }
+        html:not(.dark) .dropdown-menu .text-gray-300 { color: var(--text-secondary) !important; }
+        html:not(.dark) .dropdown-menu .text-gray-500 { color: var(--text-muted) !important; }
+        html:not(.dark) .dropdown-menu .text-white { color: var(--text-primary) !important; }
+        html:not(.dark) .dropdown-menu .hover\:bg-dark-700:hover { 
+            background: var(--bg-tertiary) !important; 
+        }
+
+        /* === CARDS === */
+        html:not(.dark) .rounded-xl.border,
+        html:not(.dark) .rounded-lg.border,
+        html:not(.dark) .rounded-xl.bg-dark-900,
+        html:not(.dark) .rounded-lg.bg-dark-900 {
+            background: var(--bg-primary) !important;
+            border: 1px solid var(--border-primary) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+        }
+        
+        html:not(.dark) .card-header,
+        html:not(.dark) .border-b.bg-dark-800 {
+            background: var(--bg-secondary) !important;
+            border-color: var(--border-primary) !important;
+        }
+
+        /* === TABLES === */
+        html:not(.dark) table { 
+            background: var(--bg-primary) !important;
+        }
+        
+        html:not(.dark) thead { 
+            background: var(--bg-secondary) !important;
+        }
+        
+        html:not(.dark) th { 
+            background: var(--bg-secondary) !important;
+            color: var(--text-secondary) !important;
+            font-weight: 600 !important;
+            font-size: 0.75rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            border-bottom: 1px solid var(--border-primary) !important;
+        }
+        
+        html:not(.dark) td { 
+            color: var(--text-primary) !important;
+            border-bottom: 1px solid var(--bg-tertiary) !important;
+        }
+        
+        html:not(.dark) tbody tr:hover td { 
+            background: var(--bg-secondary) !important; 
+        }
+        
+        /* Table content - specific fixes */
+        html:not(.dark) td span,
+        html:not(.dark) td a,
+        html:not(.dark) td div {
+            color: inherit;
+        }
+        
+        html:not(.dark) td .font-mono,
+        html:not(.dark) .font-mono {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+        }
+        
+        html:not(.dark) td .text-gray-400 { color: var(--text-tertiary) !important; }
+        html:not(.dark) td .text-gray-500 { color: var(--text-muted) !important; }
+
+        /* === STAT CARDS === */
+        html:not(.dark) .bg-blue-900\/20 { 
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.04) 100%) !important;
+            border: 1px solid rgba(37, 99, 235, 0.2) !important;
+        }
+        html:not(.dark) .bg-green-900\/20 { 
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(5, 150, 105, 0.04) 100%) !important;
+            border: 1px solid rgba(5, 150, 105, 0.2) !important;
+        }
+        html:not(.dark) .bg-red-900\/20 { 
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(220, 38, 38, 0.04) 100%) !important;
+            border: 1px solid rgba(220, 38, 38, 0.2) !important;
+        }
+        html:not(.dark) .bg-yellow-900\/20 { 
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.08) 0%, rgba(217, 119, 6, 0.04) 100%) !important;
+            border: 1px solid rgba(217, 119, 6, 0.2) !important;
+        }
+        html:not(.dark) .bg-purple-900\/20 { 
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(124, 58, 237, 0.04) 100%) !important;
+            border: 1px solid rgba(124, 58, 237, 0.2) !important;
+        }
+        html:not(.dark) .bg-orange-900\/20 { 
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.08) 0%, rgba(234, 88, 12, 0.04) 100%) !important;
+            border: 1px solid rgba(234, 88, 12, 0.2) !important;
+        }
+        
+        /* Stat borders */
+        html:not(.dark) .border-blue-800 { border-color: rgba(37, 99, 235, 0.3) !important; }
+        html:not(.dark) .border-green-800 { border-color: rgba(5, 150, 105, 0.3) !important; }
+        html:not(.dark) .border-red-800 { border-color: rgba(220, 38, 38, 0.3) !important; }
+        html:not(.dark) .border-yellow-800 { border-color: rgba(217, 119, 6, 0.3) !important; }
+        html:not(.dark) .border-purple-800 { border-color: rgba(124, 58, 237, 0.3) !important; }
+
+        /* === BADGES & PILLS === */
+        html:not(.dark) .bg-green-900\/30 { 
+            background: rgba(5, 150, 105, 0.12) !important;
+            border: 1px solid rgba(5, 150, 105, 0.25) !important;
+        }
+        html:not(.dark) .bg-red-900\/30 { 
+            background: rgba(220, 38, 38, 0.12) !important;
+            border: 1px solid rgba(220, 38, 38, 0.25) !important;
+        }
+        html:not(.dark) .bg-yellow-900\/30 { 
+            background: rgba(217, 119, 6, 0.12) !important;
+            border: 1px solid rgba(217, 119, 6, 0.25) !important;
+        }
+        html:not(.dark) .bg-blue-900\/30 { 
+            background: rgba(37, 99, 235, 0.12) !important;
+            border: 1px solid rgba(37, 99, 235, 0.25) !important;
+        }
+
+        /* === STATUS INDICATOR === */
+        html:not(.dark) .bg-green-900\/30.border-green-800 {
+            background: rgba(5, 150, 105, 0.1) !important;
+            border: 1px solid rgba(5, 150, 105, 0.3) !important;
+        }
+
+        /* === FOOTER === */
+        html:not(.dark) footer.bg-dark-900 {
+            background: var(--bg-primary) !important;
+            border-top: 1px solid var(--border-primary) !important;
+        }
+        html:not(.dark) footer .text-gray-500 { color: var(--text-muted) !important; }
+
+        /* === BUTTONS === */
+        html:not(.dark) .bg-blue-600 {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(37, 99, 235, 0.3) !important;
+        }
+        html:not(.dark) .bg-blue-600:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+        }
+        
+        /* Keep white text on colored buttons */
+        html:not(.dark) .bg-blue-600,
+        html:not(.dark) .bg-blue-600 *,
+        html:not(.dark) .bg-green-600,
+        html:not(.dark) .bg-green-600 *,
+        html:not(.dark) .bg-red-600,
+        html:not(.dark) .bg-red-600 * {
+            color: #ffffff !important;
+        }
+
+        /* === GRADIENT ELEMENTS - Keep white text === */
+        html:not(.dark) .bg-gradient-to-br,
+        html:not(.dark) .bg-gradient-to-br *,
+        html:not(.dark) [class*="bg-gradient"] span,
+        html:not(.dark) [class*="bg-gradient"] i {
+            color: #ffffff !important;
+        }
+
+        /* === MODAL === */
+        html:not(.dark) .bg-black\/70 {
+            background: rgba(15, 23, 42, 0.6) !important;
+            backdrop-filter: blur(4px);
+        }
+
+        /* === LABELS & HEADINGS === */
+        html:not(.dark) label { 
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+        }
+        
+        html:not(.dark) h1, 
+        html:not(.dark) h2, 
+        html:not(.dark) h3, 
+        html:not(.dark) h4, 
+        html:not(.dark) h5, 
+        html:not(.dark) h6 {
+            color: var(--text-primary) !important;
+        }
+        
+        html:not(.dark) .text-lg.font-bold,
+        html:not(.dark) .text-xl.font-bold,
+        html:not(.dark) .text-2xl.font-bold,
+        html:not(.dark) .text-3xl.font-bold {
+            color: var(--text-primary) !important;
+        }
+
+        /* === CHARTS === */
+        html:not(.dark) canvas {
+            background: transparent !important;
+        }
+
+        /* === TRANSITIONS === */
+        body, nav, main, footer, .card, th, td,
+        input, select, textarea, .dropdown-menu,
+        a, button, .rounded-xl, .rounded-lg {
+            transition: 
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.15s ease,
+                box-shadow 0.2s ease;
+        }
+
+        /* === FOCUS STATES === */
+        html:not(.dark) a:focus-visible,
+        html:not(.dark) button:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        /* === SELECTION === */
+        html:not(.dark) ::selection {
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--text-primary);
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-dark-950 text-gray-200 min-h-screen">
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
 
     <!-- Navigation -->
     <nav class="bg-dark-900 border-b border-gray-800 sticky top-0 z-50">
@@ -53,105 +480,150 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-8">
                     <!-- Logo -->
-                    <a href="/" class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <a href="{% url 'dashboard:index' %}" class="flex items-center gap-3 group">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
                             <i class="fas fa-shield-alt text-white"></i>
                         </div>
                         <div>
                             <h1 class="text-lg font-bold text-white">ProxyMonitor</h1>
-                            <p class="text-xs text-gray-500">Network Monitor</p>
+                            <p class="text-xs text-gray-500">Network Security</p>
                         </div>
                     </a>
 
                     <!-- Nav Links -->
                     <div class="hidden md:flex items-center gap-1">
-                        <a href="/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+                        <a href="{% url 'dashboard:index' %}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all
                             {% if page == 'dashboard' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
                             <i class="fas fa-chart-line mr-2"></i>Dashboard
                         </a>
-                        <a href="/requests/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+
+                        <a href="{% url 'dashboard:requests' %}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all
                             {% if page == 'requests' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
                             <i class="fas fa-list mr-2"></i>Requests
                         </a>
-                        <a href="/analytics/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+
+                        <a href="{% url 'dashboard:analytics' %}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all
                             {% if page == 'analytics' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
                             <i class="fas fa-chart-bar mr-2"></i>Analytics
                         </a>
-                        <a href="/blocklist/" class="px-4 py-2 rounded-lg text-sm font-medium transition
+
+                        {% if is_operator %}
+                        <a href="{% url 'dashboard:blocklist' %}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all
                             {% if page == 'blocklist' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
                             <i class="fas fa-ban mr-2"></i>Blocklist
-                            <span class="ml-1 px-1.5 py-0.5 bg-red-600 text-white text-xs rounded">{{ blocked_domains_count }}</span>
                         </a>
-                        <a href="/admin/" target="_blank" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition">
-                            <i class="fas fa-cog mr-2"></i>Admin
+                        {% endif %}
+
+                        {% if is_admin %}
+                        <a href="{% url 'dashboard:users' %}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all
+                            {% if page == 'users' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
+                            <i class="fas fa-users mr-2"></i>Users
                         </a>
+
+                        <a href="{% url 'dashboard:audit_logs' %}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all
+                            {% if page == 'audit_logs' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400 hover:text-white hover:bg-gray-800{% endif %}">
+                            <i class="fas fa-history mr-2"></i>Audit
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme (Ctrl+D)" aria-label="Toggle theme">
+                        <div class="theme-toggle-circle">
+                            <i class="fas fa-moon" id="theme-icon"></i>
+                        </div>
+                    </button>
+
                     <!-- Search -->
                     <div class="hidden lg:block relative">
-                        <input type="text" id="global-search" placeholder="Search..."
-                            class="w-64 bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
-                        <i class="fas fa-search absolute right-3 top-2.5 text-gray-500"></i>
+                        <input type="text" id="global-search" placeholder="Search... (Ctrl+K)"
+                            class="w-56 bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-gray-500">
+                        <i class="fas fa-search absolute right-3 top-2.5 text-gray-500 text-sm"></i>
                     </div>
 
                     <!-- Status -->
                     <div class="flex items-center gap-2 px-3 py-1.5 bg-green-900/30 border border-green-800 rounded-lg">
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="text-sm text-green-400" id="ws-status">Live</span>
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse" id="ws-dot"></span>
+                        <span class="text-sm font-medium text-green-400" id="ws-status">Live</span>
                     </div>
 
                     <!-- User Menu -->
                     {% if user.is_authenticated %}
                     <div class="dropdown" id="user-dropdown">
-                        <button onclick="toggleDropdown()" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-dark-800 transition cursor-pointer">
-                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                                <span class="text-white text-sm font-medium">{{ user.username|slice:":1"|upper }}</span>
+                        <button onclick="toggleDropdown()" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-dark-800 transition-all cursor-pointer">
+                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-md">
+                                <span class="text-white text-sm font-semibold">{{ user.username|slice:":1"|upper }}</span>
                             </div>
-                            <span class="text-gray-300 text-sm hidden md:block">{{ user.username }}</span>
-                            <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                            <div class="hidden md:block text-left">
+                                <span class="text-gray-300 text-sm block font-medium">{{ user.username }}</span>
+                                <span class="text-xs font-medium
+                                    {% if user.profile.role == 'admin' %}text-red-400
+                                    {% elif user.profile.role == 'operator' %}text-yellow-400
+                                    {% else %}text-gray-500{% endif %}">
+                                    {{ user.profile.get_role_display|default:"User" }}
+                                </span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-500 text-xs ml-1"></i>
                         </button>
-                        
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown-menu bg-dark-800 rounded-xl border border-gray-700 shadow-2xl overflow-hidden">
-                            <!-- User Info -->
+
+                        <!-- Dropdown -->
+                        <div class="dropdown-menu bg-dark-800 rounded-xl border border-gray-700 shadow-2xl overflow-hidden fade-in">
                             <div class="px-4 py-3 border-b border-gray-700 bg-dark-900">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                                        <span class="text-white font-medium">{{ user.username|slice:":1"|upper }}</span>
+                                        <span class="text-white font-semibold">{{ user.username|slice:":1"|upper }}</span>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-white font-medium">{{ user.username }}</p>
-                                        <p class="text-xs text-gray-500">{{ user.email|default:"Administrator" }}</p>
+                                        <p class="text-sm text-white font-semibold">{{ user.username }}</p>
+                                        <p class="text-xs font-medium
+                                            {% if user.profile.role == 'admin' %}text-red-400
+                                            {% elif user.profile.role == 'operator' %}text-yellow-400
+                                            {% else %}text-gray-500{% endif %}">
+                                            {{ user.profile.get_role_display|default:"Viewer" }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Menu Items -->
-                            <div class="py-1">
-                                <a href="/admin/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-700 transition">
-                                    <i class="fas fa-cog w-4 text-gray-500"></i>
-                                    Admin Panel
-                                </a>
-                                <a href="/admin/password_change/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-700 transition">
-                                    <i class="fas fa-key w-4 text-gray-500"></i>
-                                    Change Password
-                                </a>
+
+                            <div class="py-1 border-b border-gray-700">
+                                <button onclick="toggleTheme()" class="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-700 transition-all">
+                                    <span class="flex items-center gap-3">
+                                        <i class="fas fa-adjust w-4 text-gray-500"></i>
+                                        <span class="font-medium">Toggle Theme</span>
+                                    </span>
+                                    <kbd class="text-xs bg-dark-900 px-2 py-0.5 rounded text-gray-500 font-mono">⌘D</kbd>
+                                </button>
                             </div>
-                            
-                            <!-- Logout -->
+
+                            <div class="py-1">
+                                <a href="{% url 'dashboard:settings' %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-700 transition-all">
+                                    <i class="fas fa-user-cog w-4 text-gray-500"></i>
+                                    <span class="font-medium">Profile Settings</span>
+                                </a>
+                                {% if is_admin %}
+                                <a href="{% url 'dashboard:users' %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-700 transition-all">
+                                    <i class="fas fa-users-cog w-4 text-gray-500"></i>
+                                    <span class="font-medium">Manage Users</span>
+                                </a>
+                                <a href="{% url 'dashboard:audit_logs' %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-700 transition-all">
+                                    <i class="fas fa-history w-4 text-gray-500"></i>
+                                    <span class="font-medium">Audit Logs</span>
+                                </a>
+                                {% endif %}
+                            </div>
+
                             <div class="border-t border-gray-700 py-1">
-                                <a href="{% url 'dashboard:logout' %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-900/20 transition">
+                                <a href="{% url 'dashboard:logout' %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-900/20 transition-all">
                                     <i class="fas fa-sign-out-alt w-4"></i>
-                                    Sign Out
+                                    <span class="font-medium">Sign Out</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                     {% else %}
-                    <!-- Login Button (shown when not authenticated) -->
-                    <a href="{% url 'dashboard:login' %}" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition">
+                    <a href="{% url 'dashboard:login' %}" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition-all shadow-lg shadow-blue-600/20 text-white">
                         <i class="fas fa-sign-in-alt"></i>
                         <span>Login</span>
                     </a>
@@ -162,44 +634,117 @@
 
         <!-- Mobile Menu -->
         <div class="md:hidden border-t border-gray-800 px-4 py-2">
-            <div class="flex items-center gap-2 overflow-x-auto">
-                <a href="/" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap {% if page == 'dashboard' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
-                    <i class="fas fa-chart-line mr-1"></i>Dashboard
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+                <a href="{% url 'dashboard:index' %}" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap font-medium
+                    {% if page == 'dashboard' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
+                    <i class="fas fa-chart-line mr-1.5"></i>Dashboard
                 </a>
-                <a href="/requests/" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap {% if page == 'requests' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
-                    <i class="fas fa-list mr-1"></i>Requests
+                <a href="{% url 'dashboard:requests' %}" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap font-medium
+                    {% if page == 'requests' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
+                    <i class="fas fa-list mr-1.5"></i>Requests
                 </a>
-                <a href="/analytics/" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap {% if page == 'analytics' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
-                    <i class="fas fa-chart-bar mr-1"></i>Analytics
+                <a href="{% url 'dashboard:analytics' %}" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap font-medium
+                    {% if page == 'analytics' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
+                    <i class="fas fa-chart-bar mr-1.5"></i>Analytics
                 </a>
-                <a href="/blocklist/" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap {% if page == 'blocklist' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
-                    <i class="fas fa-ban mr-1"></i>Blocklist
+                {% if is_operator %}
+                <a href="{% url 'dashboard:blocklist' %}" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap font-medium
+                    {% if page == 'blocklist' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
+                    <i class="fas fa-ban mr-1.5"></i>Blocklist
+                </a>
+                {% endif %}
+                {% if is_admin %}
+                <a href="{% url 'dashboard:users' %}" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap font-medium
+                    {% if page == 'users' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
+                    <i class="fas fa-users mr-1.5"></i>Users
+                </a>
+                {% endif %}
+                <a href="{% url 'dashboard:settings' %}" class="px-3 py-2 rounded-lg text-sm whitespace-nowrap font-medium
+                    {% if page == 'settings' %}bg-blue-600/20 text-blue-400{% else %}text-gray-400{% endif %}">
+                    <i class="fas fa-cog mr-1.5"></i>Settings
                 </a>
             </div>
         </div>
     </nav>
 
+    <!-- Flash Messages -->
+    {% if messages %}
+    <div class="fixed top-20 right-4 z-50 space-y-2 max-w-sm">
+        {% for message in messages %}
+        <div class="toast flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border backdrop-blur-sm
+            {% if message.tags == 'error' %}bg-red-900/95 border-red-700/50 text-red-100
+            {% elif message.tags == 'success' %}bg-green-900/95 border-green-700/50 text-green-100
+            {% elif message.tags == 'warning' %}bg-yellow-900/95 border-yellow-700/50 text-yellow-100
+            {% else %}bg-blue-900/95 border-blue-700/50 text-blue-100{% endif %}">
+            <i class="fas {% if message.tags == 'error' %}fa-times-circle{% elif message.tags == 'success' %}fa-check-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} text-lg"></i>
+            <span class="text-sm font-medium flex-1">{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="ml-2 opacity-70 hover:opacity-100 transition-opacity p-1">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    <script>setTimeout(() => document.querySelectorAll('.toast').forEach(el => el.remove()), 5000);</script>
+    {% endif %}
+
     <!-- Main Content -->
-    <main class="p-6">
+    <main class="p-6 fade-in">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- WebSocket Script -->
+    <!-- Footer -->
+    <footer class="bg-dark-900 border-t border-gray-800 py-4 px-6 mt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-shield-alt text-blue-500"></i>
+                <span class="font-medium">ProxyMonitor</span>
+                <span class="text-gray-600">v1.0</span>
+            </div>
+            <div class="flex items-center gap-4 font-mono text-xs">
+                <span id="current-time" class="text-gray-400"></span>
+                <span class="text-gray-600">•</span>
+                <span>Proxy: <span class="text-green-400 font-semibold">:{{ proxy_port|default:"8088" }}</span></span>
+                <span class="text-gray-600">•</span>
+                <span>DNS: <span class="text-blue-400 font-semibold">{{ dns_server|default:"10.103.32.32" }}</span></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
     <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            const icon = document.getElementById('theme-icon');
+            
+            html.classList.toggle('dark', !isDark);
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            
+            if (typeof updateChartTheme === 'function') updateChartTheme();
+        }
+        
+        // Set initial icon
+        document.addEventListener('DOMContentLoaded', function() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('theme-icon');
+            if (icon) icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        });
+
+        // Utilities
         function formatBytes(b) {
-            if (!b) return '0 B';
+            if (!b || b === 0) return '0 B';
             const k = 1024, s = ['B', 'KB', 'MB', 'GB', 'TB'];
             const i = Math.floor(Math.log(b) / Math.log(k));
             return (b / Math.pow(k, i)).toFixed(1) + ' ' + s[i];
         }
 
-        // Dropdown toggle
         function toggleDropdown() {
-            const dropdown = document.getElementById('user-dropdown');
-            dropdown.classList.toggle('active');
+            document.getElementById('user-dropdown').classList.toggle('active');
         }
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('user-dropdown');
             if (dropdown && !dropdown.contains(event.target)) {
@@ -207,29 +752,96 @@
             }
         });
 
-        // WebSocket connection
-        let ws;
-        function connectWebSocket() {
-            ws = new WebSocket(`ws://${window.location.host}/ws/dashboard/`);
-            ws.onopen = () => {
-                document.getElementById('ws-status').textContent = 'Live';
-                document.getElementById('ws-status').classList.remove('text-red-400');
-                document.getElementById('ws-status').classList.add('text-green-400');
-            };
-            ws.onclose = () => {
-                document.getElementById('ws-status').textContent = 'Disconnected';
-                document.getElementById('ws-status').classList.remove('text-green-400');
-                document.getElementById('ws-status').classList.add('text-red-400');
-                setTimeout(connectWebSocket, 3000);
-            };
-            ws.onmessage = (e) => {
-                const data = JSON.parse(e.data);
-                if (data.type === 'new_request' && typeof handleNewRequest === 'function') {
-                    handleNewRequest(data.request);
+        // Time
+        function updateTime() {
+            const el = document.getElementById('current-time');
+            if (el) el.textContent = new Date().toLocaleString('en-US', {
+                weekday: 'short', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Search
+        const searchInput = document.getElementById('global-search');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    window.location.href = '/requests/?search=' + encodeURIComponent(this.value.trim());
                 }
+            });
+        }
+
+        // Toast
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const colors = {
+                success: 'bg-green-900/95 border-green-700/50 text-green-100',
+                error: 'bg-red-900/95 border-red-700/50 text-red-100',
+                warning: 'bg-yellow-900/95 border-yellow-700/50 text-yellow-100',
+                info: 'bg-blue-900/95 border-blue-700/50 text-blue-100'
+            };
+            const icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border backdrop-blur-sm ${colors[type]}`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type]} text-lg"></i>
+                <span class="text-sm font-medium flex-1">${message}</span>
+                <button onclick="this.parentElement.remove()" class="ml-2 opacity-70 hover:opacity-100 transition-opacity p-1">
+                    <i class="fas fa-times text-xs"></i>
+                </button>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 5000);
+        }
+
+        // WebSocket
+        let ws, wsReconnectAttempts = 0;
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}/ws/dashboard/`);
+            
+            ws.onopen = () => {
+                wsReconnectAttempts = 0;
+                document.getElementById('ws-status').textContent = 'Live';
+                document.getElementById('ws-status').className = 'text-sm font-medium text-green-400';
+                document.getElementById('ws-dot').className = 'w-2 h-2 bg-green-500 rounded-full animate-pulse';
+            };
+            
+            ws.onclose = () => {
+                document.getElementById('ws-status').textContent = 'Offline';
+                document.getElementById('ws-status').className = 'text-sm font-medium text-red-400';
+                document.getElementById('ws-dot').className = 'w-2 h-2 bg-red-500 rounded-full';
+                if (wsReconnectAttempts < 10) {
+                    setTimeout(connectWebSocket, Math.min(1000 * Math.pow(2, wsReconnectAttempts++), 30000));
+                }
+            };
+            
+            ws.onmessage = (e) => {
+                try {
+                    const data = JSON.parse(e.data);
+                    if (data.type === 'new_request' && typeof handleNewRequest === 'function') handleNewRequest(data.request);
+                    if (data.type === 'stats_update' && typeof updateStats === 'function') updateStats(data.stats);
+                } catch (err) { console.error('WS error:', err); }
             };
         }
         connectWebSocket();
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') { 
+                e.preventDefault(); 
+                document.getElementById('global-search')?.focus(); 
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'd') { 
+                e.preventDefault(); 
+                toggleTheme(); 
+            }
+            if (e.key === 'Escape') {
+                document.getElementById('user-dropdown')?.classList.remove('active');
+            }
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>

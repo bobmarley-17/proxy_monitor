@@ -1,0 +1,124 @@
+{% extends "dashboard/base.html" %}
+{% block title %}User Management - ProxyMonitor{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <div>
+        <h2 class="text-2xl font-bold text-white">User Management</h2>
+        <p class="text-gray-500">Manage users and roles</p>
+    </div>
+    <button onclick="document.getElementById('createModal').classList.remove('hidden')" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+        <i class="fas fa-plus mr-2"></i>Add User
+    </button>
+</div>
+
+<!-- Users Table -->
+<div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-dark-800">
+            <tr class="text-gray-400 text-xs uppercase">
+                <th class="text-left py-3 px-4">User</th>
+                <th class="text-left py-3 px-4">Email</th>
+                <th class="text-left py-3 px-4">Role</th>
+                <th class="text-left py-3 px-4">Department</th>
+                <th class="text-left py-3 px-4">Status</th>
+                <th class="text-left py-3 px-4">Joined</th>
+                <th class="text-right py-3 px-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800">
+            {% for user in users %}
+            <tr class="hover:bg-dark-800 transition">
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <span class="text-white font-medium">{{ user.username }}</span>
+                    </div>
+                </td>
+                <td class="py-3 px-4 text-gray-400">{{ user.email|default:"-" }}</td>
+                <td class="py-3 px-4">
+                    {% if user.profile.role == 'admin' %}
+                    <span class="px-2 py-1 rounded text-xs bg-red-900/50 text-red-400">Admin</span>
+                    {% elif user.profile.role == 'operator' %}
+                    <span class="px-2 py-1 rounded text-xs bg-yellow-900/50 text-yellow-400">Operator</span>
+                    {% else %}
+                    <span class="px-2 py-1 rounded text-xs bg-gray-700 text-gray-400">Viewer</span>
+                    {% endif %}
+                </td>
+                <td class="py-3 px-4 text-gray-400">{{ user.profile.department|default:"-" }}</td>
+                <td class="py-3 px-4">
+                    {% if user.is_active %}
+                    <span class="text-green-400"><i class="fas fa-check-circle"></i> Active</span>
+                    {% else %}
+                    <span class="text-red-400"><i class="fas fa-times-circle"></i> Inactive</span>
+                    {% endif %}
+                </td>
+                <td class="py-3 px-4 text-gray-500 text-sm">{{ user.date_joined|date:"M d, Y" }}</td>
+                <td class="py-3 px-4 text-right">
+                    <a href="{% url 'dashboard:user_edit' user.id %}" class="text-blue-400 hover:text-blue-300 mr-3">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    {% if user != request.user %}
+                    <button onclick="confirmDelete({{ user.id }}, '{{ user.username }}')" class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Create User Modal -->
+<div id="createModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-dark-900 rounded-xl border border-gray-700 p-6 w-full max-w-md">
+        <h3 class="text-xl font-bold text-white mb-4">Create New User</h3>
+        <form method="POST" action="{% url 'dashboard:user_create' %}">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label class="text-gray-400 text-sm">Username</label>
+                    <input type="text" name="username" required class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-gray-400 text-sm">Email</label>
+                    <input type="email" name="email" class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-gray-400 text-sm">Password</label>
+                    <input type="password" name="password" required class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-gray-400 text-sm">Role</label>
+                    <select name="role" class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                        {% for value, label in role_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="text-gray-400 text-sm">Department</label>
+                    <input type="text" name="department" class="w-full bg-dark-800 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="document.getElementById('createModal').classList.add('hidden')" 
+                        class="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">Cancel</button>
+                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function confirmDelete(userId, username) {
+    if (confirm(`Are you sure you want to delete user "${username}"?`)) {
+        window.location.href = `/users/${userId}/delete/`;
+    }
+}
+</script>
+{% endblock %}

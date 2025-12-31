@@ -2,56 +2,73 @@
 {% block title %}Dashboard - ProxyMonitor{% endblock %}
 
 {% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-white">Dashboard</h2>
+    <p class="text-gray-500">Real-time network monitoring</p>
+</div>
+
 <!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <div class="bg-dark-900 dark:bg-dark-900 bg-white p-5 rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200">
+    <!-- Total Requests -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm">Total Requests</p>
-                <p class="text-3xl font-bold text-white dark:text-white text-gray-900 mt-1" id="stat-total">{{ total_requests }}</p>
-                <p class="text-xs text-gray-500 mt-2">+{{ requests_24h }} last 24h</p>
+                <p class="text-gray-400 text-sm">Total Requests</p>
+                <p class="text-3xl font-bold text-white mt-1">{{ total_requests|default:0 }}</p>
+                <p class="text-xs text-green-400 mt-1">
+                    <i class="fas fa-arrow-up mr-1"></i>+{{ requests_24h|default:0 }} last 24h
+                </p>
             </div>
-            <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
                 <i class="fas fa-exchange-alt text-blue-400 text-xl"></i>
             </div>
         </div>
     </div>
-    
-    <div class="bg-dark-900 dark:bg-dark-900 bg-white p-5 rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200">
+
+    <!-- Blocked -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm">Blocked</p>
-                <p class="text-3xl font-bold text-white dark:text-white text-gray-900 mt-1" id="stat-blocked">{{ blocked_requests }}</p>
-                <p class="text-xs text-gray-500 mt-2">{{ blocked_24h }} blocked today</p>
+                <p class="text-gray-400 text-sm">Blocked</p>
+                <p class="text-3xl font-bold text-red-400 mt-1">{{ blocked_requests|default:0 }}</p>
+                <p class="text-xs text-red-400 mt-1">
+                    {{ today_blocked|default:0 }} blocked today
+                </p>
             </div>
-            <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center">
-                <i class="fas fa-shield-alt text-red-400 text-xl"></i>
+            <div class="w-12 h-12 bg-red-600/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-ban text-red-400 text-xl"></i>
             </div>
         </div>
     </div>
-    
-    <div class="bg-dark-900 dark:bg-dark-900 bg-white p-5 rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200">
+
+    <!-- Data Transfer -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm">Data Transfer</p>
-                <p class="text-3xl font-bold text-white dark:text-white text-gray-900 mt-1" id="stat-bytes">-</p>
-                <p class="text-xs text-gray-500 mt-2" id="stat-bytes-24h">-</p>
+                <p class="text-gray-400 text-sm">Data Transfer</p>
+                <p class="text-3xl font-bold text-green-400 mt-1">{{ total_bytes_formatted }}</p>
+                <p class="text-xs text-gray-500 mt-1">
+                    {{ today_bytes_formatted }} today
+                </p>
             </div>
-            <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
-                <i class="fas fa-database text-purple-400 text-xl"></i>
+            <div class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-database text-green-400 text-xl"></i>
             </div>
         </div>
     </div>
-    
-    <div class="bg-dark-900 dark:bg-dark-900 bg-white p-5 rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200">
+
+    <!-- Unique Clients -->
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm">Unique Clients</p>
-                <p class="text-3xl font-bold text-white dark:text-white text-gray-900 mt-1">{{ unique_ips }}</p>
-                <p class="text-xs text-gray-500 mt-2">Active IPs today</p>
+                <p class="text-gray-400 text-sm">Unique Clients</p>
+                <p class="text-3xl font-bold text-purple-400 mt-1">{{ unique_clients|default:0 }}</p>
+                <p class="text-xs text-gray-500 mt-1">
+                    Active IPs today
+                </p>
             </div>
-            <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
-                <i class="fas fa-users text-green-400 text-xl"></i>
+            <div class="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-users text-purple-400 text-xl"></i>
             </div>
         </div>
     </div>
@@ -60,91 +77,92 @@
 <!-- Charts Row -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Traffic Chart -->
-    <div class="lg:col-span-2 bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
-        <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">Traffic Overview (24h)</h3>
-        {% if has_chart_data %}
+    <div class="lg:col-span-2 bg-dark-900 rounded-xl border border-gray-800 p-5">
+        <h3 class="text-lg font-semibold text-white mb-4">
+            <i class="fas fa-chart-area mr-2 text-blue-400"></i>Traffic Overview (24h)
+        </h3>
         <div class="h-64">
             <canvas id="trafficChart"></canvas>
         </div>
-        {% else %}
-        <div class="flex items-center justify-center h-64 text-gray-500">
-            <div class="text-center">
-                <i class="fas fa-chart-line text-4xl mb-3 opacity-30"></i>
-                <p>No traffic data in last 24 hours</p>
-                <p class="text-sm mt-1">Data will appear once requests are made</p>
-            </div>
-        </div>
-        {% endif %}
     </div>
-    
+
     <!-- Methods Chart -->
-    <div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 p-5">
-        <h3 class="font-semibold text-white dark:text-white text-gray-900 mb-4">Request Methods</h3>
-        {% if has_methods_data %}
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+        <h3 class="text-lg font-semibold text-white mb-4">
+            <i class="fas fa-chart-pie mr-2 text-green-400"></i>Request Methods
+        </h3>
         <div class="h-64">
             <canvas id="methodsChart"></canvas>
         </div>
-        {% else %}
-        <div class="flex items-center justify-center h-64 text-gray-500">
-            <div class="text-center">
-                <i class="fas fa-chart-pie text-4xl mb-3 opacity-30"></i>
-                <p>No method data yet</p>
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 
 <!-- Recent Requests -->
-<div class="bg-dark-900 dark:bg-dark-900 bg-white rounded-xl border border-gray-800 dark:border-gray-800 border-gray-200 overflow-hidden">
-    <div class="p-4 border-b border-gray-800 dark:border-gray-800 border-gray-200 flex justify-between items-center">
-        <h3 class="font-semibold text-white dark:text-white text-gray-900">
-            <i class="fas fa-stream mr-2 text-blue-400"></i>Live Requests
+<div class="bg-dark-900 rounded-xl border border-gray-800 p-5">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-white">
+            <i class="fas fa-stream mr-2 text-yellow-400"></i>Live Requests
         </h3>
-        <a href="/requests/" class="text-sm text-blue-400 hover:text-blue-300">View All →</a>
+        <a href="{% url 'dashboard:requests' %}" class="text-sm text-blue-400 hover:text-blue-300">
+            View All <i class="fas fa-arrow-right ml-1"></i>
+        </a>
     </div>
-    <div class="overflow-auto max-h-[400px]">
+
+    <div class="overflow-x-auto">
         <table class="w-full text-sm">
-            <thead class="bg-dark-950 dark:bg-dark-950 bg-gray-50 sticky top-0">
-                <tr class="text-gray-500 text-xs uppercase">
-                    <th class="px-4 py-3 text-left">Time</th>
-                    <th class="px-4 py-3 text-left">Method</th>
-                    <th class="px-4 py-3 text-left">Host</th>
-                    <th class="px-4 py-3 text-left">Source</th>
-                    <th class="px-4 py-3 text-left">Status</th>
-                    <th class="px-4 py-3 text-right">Response</th>
+            <thead>
+                <tr class="text-gray-500 text-xs uppercase border-b border-gray-800">
+                    <th class="text-left py-3 px-2">Time</th>
+                    <th class="text-left py-3 px-2">Method</th>
+                    <th class="text-left py-3 px-2">Host</th>
+                    <th class="text-left py-3 px-2">Source</th>
+                    <th class="text-left py-3 px-2">Status</th>
+                    <th class="text-right py-3 px-2">Response</th>
                 </tr>
             </thead>
-            <tbody id="request-log" class="divide-y divide-gray-800 dark:divide-gray-800 divide-gray-200">
+            <tbody id="requests-table" class="divide-y divide-gray-800">
                 {% for req in recent_requests %}
-                <tr class="hover:bg-dark-800/50 dark:hover:bg-dark-800/50 hover:bg-gray-50 {% if req.blocked %}bg-red-900/10{% endif %}">
-                    <td class="px-4 py-3 text-gray-500 text-xs">{{ req.timestamp|date:"H:i:s" }}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-1 rounded text-xs font-mono
-                            {% if req.method == 'GET' %}bg-green-900/50 text-green-400
+                <tr class="hover:bg-dark-800 transition">
+                    <td class="py-2 px-2 text-gray-400 font-mono text-xs">
+                        {{ req.timestamp|time:"H:i:s" }}
+                    </td>
+                    <td class="py-2 px-2">
+                        <span class="px-2 py-0.5 rounded text-xs font-medium
+                            {% if req.method == 'CONNECT' %}bg-purple-900/50 text-purple-400
+                            {% elif req.method == 'GET' %}bg-green-900/50 text-green-400
                             {% elif req.method == 'POST' %}bg-blue-900/50 text-blue-400
-                            {% elif req.method == 'CONNECT' %}bg-purple-900/50 text-purple-400
                             {% else %}bg-gray-700 text-gray-400{% endif %}">
                             {{ req.method }}
                         </span>
                     </td>
-                    <td class="px-4 py-3 font-mono text-gray-300 dark:text-gray-300 text-gray-700 max-w-xs truncate">{{ req.hostname }}</td>
-                    <td class="px-4 py-3 font-mono text-gray-500 text-xs">{{ req.source_ip|default:"-" }}:{{ req.source_port|default:"-" }}</td>
-                    <td class="px-4 py-3">
+                    <td class="py-2 px-2 text-gray-300 max-w-xs truncate" title="{{ req.hostname }}">
+                        {{ req.hostname|truncatechars:40 }}
+                    </td>
+                    <td class="py-2 px-2 text-gray-400 font-mono text-xs">
+                        {{ req.source_ip }}:{{ req.source_port }}
+                    </td>
+                    <td class="py-2 px-2">
                         {% if req.blocked %}
-                        <span class="text-red-400"><i class="fas fa-ban mr-1"></i>Blocked</span>
+                        <span class="px-2 py-0.5 rounded text-xs bg-red-900/50 text-red-400">Blocked</span>
                         {% else %}
-                        <span class="text-green-400">{{ req.status_code }}</span>
+                        <span class="px-2 py-0.5 rounded text-xs 
+                            {% if req.status_code >= 200 and req.status_code < 300 %}bg-green-900/50 text-green-400
+                            {% elif req.status_code >= 300 and req.status_code < 400 %}bg-blue-900/50 text-blue-400
+                            {% elif req.status_code >= 400 %}bg-red-900/50 text-red-400
+                            {% else %}bg-gray-700 text-gray-400{% endif %}">
+                            {{ req.status_code }}
+                        </span>
                         {% endif %}
                     </td>
-                    <td class="px-4 py-3 text-right text-gray-500 text-xs">{{ req.response_time }}ms</td>
+                    <td class="py-2 px-2 text-right text-gray-500 text-xs">
+                        {{ req.response_time }}ms
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-satellite-dish text-4xl mb-3 opacity-30"></i>
-                        <p>No requests yet</p>
-                        <p class="text-sm mt-1">Configure your browser to use the proxy</p>
+                    <td colspan="6" class="py-8 text-center text-gray-500">
+                        <i class="fas fa-inbox text-4xl mb-3 block opacity-50"></i>
+                        No requests yet
                     </td>
                 </tr>
                 {% endfor %}
@@ -156,123 +174,148 @@
 
 {% block extra_js %}
 <script>
-    // Initialize stats
-    document.getElementById('stat-bytes').textContent = formatBytes({{ total_bytes|default:0 }});
-    document.getElementById('stat-bytes-24h').textContent = formatBytes({{ bytes_24h|default:0 }}) + ' today';
+    // Parse data from Django
+    const hourlyData = {{ hourly_data|safe }};
+    const methodData = {{ method_stats|safe }};
+    
+    console.log('Hourly Data:', hourlyData);
+    console.log('Method Data:', methodData);
 
     // Traffic Chart
-    {% if has_chart_data %}
-    const hourlyData = {{ hourly_data_json|safe }};
-    console.log('Hourly Data:', hourlyData);
-    
-    if (hourlyData && hourlyData.length > 0) {
-        const ctx = document.getElementById('trafficChart');
-        if (ctx) {
-            new Chart(ctx, {
+    const trafficCtx = document.getElementById('trafficChart');
+    if (trafficCtx && hourlyData && hourlyData.length > 0) {
+        const hasData = hourlyData.some(d => d.total > 0);
+        
+        if (hasData) {
+            new Chart(trafficCtx, {
                 type: 'line',
                 data: {
-                    labels: hourlyData.map(d => {
-                        const date = new Date(d.hour);
-                        return date.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
-                    }),
-                    datasets: [{
-                        label: 'Requests',
-                        data: hourlyData.map(d => d.count),
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                    }, {
-                        label: 'Blocked',
-                        data: hourlyData.map(d => d.blocked),
-                        borderColor: '#ef4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                    }]
+                    labels: hourlyData.map(d => d.hour),
+                    datasets: [
+                        {
+                            label: 'Total',
+                            data: hourlyData.map(d => d.total),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Blocked',
+                            data: hourlyData.map(d => d.blocked),
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#9ca3af' } } },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: '#9ca3af', usePointStyle: true }
+                        }
+                    },
                     scales: {
-                        x: { grid: { color: '#374151' }, ticks: { color: '#6b7280' } },
-                        y: { grid: { color: '#374151' }, ticks: { color: '#6b7280' }, beginAtZero: true }
+                        x: {
+                            grid: { color: '#1f2937' },
+                            ticks: { color: '#6b7280' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#1f2937' },
+                            ticks: { color: '#6b7280' }
+                        }
                     }
                 }
             });
+        } else {
+            trafficCtx.parentElement.innerHTML = `
+                <div class="h-full flex items-center justify-center text-gray-500">
+                    <div class="text-center">
+                        <i class="fas fa-chart-line text-4xl mb-3 opacity-50"></i>
+                        <p>No traffic data in last 24 hours</p>
+                        <p class="text-xs mt-1">Data will appear once requests are made</p>
+                    </div>
+                </div>
+            `;
         }
     }
-    {% endif %}
 
     // Methods Chart
-    {% if has_methods_data %}
-    const methodsData = {{ methods_json|safe }};
-    console.log('Methods Data:', methodsData);
-    
-    if (methodsData && methodsData.length > 0) {
-        const ctx = document.getElementById('methodsChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: methodsData.map(m => m.method),
-                    datasets: [{
-                        data: methodsData.map(m => m.count),
-                        backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'],
-                    }]
+    const methodsCtx = document.getElementById('methodsChart');
+    if (methodsCtx && methodData && methodData.length > 0) {
+        new Chart(methodsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: methodData.map(m => m.method),
+                datasets: [{
+                    data: methodData.map(m => m.count),
+                    backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#9ca3af', usePointStyle: true, padding: 15 }
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } }
-                }
-            });
-        }
-    }
-    {% endif %}
-
-    // Handle new requests via WebSocket
-    function handleNewRequest(r) {
-        const tbody = document.getElementById('request-log');
-        
-        // Remove empty message if exists
-        const emptyRow = tbody.querySelector('td[colspan]');
-        if (emptyRow) {
-            emptyRow.closest('tr').remove();
-        }
-        
-        const tr = document.createElement('tr');
-        tr.className = `hover:bg-dark-800/50 fade-in ${r.blocked ? 'bg-red-900/10' : ''}`;
-        
-        let methodClass = 'bg-gray-700 text-gray-400';
-        if (r.method === 'GET') methodClass = 'bg-green-900/50 text-green-400';
-        if (r.method === 'POST') methodClass = 'bg-blue-900/50 text-blue-400';
-        if (r.method === 'CONNECT') methodClass = 'bg-purple-900/50 text-purple-400';
-        
-        const status = r.blocked 
-            ? '<span class="text-red-400"><i class="fas fa-ban mr-1"></i>Blocked</span>'
-            : `<span class="text-green-400">${r.status_code}</span>`;
-        
-        const time = r.timestamp ? new Date(r.timestamp).toLocaleTimeString() : '-';
-        
-        tr.innerHTML = `
-            <td class="px-4 py-3 text-gray-500 text-xs">${time}</td>
-            <td class="px-4 py-3"><span class="px-2 py-1 rounded text-xs font-mono ${methodClass}">${r.method}</span></td>
-            <td class="px-4 py-3 font-mono text-gray-300 max-w-xs truncate">${r.hostname}</td>
-            <td class="px-4 py-3 font-mono text-gray-500 text-xs">${r.source_ip || '-'}:${r.source_port || '-'}</td>
-            <td class="px-4 py-3">${status}</td>
-            <td class="px-4 py-3 text-right text-gray-500 text-xs">${r.response_time}ms</td>
+                cutout: '60%'
+            }
+        });
+    } else if (methodsCtx) {
+        methodsCtx.parentElement.innerHTML = `
+            <div class="h-full flex items-center justify-center text-gray-500">
+                <div class="text-center">
+                    <i class="fas fa-chart-pie text-4xl mb-3 opacity-50"></i>
+                    <p>No method data yet</p>
+                </div>
+            </div>
         `;
-        tbody.insertBefore(tr, tbody.firstChild);
-        while (tbody.children.length > 50) tbody.removeChild(tbody.lastChild);
-        
-        // Update stats
-        const total = document.getElementById('stat-total');
-        total.textContent = parseInt(total.textContent) + 1;
-        if (r.blocked) {
-            const blocked = document.getElementById('stat-blocked');
-            blocked.textContent = parseInt(blocked.textContent) + 1;
+    }
+
+    // Handle new WebSocket requests
+    function handleNewRequest(req) {
+        const tbody = document.getElementById('requests-table');
+        if (!tbody) return;
+
+        const statusClass = req.blocked ? 'bg-red-900/50 text-red-400' :
+            req.status_code >= 200 && req.status_code < 300 ? 'bg-green-900/50 text-green-400' :
+            req.status_code >= 400 ? 'bg-red-900/50 text-red-400' : 'bg-gray-700 text-gray-400';
+
+        const methodClass = req.method === 'CONNECT' ? 'bg-purple-900/50 text-purple-400' :
+            req.method === 'GET' ? 'bg-green-900/50 text-green-400' :
+            req.method === 'POST' ? 'bg-blue-900/50 text-blue-400' : 'bg-gray-700 text-gray-400';
+
+        const time = new Date(req.timestamp).toLocaleTimeString('en-US', { 
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false 
+        });
+
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-dark-800 transition fade-in';
+        row.innerHTML = `
+            <td class="py-2 px-2 text-gray-400 font-mono text-xs">${time}</td>
+            <td class="py-2 px-2"><span class="px-2 py-0.5 rounded text-xs font-medium ${methodClass}">${req.method}</span></td>
+            <td class="py-2 px-2 text-gray-300 max-w-xs truncate">${req.hostname}</td>
+            <td class="py-2 px-2 text-gray-400 font-mono text-xs">${req.source_ip}:${req.source_port || ''}</td>
+            <td class="py-2 px-2"><span class="px-2 py-0.5 rounded text-xs ${statusClass}">${req.blocked ? 'Blocked' : req.status_code}</span></td>
+            <td class="py-2 px-2 text-right text-gray-500 text-xs">${req.response_time}ms</td>
+        `;
+
+        tbody.insertBefore(row, tbody.firstChild);
+
+        // Keep only 20 rows
+        while (tbody.children.length > 20) {
+            tbody.removeChild(tbody.lastChild);
         }
     }
 </script>

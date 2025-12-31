@@ -1,0 +1,336 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Edit User - {{ edit_user.username }} | ProxyMonitor{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'dashboard:users' %}" class="p-2 rounded-lg bg-dark-800 hover:bg-dark-700 text-gray-400 hover:text-white transition">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <i class="fas fa-user-edit text-blue-400"></i>
+                    Edit User
+                </h1>
+                <p class="text-gray-400 text-sm mt-1">Modify user account: <span class="text-blue-400 font-medium">{{ edit_user.username }}</span></p>
+            </div>
+        </div>
+        
+        <!-- User Status Badge -->
+        <div class="flex items-center gap-2">
+            {% if edit_user.is_active %}
+            <span class="px-3 py-1 bg-green-900/30 border border-green-700 text-green-400 rounded-full text-sm">
+                <i class="fas fa-check-circle mr-1"></i>Active
+            </span>
+            {% else %}
+            <span class="px-3 py-1 bg-red-900/30 border border-red-700 text-red-400 rounded-full text-sm">
+                <i class="fas fa-times-circle mr-1"></i>Inactive
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <form method="post" class="space-y-6" id="userEditForm">
+        {% csrf_token %}
+        
+        <!-- User Info Card -->
+        <div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-800 bg-dark-800">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-user text-blue-400"></i>
+                    Account Information
+                </h2>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Username (Read-only) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-at mr-2 text-gray-500"></i>Username
+                        </label>
+                        <input type="text" value="{{ edit_user.username }}" disabled
+                            class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-400 cursor-not-allowed">
+                        <p class="text-xs text-gray-500 mt-1">Username cannot be changed</p>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-envelope mr-2 text-gray-500"></i>Email Address
+                        </label>
+                        <input type="email" id="email" name="email" value="{{ edit_user.email }}"
+                            class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                            placeholder="user@example.com">
+                    </div>
+
+                    <!-- Role -->
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-user-tag mr-2 text-gray-500"></i>Role <span class="text-red-400">*</span>
+                        </label>
+                        <select id="role" name="role" required
+                            class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                            {% for value, label in role_choices %}
+                            <option value="{{ value }}" {% if edit_user.profile.role == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <span class="text-gray-400">Viewer:</span> Read-only access |
+                            <span class="text-yellow-400">Operator:</span> Manage blocklist |
+                            <span class="text-red-400">Admin:</span> Full access
+                        </p>
+                    </div>
+
+                    <!-- Department -->
+                    <div>
+                        <label for="department" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-building mr-2 text-gray-500"></i>Department
+                        </label>
+                        <input type="text" id="department" name="department" value="{{ edit_user.profile.department|default:'' }}"
+                            class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                            placeholder="e.g., IT, Security, Engineering">
+                    </div>
+                </div>
+
+                <!-- Active Status -->
+                <div class="flex items-center gap-4 p-4 bg-dark-800 rounded-lg border border-gray-700">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="is_active" class="sr-only peer" {% if edit_user.is_active %}checked{% endif %}>
+                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                    <div>
+                        <span class="text-gray-200 font-medium">Account Active</span>
+                        <p class="text-xs text-gray-500">Inactive users cannot log in to the system</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Change Card -->
+        <div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-800 bg-dark-800">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-key text-yellow-400"></i>
+                    Change Password
+                    <span class="text-xs text-gray-500 font-normal ml-2">(Optional)</span>
+                </h2>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="new_password" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-gray-500"></i>New Password
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="new_password" name="new_password"
+                                class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-3 pr-10 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                                placeholder="Leave blank to keep current">
+                            <button type="button" onclick="togglePassword('new_password')" class="absolute right-3 top-3 text-gray-500 hover:text-gray-300">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                    </div>
+
+                    <div>
+                        <label for="confirm_password" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-gray-500"></i>Confirm Password
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="confirm_password" name="confirm_password"
+                                class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-3 pr-10 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                                placeholder="Confirm new password">
+                            <button type="button" onclick="togglePassword('confirm_password')" class="absolute right-3 top-3 text-gray-500 hover:text-gray-300">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Password Match Indicator -->
+                <div id="password-match" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
+            </div>
+        </div>
+
+        <!-- User Meta Info -->
+        <div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-800 bg-dark-800">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-info-circle text-gray-400"></i>
+                    Account Details
+                </h2>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div class="bg-dark-800 rounded-lg p-4">
+                        <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">User ID</p>
+                        <p class="text-white font-mono">{{ edit_user.id }}</p>
+                    </div>
+                    <div class="bg-dark-800 rounded-lg p-4">
+                        <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">Date Joined</p>
+                        <p class="text-white">{{ edit_user.date_joined|date:"M d, Y" }}</p>
+                    </div>
+                    <div class="bg-dark-800 rounded-lg p-4">
+                        <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">Last Login</p>
+                        <p class="text-white">{{ edit_user.last_login|date:"M d, Y H:i"|default:"Never" }}</p>
+                    </div>
+                    <div class="bg-dark-800 rounded-lg p-4">
+                        <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">Superuser</p>
+                        <p class="text-white">
+                            {% if edit_user.is_superuser %}
+                            <span class="text-yellow-400"><i class="fas fa-crown mr-1"></i>Yes</span>
+                            {% else %}
+                            <span class="text-gray-400">No</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-between">
+            <div class="flex gap-3">
+                <a href="{% url 'dashboard:users' %}" class="px-6 py-3 bg-dark-800 hover:bg-dark-700 text-gray-300 rounded-lg transition flex items-center gap-2">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+                
+                {% if edit_user != request.user %}
+                <button type="button" onclick="confirmDelete()" class="px-6 py-3 bg-red-900/30 hover:bg-red-900/50 text-red-400 border border-red-800 rounded-lg transition flex items-center gap-2">
+                    <i class="fas fa-trash"></i>
+                    Delete User
+                </button>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition flex items-center gap-2 shadow-lg shadow-blue-600/20">
+                <i class="fas fa-save"></i>
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <div class="bg-dark-900 rounded-xl border border-gray-800 p-6 max-w-md mx-4 fade-in">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-3xl text-red-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Delete User?</h3>
+            <p class="text-gray-400 mb-6">
+                Are you sure you want to delete <span class="text-white font-medium">{{ edit_user.username }}</span>? 
+                This action cannot be undone.
+            </p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeDeleteModal()" class="px-6 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 rounded-lg transition">
+                    Cancel
+                </button>
+                <a href="{% url 'dashboard:user_delete' edit_user.id %}" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+                    <i class="fas fa-trash mr-2"></i>Delete
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Toggle password visibility
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = field.nextElementSibling.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Password match checker
+const newPass = document.getElementById('new_password');
+const confirmPass = document.getElementById('confirm_password');
+const matchIndicator = document.getElementById('password-match');
+
+function checkPasswordMatch() {
+    const newVal = newPass.value;
+    const confirmVal = confirmPass.value;
+    
+    if (newVal || confirmVal) {
+        matchIndicator.classList.remove('hidden');
+        
+        if (newVal === confirmVal && newVal.length >= 6) {
+            matchIndicator.className = 'mt-4 p-3 rounded-lg text-sm bg-green-900/30 border border-green-700 text-green-400';
+            matchIndicator.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Passwords match';
+        } else if (newVal !== confirmVal) {
+            matchIndicator.className = 'mt-4 p-3 rounded-lg text-sm bg-red-900/30 border border-red-700 text-red-400';
+            matchIndicator.innerHTML = '<i class="fas fa-times-circle mr-2"></i>Passwords do not match';
+        } else if (newVal.length < 6) {
+            matchIndicator.className = 'mt-4 p-3 rounded-lg text-sm bg-yellow-900/30 border border-yellow-700 text-yellow-400';
+            matchIndicator.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Password must be at least 6 characters';
+        }
+    } else {
+        matchIndicator.classList.add('hidden');
+    }
+}
+
+newPass.addEventListener('input', checkPasswordMatch);
+confirmPass.addEventListener('input', checkPasswordMatch);
+
+// Form validation
+document.getElementById('userEditForm').addEventListener('submit', function(e) {
+    const newPassword = newPass.value;
+    const confirmPassword = confirmPass.value;
+    
+    if (newPassword && newPassword !== confirmPassword) {
+        e.preventDefault();
+        showToast('Passwords do not match!', 'error');
+        return false;
+    }
+    
+    if (newPassword && newPassword.length < 6) {
+        e.preventDefault();
+        showToast('Password must be at least 6 characters!', 'error');
+        return false;
+    }
+});
+
+// Delete modal functions
+function confirmDelete() {
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+// Close modal on backdrop click
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteModal();
+    }
+});
+</script>
+{% endblock %}
