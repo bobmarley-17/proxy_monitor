@@ -1,0 +1,12 @@
+2026-01-07 17:14:41,976 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-01-07 17:14:41,976 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-01-07 17:14:41,977 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-01-07 17:14:41,977 CRITICAL Listen failure: Couldn't listen on 0.0.0.0:8000: [Errno 98] Address already in use.
+2026-01-07 17:14:48,613 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-01-07 17:14:48,614 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-01-07 17:14:48,614 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-01-07 17:14:48,614 CRITICAL Listen failure: Couldn't listen on 0.0.0.0:8000: [Errno 98] Address already in use.
+2026-01-07 17:14:55,010 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-01-07 17:14:55,010 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-01-07 17:14:55,011 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-01-07 17:14:55,011 INFO     Listening on TCP address 0.0.0.0:8000

@@ -1,0 +1,88 @@
+Starting proxy server on 0.0.0.0:8088
+
+📋 Blocklist Loaded:
+   🌐 Blocked Domains: 2
+   🔢 Blocked IPs: 0
+   🚪 Blocked Ports: 0
+   📜 Custom Rules: 0
+
+   Blocked Domains (top 5):
+      - cricbuzz.com [gaming]
+      - youtube.com [social]
+⚠️ IPv6 dual-stack failed ([Errno 97] Address family not supported by protocol), using IPv4...
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/apps/proxy/proxy_server.py", line 159, in start
+    srv = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/socket.py", line 232, in __init__
+    _socket.socket.__init__(self, family, type, proto, fileno)
+OSError: [Errno 97] Address family not supported by protocol
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/manage.py", line 14, in <module>
+    main()
+  File "/var/www/html/proxy_monitor/manage.py", line 11, in main
+    execute_from_command_line(sys.argv)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/__init__.py", line 419, in execute_from_command_line
+    utility.execute()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/__init__.py", line 413, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/base.py", line 354, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/base.py", line 398, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/proxy/management/commands/runproxy.py", line 20, in handle
+    run_proxy(port)  # Just pass port, not async
+    ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/proxy/proxy_server.py", line 598, in run_proxy
+    server.start()
+  File "/var/www/html/proxy_monitor/apps/proxy/proxy_server.py", line 174, in start
+    srv.bind((self.host, self.port))
+OSError: [Errno 98] Address already in use
+Starting proxy server on 0.0.0.0:8088
+
+📋 Blocklist Loaded:
+   🌐 Blocked Domains: 2
+   🔢 Blocked IPs: 0
+   🚪 Blocked Ports: 0
+   📜 Custom Rules: 0
+
+   Blocked Domains (top 5):
+      - cricbuzz.com [gaming]
+      - youtube.com [social]
+⚠️ IPv6 dual-stack failed ([Errno 97] Address family not supported by protocol), using IPv4...
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/apps/proxy/proxy_server.py", line 159, in start
+    srv = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/socket.py", line 232, in __init__
+    _socket.socket.__init__(self, family, type, proto, fileno)
+OSError: [Errno 97] Address family not supported by protocol
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/manage.py", line 14, in <module>
+    main()
+  File "/var/www/html/proxy_monitor/manage.py", line 11, in main
+    execute_from_command_line(sys.argv)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/__init__.py", line 419, in execute_from_command_line
+    utility.execute()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/__init__.py", line 413, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/base.py", line 354, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/management/base.py", line 398, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/proxy/management/commands/runproxy.py", line 20, in handle
+    run_proxy(port)  # Just pass port, not async
+    ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/proxy/proxy_server.py", line 598, in run_proxy
+    server.start()
+  File "/var/www/html/proxy_monitor/apps/proxy/proxy_server.py", line 174, in start
+    srv.bind((self.host, self.port))
+OSError: [Errno 98] Address already in use

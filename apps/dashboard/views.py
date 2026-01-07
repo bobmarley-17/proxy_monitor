@@ -160,35 +160,66 @@ def index(request):
 
 @login_required
 def requests_view(request):
-    blocked_only = request.GET.get('blocked') == 'true'
-    search = request.GET.get('search', '')
-    method_filter = request.GET.get('method', '')
+    """Request log with filtering and pagination"""
     
+    # Get filter parameters
+    filter_hostname = request.GET.get('hostname', '').strip()
+    filter_source_ip = request.GET.get('source_ip', '').strip()
+    filter_method = request.GET.get('method', '').strip()
+    filter_status = request.GET.get('status', '').strip()
+    page = int(request.GET.get('page', 1))
+    per_page = 100
+    
+    # Build queryset with filters
     requests_qs = ProxyRequest.objects.all()
     
-    if blocked_only:
-        requests_qs = requests_qs.filter(blocked=True)
-    if method_filter:
-        requests_qs = requests_qs.filter(method=method_filter)
-    if search:
-        requests_qs = requests_qs.filter(
-            Q(hostname__icontains=search) | Q(source_ip__icontains=search) | Q(url__icontains=search)
-        )
+    if filter_hostname:
+        requests_qs = requests_qs.filter(hostname__icontains=filter_hostname)
     
+    if filter_source_ip:
+        requests_qs = requests_qs.filter(source_ip__icontains=filter_source_ip)
+    
+    if filter_method:
+        requests_qs = requests_qs.filter(method=filter_method)
+    
+    if filter_status:
+        if filter_status == 'blocked':
+            requests_qs = requests_qs.filter(blocked=True)
+        elif filter_status == 'success':
+            requests_qs = requests_qs.filter(blocked=False, status_code__gte=200, status_code__lt=400)
+        elif filter_status == 'error':
+            requests_qs = requests_qs.filter(blocked=False, status_code__gte=400)
+    
+    # Get total count before pagination
+    total_count = requests_qs.count()
+    total_pages = (total_count + per_page - 1) // per_page  # Ceiling division
+    
+    # Ensure page is within bounds
+    page = max(1, min(page, total_pages)) if total_pages > 0 else 1
+    
+    # Apply pagination
+    start = (page - 1) * per_page
+    end = start + per_page
+    requests_list = requests_qs.order_by('-timestamp')[start:end]
+    
+    # Get unique methods for filter dropdown
     methods = ProxyRequest.objects.values_list('method', flat=True).distinct()
     
     context = {
         'page': 'requests',
-        'requests': requests_qs[:500],
-        'blocked_only': blocked_only,
-        'search': search,
-        'method_filter': method_filter,
+        'requests': requests_list,
+        'total_count': total_count,
+        'total_pages': total_pages,
+        'page': page,
+        'per_page': per_page,
+        'filter_hostname': filter_hostname,
+        'filter_source_ip': filter_source_ip,
+        'filter_method': filter_method,
+        'filter_status': filter_status,
         'methods': list(methods),
-        'total_count': requests_qs.count(),
     }
     
     return render(request, 'dashboard/requests.html', context)
-
 
 @login_required
 def analytics_view(request):

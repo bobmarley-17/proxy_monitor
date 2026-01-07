@@ -2,124 +2,268 @@
 {% block title %}Requests - ProxyMonitor{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <h2 class="text-2xl font-bold text-white mb-2">Request Log</h2>
-    <p class="text-gray-500">View and filter all proxy requests ({{ total_count }} total)</p>
+<!-- Page Header -->
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-white">Request Log</h1>
+    <p class="text-gray-400 mt-1">View and filter all proxy requests</p>
 </div>
 
 <!-- Filters -->
-<div class="bg-dark-900 rounded-xl border border-gray-800 p-4 mb-6">
-    <form method="get" class="flex flex-wrap gap-4">
-        <div class="flex-1 min-w-[200px]">
-            <label class="block text-xs text-gray-500 mb-1">Hostname</label>
-            <input type="text" name="hostname" value="{{ filter_hostname }}" placeholder="youtube.com, google.com..."
-                class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+<div class="bg-dark-900 rounded-xl border border-gray-800 p-5 mb-6">
+    <form method="get" id="filterForm" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- Hostname Filter -->
+            <div class="lg:col-span-2">
+                <label class="block text-xs font-medium text-gray-400 mb-2">Hostname</label>
+                <input type="text" name="hostname" value="{{ filter_hostname }}" 
+                       placeholder="e.g., youtube.com, google.com..."
+                       class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+            </div>
+            
+            <!-- Source IP Filter -->
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-2">Source IP</label>
+                <input type="text" name="source_ip" value="{{ filter_source_ip }}" 
+                       placeholder="e.g., 192.168.1.1"
+                       class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+            </div>
+            
+            <!-- Method Filter -->
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-2">Method</label>
+                <select name="method" 
+                        class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                    <option value="">All Methods</option>
+                    <option value="GET" {% if filter_method == 'GET' %}selected{% endif %}>GET</option>
+                    <option value="POST" {% if filter_method == 'POST' %}selected{% endif %}>POST</option>
+                    <option value="CONNECT" {% if filter_method == 'CONNECT' %}selected{% endif %}>CONNECT</option>
+                    <option value="PUT" {% if filter_method == 'PUT' %}selected{% endif %}>PUT</option>
+                    <option value="DELETE" {% if filter_method == 'DELETE' %}selected{% endif %}>DELETE</option>
+                    <option value="PATCH" {% if filter_method == 'PATCH' %}selected{% endif %}>PATCH</option>
+                    <option value="HEAD" {% if filter_method == 'HEAD' %}selected{% endif %}>HEAD</option>
+                    <option value="OPTIONS" {% if filter_method == 'OPTIONS' %}selected{% endif %}>OPTIONS</option>
+                </select>
+            </div>
+            
+            <!-- Status Filter -->
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-2">Status</label>
+                <select name="status" 
+                        class="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                    <option value="">All Status</option>
+                    <option value="success" {% if filter_status == 'success' %}selected{% endif %}>✓ Success (2xx/3xx)</option>
+                    <option value="blocked" {% if filter_status == 'blocked' %}selected{% endif %}>⛔ Blocked</option>
+                    <option value="error" {% if filter_status == 'error' %}selected{% endif %}>✗ Error (4xx/5xx)</option>
+                </select>
+            </div>
         </div>
-        <div class="w-48">
-            <label class="block text-xs text-gray-500 mb-1">Source IP</label>
-            <input type="text" name="source_ip" value="{{ filter_source_ip }}" placeholder="192.168.1.1"
-                class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
-        </div>
-        <div class="w-36">
-            <label class="block text-xs text-gray-500 mb-1">Method</label>
-            <select name="method" class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <option value="">All Methods</option>
-                <option value="GET" {% if filter_method == 'GET' %}selected{% endif %}>GET</option>
-                <option value="POST" {% if filter_method == 'POST' %}selected{% endif %}>POST</option>
-                <option value="CONNECT" {% if filter_method == 'CONNECT' %}selected{% endif %}>CONNECT</option>
-                <option value="PUT" {% if filter_method == 'PUT' %}selected{% endif %}>PUT</option>
-                <option value="DELETE" {% if filter_method == 'DELETE' %}selected{% endif %}>DELETE</option>
-                <option value="PATCH" {% if filter_method == 'PATCH' %}selected{% endif %}>PATCH</option>
-                <option value="HEAD" {% if filter_method == 'HEAD' %}selected{% endif %}>HEAD</option>
-                <option value="OPTIONS" {% if filter_method == 'OPTIONS' %}selected{% endif %}>OPTIONS</option>
-            </select>
-        </div>
-        <div class="w-36">
-            <label class="block text-xs text-gray-500 mb-1">Status</label>
-            <select name="status" class="w-full bg-dark-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <option value="">All Status</option>
-                <option value="success" {% if filter_status == 'success' %}selected{% endif %}>Success</option>
-                <option value="blocked" {% if filter_status == 'blocked' %}selected{% endif %}>Blocked</option>
-                <option value="error" {% if filter_status == 'error' %}selected{% endif %}>Error</option>
-            </select>
-        </div>
-        <div class="flex items-end gap-2">
-            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                <i class="fas fa-search mr-2"></i>Filter
-            </button>
-            <a href="{% url 'dashboard:requests' %}" class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition">Clear</a>
+        
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-between pt-2">
+            <div class="flex items-center gap-3">
+                <button type="submit" 
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-blue-600/20">
+                    <i class="fas fa-search"></i>
+                    Apply Filters
+                </button>
+                <a href="{% url 'dashboard:requests' %}" 
+                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-dark-800 hover:bg-dark-700 text-gray-300 font-medium rounded-xl border border-gray-700 transition-colors">
+                    <i class="fas fa-times"></i>
+                    Clear
+                </a>
+            </div>
+            
+            <!-- Active Filters Badge -->
+            {% if filter_hostname or filter_source_ip or filter_method or filter_status %}
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/20">
+                    <i class="fas fa-filter"></i>
+                    Filters Active
+                </span>
+            </div>
+            {% endif %}
         </div>
     </form>
 </div>
 
-<!-- Results -->
+<!-- Results Table -->
 <div class="bg-dark-900 rounded-xl border border-gray-800 overflow-hidden">
-    <div class="p-4 border-b border-gray-800 flex justify-between items-center">
-        <span class="text-gray-400">Showing {{ requests|length }} of {{ total_count }} requests</span>
-        <div class="flex gap-2 text-sm">
+    <!-- Table Header -->
+    <div class="px-5 py-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-center gap-3">
+            <span class="text-white font-medium">{{ total_count|default:0 }}</span>
+            <span class="text-gray-400">total requests</span>
             {% if filter_hostname or filter_source_ip or filter_method or filter_status %}
-            <span class="text-yellow-400">
-                <i class="fas fa-filter mr-1"></i>Filtered
+            <span class="text-gray-600">|</span>
+            <span class="text-gray-400">Showing</span>
+            <span class="text-white font-medium">{{ requests|length }}</span>
+            <span class="text-gray-400">filtered</span>
+            {% endif %}
+        </div>
+        
+        <!-- Quick Filter Chips -->
+        {% if filter_hostname or filter_source_ip or filter_method or filter_status %}
+        <div class="flex flex-wrap items-center gap-2">
+            {% if filter_hostname %}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 border border-blue-500/20">
+                Host: {{ filter_hostname|truncatechars:20 }}
+                <a href="?{% if filter_source_ip %}source_ip={{ filter_source_ip }}&{% endif %}{% if filter_method %}method={{ filter_method }}&{% endif %}{% if filter_status %}status={{ filter_status }}{% endif %}" class="hover:text-blue-300 ml-1">
+                    <i class="fas fa-times text-[10px]"></i>
+                </a>
+            </span>
+            {% endif %}
+            {% if filter_source_ip %}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-purple-500/15 text-purple-400 border border-purple-500/20">
+                IP: {{ filter_source_ip }}
+                <a href="?{% if filter_hostname %}hostname={{ filter_hostname }}&{% endif %}{% if filter_method %}method={{ filter_method }}&{% endif %}{% if filter_status %}status={{ filter_status }}{% endif %}" class="hover:text-purple-300 ml-1">
+                    <i class="fas fa-times text-[10px]"></i>
+                </a>
+            </span>
+            {% endif %}
+            {% if filter_method %}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                Method: {{ filter_method }}
+                <a href="?{% if filter_hostname %}hostname={{ filter_hostname }}&{% endif %}{% if filter_source_ip %}source_ip={{ filter_source_ip }}&{% endif %}{% if filter_status %}status={{ filter_status }}{% endif %}" class="hover:text-emerald-300 ml-1">
+                    <i class="fas fa-times text-[10px]"></i>
+                </a>
+            </span>
+            {% endif %}
+            {% if filter_status %}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/20">
+                Status: {{ filter_status|title }}
+                <a href="?{% if filter_hostname %}hostname={{ filter_hostname }}&{% endif %}{% if filter_source_ip %}source_ip={{ filter_source_ip }}&{% endif %}{% if filter_method %}method={{ filter_method }}{% endif %}" class="hover:text-amber-300 ml-1">
+                    <i class="fas fa-times text-[10px]"></i>
+                </a>
             </span>
             {% endif %}
         </div>
+        {% endif %}
     </div>
-    <div class="overflow-auto max-h-[70vh]">
-        <table class="w-full text-sm">
-            <thead class="bg-dark-950 sticky top-0">
-                <tr class="text-gray-500 text-xs uppercase">
-                    <th class="px-4 py-3 text-left">Time</th>
-                    <th class="px-4 py-3 text-left">Method</th>
-                    <th class="px-4 py-3 text-left">Host</th>
-                    <th class="px-4 py-3 text-left">Source</th>
-                    <th class="px-4 py-3 text-left">Destination</th>
-                    <th class="px-4 py-3 text-left">Status</th>
-                    <th class="px-4 py-3 text-right">Response</th>
-                    <th class="px-4 py-3 text-right">Size</th>
+    
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-dark-800/50">
+                    <th class="text-left py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Time</th>
+                    <th class="text-left py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Method</th>
+                    <th class="text-left py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Host</th>
+                    <th class="text-left py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Source</th>
+                    <th class="text-left py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Destination</th>
+                    <th class="text-left py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                    <th class="text-right py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Response</th>
+                    <th class="text-right py-4 px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">Size</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-800">
+            <tbody class="divide-y divide-gray-800/50">
                 {% for req in requests %}
-                <tr class="hover:bg-dark-800/50 {% if req.blocked %}bg-red-900/10{% endif %}">
-                    <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{{ req.timestamp|date:"M d, H:i:s" }}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-1 rounded text-xs font-mono
-                            {% if req.method == 'GET' %}bg-green-900/50 text-green-400
-                            {% elif req.method == 'POST' %}bg-blue-900/50 text-blue-400
-                            {% elif req.method == 'CONNECT' %}bg-purple-900/50 text-purple-400
-                            {% elif req.method == 'PUT' %}bg-yellow-900/50 text-yellow-400
-                            {% elif req.method == 'DELETE' %}bg-red-900/50 text-red-400
-                            {% else %}bg-gray-700 text-gray-400{% endif %}">
+                <tr class="hover:bg-dark-800/30 transition-colors {% if req.blocked %}bg-red-500/5{% endif %}">
+                    <!-- Time -->
+                    <td class="py-4 px-5 whitespace-nowrap">
+                        <div class="text-sm text-gray-300">{{ req.timestamp|date:"M d" }}</div>
+                        <div class="text-xs text-gray-500 font-mono">{{ req.timestamp|time:"H:i:s" }}</div>
+                    </td>
+                    
+                    <!-- Method -->
+                    <td class="py-4 px-5">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold font-mono
+                            {% if req.method == 'GET' %}bg-emerald-500/15 text-emerald-400 border border-emerald-500/20
+                            {% elif req.method == 'POST' %}bg-blue-500/15 text-blue-400 border border-blue-500/20
+                            {% elif req.method == 'CONNECT' %}bg-purple-500/15 text-purple-400 border border-purple-500/20
+                            {% elif req.method == 'PUT' %}bg-amber-500/15 text-amber-400 border border-amber-500/20
+                            {% elif req.method == 'DELETE' %}bg-red-500/15 text-red-400 border border-red-500/20
+                            {% elif req.method == 'PATCH' %}bg-orange-500/15 text-orange-400 border border-orange-500/20
+                            {% else %}bg-gray-500/15 text-gray-400 border border-gray-500/20{% endif %}">
                             {{ req.method }}
                         </span>
                     </td>
-                    <td class="px-4 py-3 font-mono text-gray-300 max-w-xs truncate" title="{{ req.hostname }}">{{ req.hostname }}</td>
-                    <td class="px-4 py-3 font-mono text-gray-500 text-xs">{{ req.source_ip|default:"-" }}:{{ req.source_port|default:"-" }}</td>
-                    <td class="px-4 py-3 font-mono text-gray-500 text-xs">
-                        {% if req.destination_ip %}{{ req.destination_ip }}:{{ req.destination_port }}{% else %}-{% endif %}
+                    
+                    <!-- Host -->
+                    <td class="py-4 px-5">
+                        <span class="text-sm text-white font-medium truncate max-w-[250px] block" title="{{ req.hostname }}">
+                            {{ req.hostname|truncatechars:40 }}
+                        </span>
                     </td>
-                    <td class="px-4 py-3">
-                        {% if req.blocked %}
-                        <span class="text-red-400 text-xs"><i class="fas fa-ban mr-1"></i>Blocked</span>
-                        {% elif req.status_code >= 400 %}
-                        <span class="text-yellow-400 text-xs">{{ req.status_code }}</span>
-                        {% elif req.status_code >= 200 %}
-                        <span class="text-green-400 text-xs">{{ req.status_code }}</span>
-                        {% else %}
-                        <span class="text-gray-500 text-xs">{{ req.status_code|default:"-" }}</span>
+                    
+                    <!-- Source -->
+                    <td class="py-4 px-5">
+                        <span class="font-mono text-sm text-gray-400">{{ req.source_ip|default:"-" }}</span>
+                        {% if req.source_port %}
+                        <span class="text-gray-600">:</span>
+                        <span class="font-mono text-xs text-gray-500">{{ req.source_port }}</span>
                         {% endif %}
                     </td>
-                    <td class="px-4 py-3 text-right text-gray-500 text-xs">{{ req.response_time|default:0 }}ms</td>
-                    <td class="px-4 py-3 text-right text-gray-500 text-xs">{{ req.content_length|filesizeformat }}</td>
+                    
+                    <!-- Destination -->
+                    <td class="py-4 px-5">
+                        {% if req.destination_ip and req.destination_ip != '0.0.0.0' %}
+                        <span class="font-mono text-sm text-gray-400">{{ req.destination_ip }}</span>
+                        <span class="text-gray-600">:</span>
+                        <span class="font-mono text-xs text-gray-500">{{ req.destination_port }}</span>
+                        {% else %}
+                        <span class="text-gray-600">-</span>
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Status -->
+                    <td class="py-4 px-5">
+                        {% if req.blocked %}
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-red-500/15 text-red-400 border border-red-500/20">
+                            <i class="fas fa-ban text-[10px]"></i>
+                            Blocked
+                        </span>
+                        {% elif req.status_code >= 500 %}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-red-500/15 text-red-400 border border-red-500/20">
+                            {{ req.status_code }}
+                        </span>
+                        {% elif req.status_code >= 400 %}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-orange-500/15 text-orange-400 border border-orange-500/20">
+                            {{ req.status_code }}
+                        </span>
+                        {% elif req.status_code >= 300 %}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/20">
+                            {{ req.status_code }}
+                        </span>
+                        {% elif req.status_code >= 200 %}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                            {{ req.status_code }}
+                        </span>
+                        {% else %}
+                        <span class="text-gray-500">{{ req.status_code|default:"-" }}</span>
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Response Time -->
+                    <td class="py-4 px-5 text-right">
+                        <span class="text-sm text-gray-400">{{ req.response_time|default:0 }}<span class="text-gray-500 ml-0.5">ms</span></span>
+                    </td>
+                    
+                    <!-- Size -->
+                    <td class="py-4 px-5 text-right">
+                        <span class="text-sm text-gray-400">{{ req.content_length|filesizeformat }}</span>
+                    </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="8" class="px-4 py-8 text-center text-gray-500">
-                    <i class="fas fa-inbox text-4xl mb-3 opacity-30 block"></i>
-                    <p>No requests found</p>
-                    {% if filter_hostname or filter_source_ip or filter_method or filter_status %}
-                    <p class="text-sm mt-1">Try adjusting your filters</p>
-                    {% endif %}
-                </td></tr>
+                <tr>
+                    <td colspan="8" class="py-16 text-center">
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 bg-dark-800 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-inbox text-3xl text-gray-600"></i>
+                            </div>
+                            <p class="text-gray-400 font-medium">No requests found</p>
+                            {% if filter_hostname or filter_source_ip or filter_method or filter_status %}
+                            <p class="text-sm text-gray-500 mt-1">Try adjusting your filters</p>
+                            <a href="{% url 'dashboard:requests' %}" 
+                               class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 font-medium rounded-lg border border-gray-700 transition-colors text-sm">
+                                <i class="fas fa-times"></i>
+                                Clear Filters
+                            </a>
+                            {% else %}
+                            <p class="text-sm text-gray-500 mt-1">Requests will appear here as they come in</p>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -127,26 +271,143 @@
     
     <!-- Pagination -->
     {% if total_pages > 1 %}
-    <div class="px-4 py-3 border-t border-gray-800 flex items-center justify-between">
-        <div class="text-sm text-gray-500">
-            Page {{ page }} of {{ total_pages }}
+    <div class="px-5 py-4 border-t border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="text-sm text-gray-400">
+            Page <span class="text-white font-medium">{{ page }}</span> of <span class="text-white font-medium">{{ total_pages }}</span>
         </div>
-        <div class="flex gap-2">
+        <div class="flex items-center gap-2">
+            <!-- Previous Button -->
             {% if page > 1 %}
-            <a href="?page={{ page|add:'-1' }}{% if filter_hostname %}&hostname={{ filter_hostname }}{% endif %}{% if filter_source_ip %}&source_ip={{ filter_source_ip }}{% endif %}{% if filter_method %}&method={{ filter_method }}{% endif %}{% if filter_status %}&status={{ filter_status }}{% endif %}" 
-               class="px-3 py-1 bg-dark-800 hover:bg-dark-700 text-white rounded text-sm">
-                <i class="fas fa-chevron-left mr-1"></i>Previous
+            <a href="?page={{ page|add:'-1' }}{% if filter_hostname %}&hostname={{ filter_hostname }}{% endif %}{% if filter_source_ip %}&source_ip={{ filter_source_ip }}{% endif %}{% if filter_method %}&method={{ filter_method }}{% endif %}{% if filter_status %}&status={{ filter_status }}{% endif %}"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 font-medium rounded-lg border border-gray-700 transition-colors text-sm">
+                <i class="fas fa-chevron-left text-xs"></i>
+                Previous
             </a>
+            {% else %}
+            <span class="inline-flex items-center gap-2 px-4 py-2 bg-dark-800/50 text-gray-600 font-medium rounded-lg border border-gray-800 text-sm cursor-not-allowed">
+                <i class="fas fa-chevron-left text-xs"></i>
+                Previous
+            </span>
             {% endif %}
             
+            <!-- Page Numbers -->
+            <div class="hidden sm:flex items-center gap-1">
+                {% if page > 3 %}
+                <a href="?page=1{% if filter_hostname %}&hostname={{ filter_hostname }}{% endif %}{% if filter_source_ip %}&source_ip={{ filter_source_ip }}{% endif %}{% if filter_method %}&method={{ filter_method }}{% endif %}{% if filter_status %}&status={{ filter_status }}{% endif %}"
+                   class="w-9 h-9 flex items-center justify-center rounded-lg text-sm text-gray-400 hover:bg-dark-800 transition-colors">
+                    1
+                </a>
+                {% if page > 4 %}
+                <span class="text-gray-600 px-1">...</span>
+                {% endif %}
+                {% endif %}
+                
+                {% for p in page|add:"-2"|add:"0"|make_list %}
+                {% with page_num=forloop.counter|add:page|add:"-3" %}
+                {% if page_num > 0 and page_num <= total_pages %}
+                <a href="?page={{ page_num }}{% if filter_hostname %}&hostname={{ filter_hostname }}{% endif %}{% if filter_source_ip %}&source_ip={{ filter_source_ip }}{% endif %}{% if filter_method %}&method={{ filter_method }}{% endif %}{% if filter_status %}&status={{ filter_status }}{% endif %}"
+                   class="w-9 h-9 flex items-center justify-center rounded-lg text-sm transition-colors
+                   {% if page_num == page %}bg-blue-600 text-white font-medium{% else %}text-gray-400 hover:bg-dark-800{% endif %}">
+                    {{ page_num }}
+                </a>
+                {% endif %}
+                {% endwith %}
+                {% endfor %}
+                
+                {% if page < total_pages|add:"-2" %}
+                {% if page < total_pages|add:"-3" %}
+                <span class="text-gray-600 px-1">...</span>
+                {% endif %}
+                <a href="?page={{ total_pages }}{% if filter_hostname %}&hostname={{ filter_hostname }}{% endif %}{% if filter_source_ip %}&source_ip={{ filter_source_ip }}{% endif %}{% if filter_method %}&method={{ filter_method }}{% endif %}{% if filter_status %}&status={{ filter_status }}{% endif %}"
+                   class="w-9 h-9 flex items-center justify-center rounded-lg text-sm text-gray-400 hover:bg-dark-800 transition-colors">
+                    {{ total_pages }}
+                </a>
+                {% endif %}
+            </div>
+            
+            <!-- Next Button -->
             {% if page < total_pages %}
-            <a href="?page={{ page|add:'1' }}{% if filter_hostname %}&hostname={{ filter_hostname }}{% endif %}{% if filter_source_ip %}&source_ip={{ filter_source_ip }}{% endif %}{% if filter_method %}&method={{ filter_method }}{% endif %}{% if filter_status %}&status={{ filter_status }}{% endif %}" 
-               class="px-3 py-1 bg-dark-800 hover:bg-dark-700 text-white rounded text-sm">
-                Next<i class="fas fa-chevron-right ml-1"></i>
+            <a href="?page={{ page|add:'1' }}{% if filter_hostname %}&hostname={{ filter_hostname }}{% endif %}{% if filter_source_ip %}&source_ip={{ filter_source_ip }}{% endif %}{% if filter_method %}&method={{ filter_method }}{% endif %}{% if filter_status %}&status={{ filter_status }}{% endif %}"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 font-medium rounded-lg border border-gray-700 transition-colors text-sm">
+                Next
+                <i class="fas fa-chevron-right text-xs"></i>
             </a>
+            {% else %}
+            <span class="inline-flex items-center gap-2 px-4 py-2 bg-dark-800/50 text-gray-600 font-medium rounded-lg border border-gray-800 text-sm cursor-not-allowed">
+                Next
+                <i class="fas fa-chevron-right text-xs"></i>
+            </span>
             {% endif %}
         </div>
     </div>
     {% endif %}
 </div>
+
+<!-- Live Update Indicator -->
+<div class="fixed bottom-6 right-6 z-40">
+    <div id="liveIndicator" class="flex items-center gap-2 px-4 py-2 bg-dark-900 border border-gray-800 rounded-full shadow-lg">
+        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        <span class="text-sm text-gray-400">Live updates</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-refresh functionality (optional - can be enabled/disabled)
+let autoRefresh = false;
+let refreshInterval = null;
+
+function toggleAutoRefresh() {
+    autoRefresh = !autoRefresh;
+    const indicator = document.getElementById('liveIndicator');
+    
+    if (autoRefresh) {
+        refreshInterval = setInterval(() => {
+            // Only refresh if no filters are applied and on page 1
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.has('hostname') && !urlParams.has('source_ip') && 
+                !urlParams.has('method') && !urlParams.has('status') && 
+                (!urlParams.has('page') || urlParams.get('page') === '1')) {
+                location.reload();
+            }
+        }, 10000); // Refresh every 10 seconds
+        indicator.querySelector('span:last-child').textContent = 'Auto-refresh ON';
+        indicator.classList.add('border-emerald-500/30');
+    } else {
+        if (refreshInterval) clearInterval(refreshInterval);
+        indicator.querySelector('span:last-child').textContent = 'Live updates';
+        indicator.classList.remove('border-emerald-500/30');
+    }
+}
+
+// Click indicator to toggle
+document.getElementById('liveIndicator').addEventListener('click', toggleAutoRefresh);
+
+// Keyboard shortcut for filter focus
+document.addEventListener('keydown', function(e) {
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+        const activeElement = document.activeElement;
+        if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA' && activeElement.tagName !== 'SELECT') {
+            e.preventDefault();
+            document.querySelector('input[name="hostname"]').focus();
+        }
+    }
+});
+
+// Handle WebSocket updates for live requests
+function handleNewRequest(req) {
+    // Only update if no filters are active and on page 1
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('hostname') || urlParams.has('source_ip') || 
+        urlParams.has('method') || urlParams.has('status') ||
+        (urlParams.has('page') && urlParams.get('page') !== '1')) {
+        return;
+    }
+    
+    // Could implement live table updates here
+    // For now, just show a notification
+    showToast('New request: ' + req.hostname, 'info');
+}
+</script>
 {% endblock %}
