@@ -31,4 +31,8 @@ urlpatterns = [
     path('api/requests/', views.api_requests, name='api_requests'),
     path('api/resolve/', views.api_resolve, name='api_resolve'),
     path('api/dns-cache/', views.api_dns_cache, name='api_dns_cache'),
+
+    path('api/health/', views.health_check, name='health_check'),
+
+
 ]

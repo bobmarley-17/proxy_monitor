@@ -10,6 +10,11 @@ from datetime import timedelta, datetime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
+import time
+import psutil
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 
 from .models import ProxyRequest, DomainStats, IPHostnameCache, UserProfile, AuditLog
 from .dns_utils import resolve_ip_with_custom_dns
@@ -540,3 +545,49 @@ def api_resolve(request):
 def api_dns_cache(request):
     IPHostnameCache.objects.all().delete()
     return Response({'message': 'DNS cache cleared'})
+
+
+
+@csrf_exempt
+@require_GET
+def health_check(request):
+    """
+    GET /api/health/
+    Returns 200 if this node is healthy, 503 otherwise.
+    Called every ~10 s by the load balancer on test05.
+    """
+    try:
+        cpu = psutil.cpu_percent(interval=0.1)
+        mem = psutil.virtual_memory()
+
+        # quick check: is the proxy process alive?
+        proxy_alive = False
+        for proc in psutil.process_iter(['cmdline']):
+            try:
+                cmdline = ' '.join(proc.info.get('cmdline') or [])
+                if 'runproxy' in cmdline or 'proxy_server' in cmdline:
+                    proxy_alive = True
+                    break
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+
+        payload = {
+            'status': 'healthy' if proxy_alive else 'degraded',
+            'timestamp': time.time(),
+            'proxy_running': proxy_alive,
+            'system': {
+                'cpu_percent': cpu,
+                'memory_percent': mem.percent,
+                'memory_available_mb': round(
+                    mem.available / 1024 / 1024, 2
+                ),
+            },
+        }
+        code = 200 if proxy_alive else 503
+        return JsonResponse(payload, status=code)
+
+    except Exception as exc:
+        return JsonResponse(
+            {'status': 'error', 'error': str(exc)}, status=500
+        )
+
