@@ -4,7 +4,10 @@ import time
 import sys
 import os
 import django
+import select
+import ipaddress
 from django.db.models import F
+from django.db import close_old_connections
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
@@ -17,228 +20,324 @@ from apps.blocklist.models import BlockedDomain, BlockedIP, BlockedPort, BlockRu
 
 BUFFER_SIZE = 65536 * 2
 
+# Performance tuning
+MAX_CONNECTIONS = 1000
+CLIENT_HEADER_TIMEOUT = 10
+IDLE_TUNNEL_TIMEOUT = 120
 
+_active_connections = 0
+_conn_lock = threading.Lock()
+
+
+# =========================================================
+# SSRF protection
+# =========================================================
+def is_private_host(host):
+    try:
+        ip = ipaddress.ip_address(socket.gethostbyname(host))
+        return (
+            ip.is_private
+            or ip.is_loopback
+            or ip.is_link_local
+            or ip.is_reserved
+            or ip.is_multicast
+        )
+    except Exception:
+        return False
+
+
+# =========================================================
+# Blocklist checker
+# =========================================================
+def check_blocklist(hostname, src_ip=None, dest_ip=None, src_port=None, dest_port=None):
+    """
+    Check all blocklist rules. Returns (is_blocked, block_reason, block_type).
+    """
+    try:
+        close_old_connections()
+
+        # 1. Check domain blocklist
+        domain_blocked, domain_rule = BlockedDomain.is_blocked(hostname)
+        if domain_blocked:
+            reason = f"Domain blocked: {domain_rule.domain}"
+            if domain_rule.reason:
+                reason += f" ({domain_rule.reason})"
+            return True, reason, 'domain'
+
+        # 2. Check source IP blocklist
+        if src_ip:
+            ip_blocked, ip_rule = BlockedIP.is_blocked(src_ip, 'source')
+            if ip_blocked:
+                reason = f"Source IP blocked: {ip_rule.ip_address}"
+                if ip_rule.reason:
+                    reason += f" ({ip_rule.reason})"
+                return True, reason, 'source_ip'
+
+        # 3. Check destination IP blocklist
+        if dest_ip:
+            ip_blocked, ip_rule = BlockedIP.is_blocked(dest_ip, 'destination')
+            if ip_blocked:
+                reason = f"Destination IP blocked: {ip_rule.ip_address}"
+                if ip_rule.reason:
+                    reason += f" ({ip_rule.reason})"
+                return True, reason, 'dest_ip'
+
+        # 4. Check destination port blocklist
+        if dest_port:
+            port_blocked, port_rule = BlockedPort.is_blocked(dest_port, 'destination')
+            if port_blocked:
+                reason = f"Port blocked: {port_rule.port}"
+                if port_rule.reason:
+                    reason += f" ({port_rule.reason})"
+                return True, reason, 'port'
+
+        # 5. Check source port blocklist
+        if src_port:
+            port_blocked, port_rule = BlockedPort.is_blocked(src_port, 'source')
+            if port_blocked:
+                reason = f"Source port blocked: {port_rule.port}"
+                if port_rule.reason:
+                    reason += f" ({port_rule.reason})"
+                return True, reason, 'source_port'
+
+        # 6. Check combined firewall rules
+        action, rule = BlockRule.check_request(
+            hostname=hostname,
+            source_ip=src_ip,
+            dest_ip=dest_ip,
+            source_port=src_port,
+            dest_port=dest_port
+        )
+        if action == 'block':
+            reason = f"Rule blocked: {rule.name}"
+            if rule.reason:
+                reason += f" ({rule.reason})"
+            return True, reason, 'rule'
+
+        return False, None, None
+
+    except Exception as e:
+        print(f"[BLOCKLIST ERROR] {e}")
+        return False, None, None
+
+
+# =========================================================
+# Database logging
+# =========================================================
+def log_request(method, hostname, url, src_ip, src_port, dest_ip, dest_port,
+                status_code, content_length, response_time, blocked,
+                block_reason=None, block_type=None):
+    """Log request to database and broadcast via WebSocket."""
+    try:
+        close_old_connections()
+
+        req = ProxyRequest.objects.create(
+            method=method,
+            hostname=hostname,
+            url=url or hostname,
+            source_ip=src_ip,
+            source_port=src_port,
+            destination_ip=dest_ip or '',
+            destination_port=dest_port or 0,
+            status_code=status_code,
+            content_length=content_length or 0,
+            response_time=round(response_time, 3),
+            blocked=blocked,
+            block_reason=block_reason or '',
+            block_type=block_type or '',
+        )
+
+        # Update domain stats
+        DomainStats.objects.update_or_create(
+            domain=hostname,
+            defaults={}
+        )
+        stats_update = {'request_count': F('request_count') + 1}
+        if blocked:
+            stats_update['blocked_count'] = F('blocked_count') + 1
+        if content_length:
+            stats_update['total_bytes'] = F('total_bytes') + content_length
+        DomainStats.objects.filter(domain=hostname).update(**stats_update)
+
+        # Broadcast via WebSocket
+        try:
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'proxy_updates',
+                {
+                    'type': 'proxy_request',
+                    'data': {
+                        'id': str(req.id),
+                        'method': method,
+                        'hostname': hostname,
+                        'url': url or hostname,
+                        'status_code': status_code,
+                        'blocked': blocked,
+                        'block_reason': block_reason or '',
+                        'response_time': round(response_time, 3),
+                        'source_ip': src_ip,
+                        'timestamp': req.timestamp.isoformat() if req.timestamp else '',
+                    }
+                }
+            )
+        except Exception:
+            pass
+
+    except Exception as e:
+        print(f"[LOG ERROR] {e}")
+
+
+# =========================================================
+# Proxy Server
+# =========================================================
 class ProxyServer:
     def __init__(self, host='0.0.0.0', port=8088):
         self.host = host
         self.port = int(port)
         self.channel_layer = get_channel_layer()
 
-    def load_blocklist(self):
-        """Load and display blocklist stats"""
-        try:
-            domain_count = BlockedDomain.objects.filter(is_active=True).count()
-            ip_count = BlockedIP.objects.filter(is_active=True).count()
-            port_count = BlockedPort.objects.filter(is_active=True).count()
-            rule_count = BlockRule.objects.filter(is_active=True).count()
-
-            print(f"\n📋 Blocklist Loaded:")
-            print(f"   🌐 Blocked Domains: {domain_count}")
-            print(f"   🔢 Blocked IPs: {ip_count}")
-            print(f"   🚪 Blocked Ports: {port_count}")
-            print(f"   📜 Custom Rules: {rule_count}")
-
-            # Show blocked domains
-            domains = BlockedDomain.objects.filter(is_active=True)[:5]
-            if domains:
-                print(f"\n   Blocked Domains (top 5):")
-                for d in domains:
-                    print(f"      - {d.domain} [{d.category}]")
-
-            # Show blocked IPs
-            ips = BlockedIP.objects.filter(is_active=True)[:5]
-            if ips:
-                print(f"\n   Blocked IPs (top 5):")
-                for ip in ips:
-                    cidr = f"/{ip.cidr_prefix}" if ip.cidr_prefix else ""
-                    print(f"      - {ip.ip_address}{cidr} ({ip.ip_type})")
-
-            # Show blocked ports
-            ports = BlockedPort.objects.filter(is_active=True)[:5]
-            if ports:
-                print(f"\n   Blocked Ports (top 5):")
-                for p in ports:
-                    port_range = f"{p.port}-{p.port_end}" if p.port_end else str(p.port)
-                    print(f"      - {port_range} ({p.port_type}, {p.protocol})")
-
-            # Show custom rules
-            rules = BlockRule.objects.filter(is_active=True).order_by('priority')[:5]
-            if rules:
-                print(f"\n   Custom Rules (top 5):")
-                print(f"   {'Pri':<5} {'Name':<30} {'Action':<8}")
-                print(f"   {'-'*50}")
-                for r in rules:
-                    print(f"   {r.priority:<5} {r.name[:29]:<30} {r.action.upper():<8}")
-
-        except Exception as e:
-            print(f"Error loading blocklist: {e}")
-
-    def check_blocked(self, hostname, src_ip, dst_ip, src_port, dst_port):
-        """
-        Check all blocking rules in order:
-        1. Custom Rules (priority-based, can allow or block)
-        2. Blocked Domains
-        3. Blocked IPs (source and destination)
-        4. Blocked Ports (source and destination)
-        
-        Returns: (is_blocked, block_type, reason, rule)
-        """
-        try:
-            # 1. Check Custom Rules first (priority-based)
-            action, rule = BlockRule.check_request(
-                hostname=hostname,
-                source_ip=src_ip,
-                dest_ip=dst_ip,
-                source_port=src_port,
-                dest_port=dst_port
-            )
-
-            if action == 'allow':
-                # Explicit allow - skip all other checks
-                print(f"✅ ALLOWED by rule: {rule.name}")
-                return False, None, None, None
-            elif action == 'block':
-                reason = rule.reason or f"Blocked by rule: {rule.name}"
-                return True, 'rule', reason, rule
-            elif action == 'log':
-                # Log only - don't block but record
-                print(f"📝 LOGGED by rule: {rule.name}")
-
-            # 2. Check Domain blocking
-            if hostname:
-                is_blocked, domain_rule = BlockedDomain.is_blocked(hostname)
-                if is_blocked:
-                    reason = domain_rule.reason or f"Domain blocked: {hostname}"
-                    return True, 'domain', reason, domain_rule
-
-            # 3. Check Source IP blocking
-            if src_ip:
-                is_blocked, ip_rule = BlockedIP.is_blocked(src_ip, 'source')
-                if is_blocked:
-                    reason = ip_rule.reason or f"Source IP blocked: {src_ip}"
-                    return True, 'src_ip', reason, ip_rule
-
-            # 4. Check Destination IP blocking
-            if dst_ip:
-                is_blocked, ip_rule = BlockedIP.is_blocked(dst_ip, 'destination')
-                if is_blocked:
-                    reason = ip_rule.reason or f"Destination IP blocked: {dst_ip}"
-                    return True, 'dst_ip', reason, ip_rule
-
-            # 5. Check Source Port blocking
-            if src_port:
-                try:
-                    is_blocked, port_rule = BlockedPort.is_blocked(int(src_port), 'source')
-                    if is_blocked:
-                        reason = port_rule.reason or f"Source port blocked: {src_port}"
-                        return True, 'src_port', reason, port_rule
-                except (ValueError, TypeError):
-                    pass
-
-            # 6. Check Destination Port blocking
-            if dst_port:
-                try:
-                    is_blocked, port_rule = BlockedPort.is_blocked(int(dst_port), 'destination')
-                    if is_blocked:
-                        reason = port_rule.reason or f"Destination port blocked: {dst_port}"
-                        return True, 'dst_port', reason, port_rule
-                except (ValueError, TypeError):
-                    pass
-
-        except Exception as e:
-            print(f"Error checking blocklist: {e}")
-
-        return False, None, None, None
-
     def start(self):
-        """Start the proxy server"""
-        self.load_blocklist()
-        srv = None
+        srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        srv.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
+        srv.bind((self.host, self.port))
+        srv.listen(500)
+
+        print(f"\n{'='*60}")
+        print(f"  PROXY SERVER STARTED")
+        print(f"  Listening on: {self.host}:{self.port}")
+        print(f"  Blocklist enforcement: ENABLED")
+        print(f"  Max connections: {MAX_CONNECTIONS}")
+        print(f"{'='*60}\n")
+
+        # Show blocklist stats on startup
         try:
-            srv = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-            srv.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
-            srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            bind_host = '::' if self.host == '0.0.0.0' else self.host
-            srv.bind((bind_host, self.port))
-            print(f"\n{'='*60}")
-            print(f"  🌐 PROXY SERVER STARTED (Dual Stack IPv4/IPv6)")
-            print(f"  📍 Listening on: {self.host}:{self.port}")
+            print(f"  Blocked domains:  {BlockedDomain.objects.filter(is_active=True).count()}")
+            print(f"  Blocked IPs:      {BlockedIP.objects.filter(is_active=True).count()}")
+            print(f"  Blocked ports:    {BlockedPort.objects.filter(is_active=True).count()}")
+            print(f"  Firewall rules:   {BlockRule.objects.filter(is_active=True).count()}")
             print(f"{'='*60}\n")
-        except Exception as e:
-            print(f"⚠️ IPv6 dual-stack failed ({e}), using IPv4...")
-            if srv:
-                srv.close()
-            srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            srv.bind((self.host, self.port))
-            print(f"\n{'='*60}")
-            print(f"  🌐 PROXY SERVER STARTED (IPv4)")
-            print(f"  📍 Listening on: {self.host}:{self.port}")
-            print(f"{'='*60}\n")
-
-        srv.listen(200)
+        except Exception:
+            pass
 
         while True:
             try:
                 client, addr = srv.accept()
-                threading.Thread(target=self.handle_client, args=(client, addr), daemon=True).start()
+
+                if not self._acquire_slot():
+                    client.close()
+                    continue
+
+                client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+                threading.Thread(
+                    target=self.handle_client,
+                    args=(client, addr),
+                    daemon=True
+                ).start()
+
             except KeyboardInterrupt:
-                print("\n🛑 Proxy server shutting down...")
                 break
-            except Exception as e:
-                print(f"Accept error: {e}")
 
+    def _acquire_slot(self):
+        global _active_connections
+        with _conn_lock:
+            if _active_connections >= MAX_CONNECTIONS:
+                return False
+            _active_connections += 1
+            return True
+
+    def _release_slot(self):
+        global _active_connections
+        with _conn_lock:
+            _active_connections -= 1
+
+    # ---------------------------------------------------------
+    # CLIENT HANDLER
+    # ---------------------------------------------------------
     def handle_client(self, client, addr):
-        """Handle incoming client connection"""
         start = time.time()
-
-        if len(addr) == 2:
-            src_ip, src_port = addr
-        else:
-            src_ip, src_port = addr[0], addr[1]
-
-        # Normalize IPv6-mapped IPv4
-        if isinstance(src_ip, str) and src_ip.startswith('::ffff:'):
-            src_ip = src_ip[7:]
+        peer_ip, src_port = addr[0], addr[1]
 
         try:
-            client.settimeout(30)
+            client.settimeout(CLIENT_HEADER_TIMEOUT)
+
             data = client.recv(BUFFER_SIZE)
             if not data:
-                client.close()
                 return
 
-            try:
-                first_line = data.split(b'\r\n')[0].decode('utf-8', errors='ignore')
-                parts = first_line.split()
-                if len(parts) < 2:
-                    client.close()
-                    return
-                method = parts[0]
-                target = parts[1]
-            except Exception as e:
-                print(f"Parse error: {e}")
-                client.close()
+            first_line = data.split(b'\r\n')[0].decode(errors='ignore')
+            parts = first_line.split()
+            if len(parts) < 2:
                 return
+
+            method = parts[0]
+            target = parts[1]
 
             if method == 'CONNECT':
-                self.handle_connect(client, target, src_ip, src_port, start)
+                self.handle_connect(client, target, peer_ip, src_port, start)
             else:
-                self.handle_http(client, data, method, target, src_ip, src_port, start)
+                self.handle_http(client, data, method, target, peer_ip, src_port, start)
 
         except socket.timeout:
             pass
-        except Exception as e:
-            print(f"Client error: {e}")
+        except Exception:
+            pass
         finally:
             try:
                 client.close()
             except:
                 pass
+            self._release_slot()
 
+    # ---------------------------------------------------------
+    # TUNNEL
+    # ---------------------------------------------------------
+    def tunnel(self, client, server):
+        sockets = [client, server]
+        last_activity = time.time()
+
+        try:
+            while True:
+                readable, _, exceptional = select.select(
+                    sockets, [], sockets, 10
+                )
+
+                now = time.time()
+
+                if now - last_activity > IDLE_TUNNEL_TIMEOUT:
+                    break
+
+                if exceptional:
+                    break
+
+                if not readable:
+                    continue
+
+                for sock in readable:
+                    data = sock.recv(BUFFER_SIZE)
+                    if not data:
+                        return
+
+                    last_activity = now
+
+                    if sock is client:
+                        server.sendall(data)
+                    else:
+                        client.sendall(data)
+
+        finally:
+            try:
+                server.close()
+            except:
+                pass
+
+    # ---------------------------------------------------------
+    # CONNECT (HTTPS)
+    # ---------------------------------------------------------
     def handle_connect(self, client, target, src_ip, src_port, start):
-        """Handle HTTPS CONNECT requests"""
+        server = None
         try:
             if ':' in target:
                 host, port = target.split(':')
@@ -247,363 +346,253 @@ class ProxyServer:
                 host = target
                 port = 443
 
-            # Resolve destination IP
-            try:
-                dst_ip = socket.gethostbyname(host)
-            except:
-                dst_ip = "0.0.0.0"
-
-            # Check blocking rules
-            is_blocked, block_type, reason, rule = self.check_blocked(
+            # --- BLOCKLIST CHECK ---
+            is_blocked, block_reason, block_type = check_blocklist(
                 hostname=host,
                 src_ip=src_ip,
-                dst_ip=dst_ip,
+                dest_port=port,
                 src_port=src_port,
-                dst_port=port
             )
 
             if is_blocked:
-                print(f"🚫 BLOCKED [{block_type}]: {src_ip}:{src_port} → {dst_ip}:{port} ({host})")
-                print(f"   Reason: {reason}")
-                self.send_blocked(client, host, reason)
-                self.log('CONNECT', host, 403, True, start, src_ip, src_port, dst_ip, port, 0, block_type)
-                client.close()
+                client.sendall(b'HTTP/1.1 403 Forbidden\r\n'
+                              b'Content-Type: text/plain\r\n'
+                              b'Connection: close\r\n\r\n'
+                              b'Blocked by proxy policy')
+                elapsed = time.time() - start
+                log_request(
+                    method='CONNECT', hostname=host, url=target,
+                    src_ip=src_ip, src_port=src_port,
+                    dest_ip=None, dest_port=port,
+                    status_code=403, content_length=0,
+                    response_time=elapsed, blocked=True,
+                    block_reason=block_reason, block_type=block_type,
+                )
+                print(f"  [BLOCKED] CONNECT {host}:{port} from {src_ip} - {block_reason}")
                 return
 
-            # Connect to target
-            server = socket.create_connection((host, port), timeout=15)
+            # --- SSRF protection ---
+            if is_private_host(host):
+                client.sendall(b'HTTP/1.1 403 Forbidden\r\n\r\n')
+                elapsed = time.time() - start
+                log_request(
+                    method='CONNECT', hostname=host, url=target,
+                    src_ip=src_ip, src_port=src_port,
+                    dest_ip=None, dest_port=port,
+                    status_code=403, content_length=0,
+                    response_time=elapsed, blocked=True,
+                    block_reason='Private/internal host blocked (SSRF)',
+                    block_type='ssrf',
+                )
+                return
 
-            try:
-                dst_info = server.getpeername()
-                dst_ip, dst_port = dst_info[0], dst_info[1]
-            except:
-                dst_ip, dst_port = host, port
+            # --- CONNECT to remote ---
+            server = socket.create_connection((host, port), timeout=10)
+            server.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+            # Get resolved destination IP
+            dest_ip = server.getpeername()[0] if server else None
+
+            # Check destination IP blocklist after DNS resolution
+            if dest_ip:
+                ip_blocked, ip_reason, ip_type = check_blocklist(
+                    hostname=host,
+                    src_ip=src_ip,
+                    dest_ip=dest_ip,
+                    dest_port=port,
+                    src_port=src_port,
+                )
+                if ip_blocked and ip_type in ('dest_ip',):
+                    server.close()
+                    client.sendall(b'HTTP/1.1 403 Forbidden\r\n\r\n'
+                                  b'Blocked by proxy policy')
+                    elapsed = time.time() - start
+                    log_request(
+                        method='CONNECT', hostname=host, url=target,
+                        src_ip=src_ip, src_port=src_port,
+                        dest_ip=dest_ip, dest_port=port,
+                        status_code=403, content_length=0,
+                        response_time=elapsed, blocked=True,
+                        block_reason=ip_reason, block_type=ip_type,
+                    )
+                    print(f"  [BLOCKED] CONNECT {host}:{port} dest_ip={dest_ip} - {ip_reason}")
+                    return
 
             client.sendall(b'HTTP/1.1 200 Connection Established\r\n\r\n')
-            self.log('CONNECT', host, 200, False, start, src_ip, src_port, dst_ip, dst_port, 0, None)
 
-            client.settimeout(None)
-            server.settimeout(None)
+            # Log allowed connection
+            elapsed = time.time() - start
+            log_request(
+                method='CONNECT', hostname=host, url=target,
+                src_ip=src_ip, src_port=src_port,
+                dest_ip=dest_ip, dest_port=port,
+                status_code=200, content_length=0,
+                response_time=elapsed, blocked=False,
+            )
 
-            def forward(source, destination):
-                try:
-                    while True:
-                        data = source.recv(BUFFER_SIZE)
-                        if not data:
-                            break
-                        destination.sendall(data)
-                except:
-                    pass
-                finally:
-                    try:
-                        source.close()
-                    except:
-                        pass
-                    try:
-                        destination.close()
-                    except:
-                        pass
-
-            t1 = threading.Thread(target=forward, args=(client, server), daemon=True)
-            t2 = threading.Thread(target=forward, args=(server, client), daemon=True)
-            t1.start()
-            t2.start()
-            t1.join()
-            t2.join()
+            self.tunnel(client, server)
 
         except Exception as e:
-            print(f"CONNECT error: {e}")
             try:
                 client.sendall(b'HTTP/1.1 502 Bad Gateway\r\n\r\n')
             except:
                 pass
+            # Log error
+            elapsed = time.time() - start
+            try:
+                host_name = target.split(':')[0] if ':' in target else target
+                log_request(
+                    method='CONNECT', hostname=host_name, url=target,
+                    src_ip=src_ip, src_port=src_port,
+                    dest_ip=None, dest_port=443,
+                    status_code=502, content_length=0,
+                    response_time=elapsed, blocked=False,
+                )
+            except:
+                pass
+        finally:
+            try:
+                if server:
+                    server.close()
+            except:
+                pass
 
+    # ---------------------------------------------------------
+    # HTTP (plain)
+    # ---------------------------------------------------------
     def handle_http(self, client, data, method, target, src_ip, src_port, start):
-        """Handle HTTP requests"""
+        server = None
         try:
             if target.startswith('http://'):
-                target = target[7:]
-
-            if '/' in target:
-                host_part, path = target.split('/', 1)
-                path = '/' + path
+                target_clean = target[7:]
             else:
-                host_part = target
-                path = '/'
+                target_clean = target
 
-            if ':' in host_part:
-                host, port = host_part.split(':')
+            host = target_clean.split('/')[0]
+            path = '/' + '/'.join(target_clean.split('/')[1:]) if '/' in target_clean else '/'
+            port = 80
+
+            if ':' in host:
+                host, port = host.rsplit(':', 1)
                 port = int(port)
-            else:
-                host = host_part
-                port = 80
 
-            # Resolve destination IP
-            try:
-                dst_ip = socket.gethostbyname(host)
-            except:
-                dst_ip = "0.0.0.0"
-
-            # Check blocking rules
-            is_blocked, block_type, reason, rule = self.check_blocked(
+            # --- BLOCKLIST CHECK ---
+            is_blocked, block_reason, block_type = check_blocklist(
                 hostname=host,
                 src_ip=src_ip,
-                dst_ip=dst_ip,
+                dest_port=port,
                 src_port=src_port,
-                dst_port=port
             )
 
             if is_blocked:
-                print(f"🚫 BLOCKED [{block_type}]: {src_ip}:{src_port} → {dst_ip}:{port} ({host})")
-                print(f"   Reason: {reason}")
-                self.send_blocked(client, host, reason)
-                self.log(method, host, 403, True, start, src_ip, src_port, dst_ip, port, 0, block_type)
-                client.close()
+                block_response = (
+                    b'HTTP/1.1 403 Forbidden\r\n'
+                    b'Content-Type: text/html\r\n'
+                    b'Connection: close\r\n\r\n'
+                    b'<html><body><h1>403 Forbidden</h1>'
+                    b'<p>This site has been blocked by proxy policy.</p>'
+                    b'</body></html>'
+                )
+                client.sendall(block_response)
+                elapsed = time.time() - start
+                log_request(
+                    method=method, hostname=host, url=target,
+                    src_ip=src_ip, src_port=src_port,
+                    dest_ip=None, dest_port=port,
+                    status_code=403, content_length=0,
+                    response_time=elapsed, blocked=True,
+                    block_reason=block_reason, block_type=block_type,
+                )
+                print(f"  [BLOCKED] {method} {host}{path} from {src_ip} - {block_reason}")
                 return
 
-            # Modify request - change Connection header
-            str_data = data.decode('iso-8859-1')
-            if 'Connection: keep-alive' in str_data:
-                str_data = str_data.replace('Connection: keep-alive', 'Connection: close')
-            elif 'Connection: close' not in str_data:
-                idx = str_data.find('\r\n\r\n')
-                if idx != -1:
-                    str_data = str_data[:idx] + '\r\nConnection: close' + str_data[idx:]
-            data = str_data.encode('iso-8859-1')
+            # --- SSRF protection ---
+            if is_private_host(host):
+                client.sendall(b'HTTP/1.1 403 Forbidden\r\n\r\n')
+                elapsed = time.time() - start
+                log_request(
+                    method=method, hostname=host, url=target,
+                    src_ip=src_ip, src_port=src_port,
+                    dest_ip=None, dest_port=port,
+                    status_code=403, content_length=0,
+                    response_time=elapsed, blocked=True,
+                    block_reason='Private/internal host blocked (SSRF)',
+                    block_type='ssrf',
+                )
+                return
 
-            # Connect to target server
-            server = socket.create_connection((host, port), timeout=15)
+            # --- Forward request ---
+            server = socket.create_connection((host, port), timeout=10)
+            server.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
-            try:
-                dst_info = server.getpeername()
-                dst_ip, dst_port = dst_info[0], dst_info[1]
-            except:
-                dst_ip, dst_port = host, port
+            dest_ip = server.getpeername()[0] if server else None
 
-            # Send request
             server.sendall(data)
 
-            # Receive and forward response
-            total_size = 0
-            while True:
-                response = server.recv(BUFFER_SIZE)
-                if not response:
-                    break
-                total_size += len(response)
-                client.sendall(response)
+            response_data = b''
+            content_length = 0
+            status_code = 0
 
-            server.close()
-            self.log(method, host, 200, False, start, src_ip, src_port, dst_ip, dst_port, total_size, None)
+            while True:
+                try:
+                    server.settimeout(10)
+                    response = server.recv(BUFFER_SIZE)
+                    if not response:
+                        break
+                    if not response_data:
+                        # Parse status from first chunk
+                        try:
+                            status_line = response.split(b'\r\n')[0].decode(errors='ignore')
+                            status_parts = status_line.split()
+                            if len(status_parts) >= 2:
+                                status_code = int(status_parts[1])
+                        except:
+                            pass
+                    response_data += response
+                    content_length += len(response)
+                    client.sendall(response)
+                except socket.timeout:
+                    break
+
+            elapsed = time.time() - start
+            log_request(
+                method=method, hostname=host, url=target,
+                src_ip=src_ip, src_port=src_port,
+                dest_ip=dest_ip, dest_port=port,
+                status_code=status_code or 200, content_length=content_length,
+                response_time=elapsed, blocked=False,
+            )
 
         except Exception as e:
-            print(f"HTTP error: {e}")
             try:
                 client.sendall(b'HTTP/1.1 502 Bad Gateway\r\n\r\n')
             except:
                 pass
-
-    def send_blocked(self, client, host, reason=""):
-        """Send blocked page to client"""
-        body = f'''<!DOCTYPE html>
-<html>
-<head>
-    <title>Access Blocked</title>
-    <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }}
-        .container {{
-            text-align: center;
-            padding: 50px;
-            background: rgba(30, 41, 59, 0.95);
-            border-radius: 24px;
-            border: 1px solid #334155;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-width: 500px;
-            margin: 20px;
-        }}
-        .icon {{ 
-            font-size: 80px; 
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }}
-        @keyframes pulse {{
-            0%, 100% {{ transform: scale(1); }}
-            50% {{ transform: scale(1.1); }}
-        }}
-        h1 {{ 
-            color: #ef4444; 
-            margin-bottom: 10px; 
-            font-size: 32px;
-            font-weight: 700;
-        }}
-        p {{ 
-            color: #94a3b8; 
-            font-size: 16px; 
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }}
-        .domain {{
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            padding: 15px 30px;
-            border-radius: 12px;
-            display: inline-block;
-            font-family: 'SF Mono', Monaco, monospace;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-        }}
-        .reason {{
-            padding: 15px 20px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 10px;
-            color: #fca5a5;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }}
-        .reason strong {{
-            color: #f87171;
-        }}
-        .footer {{ 
-            color: #64748b; 
-            font-size: 12px;
-            border-top: 1px solid #334155;
-            padding-top: 20px;
-            margin-top: 10px;
-        }}
-        .info {{
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 15px;
-            font-size: 11px;
-            color: #475569;
-        }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="icon">🚫</div>
-        <h1>Access Blocked</h1>
-        <p>This website has been blocked by your network administrator.</p>
-        <div class="domain">{host}</div>
-        <div class="reason">
-            <strong>Reason:</strong> {reason or 'Policy violation'}
-        </div>
-        <div class="footer">
-            If you believe this is an error, please contact your network administrator.
-            <div class="info">
-                <span>ProxyMonitor</span>
-                <span>•</span>
-                <span>{time.strftime('%Y-%m-%d %H:%M:%S')}</span>
-            </div>
-        </div>
-    </div>
-</body>
-</html>'''
-        try:
-            response = f'HTTP/1.1 403 Forbidden\r\n'
-            response += f'Content-Type: text/html; charset=utf-8\r\n'
-            response += f'Content-Length: {len(body.encode("utf-8"))}\r\n'
-            response += f'Connection: close\r\n'
-            response += f'X-Blocked-By: ProxyMonitor\r\n'
-            response += f'\r\n'
-            response += body
-            client.sendall(response.encode('utf-8'))
-        except:
-            pass
-
-    def log(self, method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size, block_type):
-        """Log request asynchronously"""
-        threading.Thread(
-            target=self._log_db,
-            args=(method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size, block_type),
-            daemon=True
-        ).start()
-
-    def _log_db(self, method, host, status, blocked, start, src_ip, src_port, dst_ip, dst_port, size, block_type):
-        """Save request to database"""
-        try:
-            # Console log
-            icon = '🚫' if blocked else '✅'
-            block_info = f" [{block_type}]" if block_type else ""
-            elapsed = int((time.time() - start) * 1000)
-            print(f"{icon} {method:8} {host[:40]:40} {src_ip}:{src_port} → {dst_ip}:{dst_port} {elapsed}ms{block_info}")
-
-            # Update domain stats
-            stats, created = DomainStats.objects.get_or_create(
-                hostname=host,
-                defaults={
-                    'request_count': 0,
-                    'total_bytes': 0,
-                    'blocked_count': 0
-                }
-            )
-            DomainStats.objects.filter(hostname=host).update(
-                request_count=F('request_count') + 1,
-                total_bytes=F('total_bytes') + size,
-                blocked_count=F('blocked_count') + (1 if blocked else 0)
-            )
-
-            # Create request log
-            req = ProxyRequest.objects.create(
-                method=method,
-                url=f"https://{host}" if method == 'CONNECT' else f"http://{host}",
-                hostname=host,
-                status_code=status,
-                blocked=blocked,
-                response_time=elapsed,
-                content_length=size,
-                source_ip=src_ip,
-                source_port=int(src_port),
-                destination_ip=str(dst_ip),
-                destination_port=int(dst_port)
-            )
-
-            # Send WebSocket notification
-            self.notify(req)
-
-        except Exception as e:
-            print(f"Log Error: {e}")
-
-    def notify(self, req):
-        """Send WebSocket notification for real-time updates"""
-        try:
-            from apps.dashboard.serializers import ProxyRequestListSerializer
-            data = ProxyRequestListSerializer(req).data
-            data['id'] = str(data['id'])
-            async_to_sync(self.channel_layer.group_send)(
-                'dashboard',
-                {
-                    'type': 'new_request',
-                    'request': data
-                }
-            )
-        except Exception as e:
-            pass
+            elapsed = time.time() - start
+            try:
+                host_name = target.split('/')[0] if '/' in target else target
+                if host_name.startswith('http://'):
+                    host_name = host_name[7:]
+                log_request(
+                    method=method, hostname=host_name, url=target,
+                    src_ip=src_ip, src_port=src_port,
+                    dest_ip=None, dest_port=80,
+                    status_code=502, content_length=0,
+                    response_time=elapsed, blocked=False,
+                )
+            except:
+                pass
+        finally:
+            try:
+                if server:
+                    server.close()
+            except:
+                pass
 
 
 def run_proxy(port=8088):
-    """Start the proxy server"""
-    server = ProxyServer(port=port)
-    server.start()
+    ProxyServer(port=port).start()
 
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='ProxyMonitor - Proxy Server')
-    parser.add_argument('--host', type=str, default='0.0.0.0', help='Host to bind')
-    parser.add_argument('--port', type=int, default=8088, help='Port to bind')
-    args = parser.parse_args()
-    
-    server = ProxyServer(host=args.host, port=args.port)
-    server.start()
+    ProxyServer().start()

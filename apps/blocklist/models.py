@@ -34,16 +34,22 @@ class BlockedDomain(models.Model):
         verbose_name_plural = 'Blocked Domains'
 
     def __str__(self):
-        return f"{self.domain} ({self.category})"
+        prefix = "🔴" if self.is_active else "⚪"
+        wild = " [wildcard]" if self.is_wildcard else ""
+        return f"{prefix} {self.domain}{wild}"
 
     def save(self, *args, **kwargs):
+        self.domain = self.domain.lower().strip().rstrip('.')
         self.is_wildcard = '*' in self.domain or self.domain.startswith('.')
-        self.domain = self.domain.lower().strip()
+
+        if self.domain.count('*') > 2:
+            raise ValueError("Too many wildcards in domain rule")
+
         super().save(*args, **kwargs)
 
     def matches(self, hostname):
-        hostname = hostname.lower().strip()
-        domain = self.domain.lower().strip()
+        hostname = hostname.lower().strip().rstrip('.')
+        domain = self.domain.lower().strip().rstrip('.')
 
         if not self.is_wildcard:
             return hostname == domain or hostname.endswith('.' + domain)
@@ -226,22 +232,22 @@ class BlockedPort(models.Model):
 class BlockRule(models.Model):
     """Combined blocking rules - Firewall style"""
     name = models.CharField(max_length=255)
-    
+
     # Domain matching
     domain_pattern = models.CharField(max_length=255, blank=True, null=True)
-    
+
     # IP matching
     source_ip = models.CharField(max_length=45, blank=True, null=True)
     source_ip_cidr = models.IntegerField(null=True, blank=True)
     dest_ip = models.CharField(max_length=45, blank=True, null=True)
     dest_ip_cidr = models.IntegerField(null=True, blank=True)
-    
+
     # Port matching
     source_port_start = models.IntegerField(null=True, blank=True)
     source_port_end = models.IntegerField(null=True, blank=True)
     dest_port_start = models.IntegerField(null=True, blank=True)
     dest_port_end = models.IntegerField(null=True, blank=True)
-    
+
     # Rule metadata
     priority = models.IntegerField(default=100)
     action = models.CharField(max_length=20, default='block', choices=[

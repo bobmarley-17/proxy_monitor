@@ -6,8 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'dev-key-change-in-production')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 INSTALLED_APPS = [
     'daphne',
@@ -56,7 +56,8 @@ TEMPLATES = [{
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
-# Database
+# ================= DATABASE =================
+
 DB_ENGINE = os.getenv('DB_ENGINE', 'django.db.backends.sqlite3')
 
 if 'mysql' in DB_ENGINE:
@@ -69,7 +70,7 @@ if 'mysql' in DB_ENGINE:
             'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '3306'),
             'OPTIONS': {'charset': 'utf8mb4'},
-            'CONN_MAX_AGE': 600,
+            'CONN_MAX_AGE': 300,  # 🔥 increased
         }
     }
 else:
@@ -79,6 +80,30 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+# ================= CACHE (NEW — BIG WIN) =================
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'proxy-monitor-cache',
+        'TIMEOUT': 60,
+    }
+}
+
+# Use in-memory cache (zero setup, works immediately)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'proxy-dashboard',
+        'TIMEOUT': 60,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
+}
+
+# ================= CHANNELS =================
 
 CHANNEL_LAYERS = {
     'default': {
@@ -95,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50,
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication'],
 }
 
@@ -113,11 +138,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PROXY_PORT = int(os.getenv('PROXY_PORT', 8088))
 
-# DNS Configuration
 DNS_SERVERS = ['10.103.32.32']
 DNS_TIMEOUT = 5
 
-# Login Settings
 LOGIN_URL = 'dashboard:login'
 LOGIN_REDIRECT_URL = 'dashboard:index'
 LOGOUT_REDIRECT_URL = 'dashboard:login'
