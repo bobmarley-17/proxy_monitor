@@ -149,7 +149,7 @@ def log_request(method, hostname, url, src_ip, src_port, dest_ip, dest_port,
 
         # Update domain stats
         DomainStats.objects.update_or_create(
-            domain=hostname,
+            hostname=hostname,
             defaults={}
         )
         stats_update = {'request_count': F('request_count') + 1}
@@ -157,7 +157,7 @@ def log_request(method, hostname, url, src_ip, src_port, dest_ip, dest_port,
             stats_update['blocked_count'] = F('blocked_count') + 1
         if content_length:
             stats_update['total_bytes'] = F('total_bytes') + content_length
-        DomainStats.objects.filter(domain=hostname).update(**stats_update)
+        DomainStats.objects.filter(hostname=hostname).update(**stats_update)
 
         # Broadcast via WebSocket
         try:
@@ -292,23 +292,28 @@ class ProxyServer:
             self._release_slot()
 
     # ---------------------------------------------------------
-    # TUNNEL
+    # TUNNEL (with byte tracking & error handling)
     # ---------------------------------------------------------
     def tunnel(self, client, server):
+        """Tunnel data between client and server. Returns bytes transferred."""
         sockets = [client, server]
         last_activity = time.time()
+        total_bytes = 0
 
         try:
             while True:
+                # Wait for data on either socket
                 readable, _, exceptional = select.select(
                     sockets, [], sockets, 10
                 )
 
                 now = time.time()
 
+                # Idle timeout
                 if now - last_activity > IDLE_TUNNEL_TIMEOUT:
                     break
 
+                # Exceptional sockets (errors)
                 if exceptional:
                     break
 
@@ -316,23 +321,44 @@ class ProxyServer:
                     continue
 
                 for sock in readable:
-                    data = sock.recv(BUFFER_SIZE)
-                    if not data:
-                        return
+                    try:
+                        data = sock.recv(BUFFER_SIZE)
+                    except:
+                        data = b''  # Socket error → treat as EOF
+
+                    if not data:  # EOF
+                        return total_bytes
 
                     last_activity = now
+                    total_bytes += len(data)
 
+                    # Forward data to the other side
                     if sock is client:
-                        server.sendall(data)
+                        try:
+                            server.sendall(data)
+                        except:
+                            pass  # Ignore send errors
                     else:
-                        client.sendall(data)
+                        try:
+                            client.sendall(data)
+                        except:
+                            pass  # Ignore send errors
 
+        except Exception as e:
+            print(f"[TUNNEL ERROR] {e}")
         finally:
+            # Always close both ends
             try:
                 server.close()
             except:
                 pass
+            try:
+                client.close()
+            except:
+                pass
 
+        return total_bytes
+        
     # ---------------------------------------------------------
     # CONNECT (HTTPS)
     # ---------------------------------------------------------
@@ -420,17 +446,26 @@ class ProxyServer:
 
             client.sendall(b'HTTP/1.1 200 Connection Established\r\n\r\n')
 
-            # Log allowed connection
+            # --- Tunnel with error handling ---
+            try:
+                tunnel_bytes = self.tunnel(client, server)
+                status_code = 200
+            except Exception as e:
+                tunnel_bytes = 0
+                status_code = 502
+                print(f"[TUNNEL FAILED] {e}")
+
+            # Log AFTER tunnel completes
             elapsed = time.time() - start
             log_request(
                 method='CONNECT', hostname=host, url=target,
                 src_ip=src_ip, src_port=src_port,
                 dest_ip=dest_ip, dest_port=port,
-                status_code=200, content_length=0,
-                response_time=elapsed, blocked=False,
+                status_code=status_code, 
+                content_length=tunnel_bytes,
+                response_time=elapsed, 
+                blocked=False,
             )
-
-            self.tunnel(client, server)
 
         except Exception as e:
             try:

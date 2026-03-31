@@ -10,6 +10,9 @@ class BlockedDomainSerializer(serializers.ModelSerializer):
 
 
 class BlockedIPSerializer(serializers.ModelSerializer):
+    # Override to avoid DRF IPAddressField bug with Django 5.2
+    ip_address = serializers.CharField(max_length=45)
+
     class Meta:
         model = BlockedIP
         fields = '__all__'
@@ -24,6 +27,10 @@ class BlockedPortSerializer(serializers.ModelSerializer):
 
 
 class BlockRuleSerializer(serializers.ModelSerializer):
+    # Override to avoid DRF IPAddressField bug with Django 5.2
+    source_ip = serializers.CharField(max_length=45, required=False, allow_blank=True, allow_null=True)
+    dest_ip = serializers.CharField(max_length=45, required=False, allow_blank=True, allow_null=True)
+
     class Meta:
         model = BlockRule
         fields = '__all__'
