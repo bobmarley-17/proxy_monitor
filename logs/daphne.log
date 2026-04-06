@@ -82590,3 +82590,1090 @@ Not Found: /favicon.ico
 2026-03-26 15:12:32,937 WARNING  Not Found: /favicon.ico
 Not Found: /favicon.ico
 2026-03-30 08:58:21,470 WARNING  Not Found: /favicon.ico
+2026-03-31 17:39:09,149 INFO     Killed 0 pending application instances
+10.103.28.17:51571 - - [12/Mar/2026:16:33:27] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51571 - - [12/Mar/2026:16:33:28] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:61214 - - [12/Mar/2026:16:34:36] "GET /" 200 91531
+10.103.28.17:51571 - - [12/Mar/2026:16:34:36] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61324 - - [12/Mar/2026:16:34:37] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61324 - - [12/Mar/2026:16:34:37] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:61214 - - [12/Mar/2026:16:34:38] "GET /favicon.ico" 404 6852
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:62143 - - [12/Mar/2026:16:43:28] "GET /" 200 91589
+10.103.28.17:61324 - - [12/Mar/2026:16:43:28] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61119 - - [12/Mar/2026:16:43:28] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61119 - - [12/Mar/2026:16:43:28] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:62143 - - [12/Mar/2026:16:44:40] "GET /requests/" 200 334426
+10.103.28.17:53458 - - [12/Mar/2026:16:44:41] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61119 - - [12/Mar/2026:16:44:41] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:53458 - - [12/Mar/2026:16:44:41] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:53458 - - [12/Mar/2026:17:05:08] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:55943 - - [13/Mar/2026:17:21:49] "GET /requests/" 302 -
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.28.17:55943 - - [13/Mar/2026:17:21:49] "GET /login/?next=/requests/" 200 5186
+10.103.28.17:52509 - - [16/Mar/2026:09:11:38] "GET /favicon.ico" 404 6852
+10.103.32.129:56574 - - [23/Mar/2026:12:10:47] "GET /" 302 -
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.32.129:56574 - - [23/Mar/2026:12:10:48] "GET /login/?next=/" 200 5186
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.32.129:56574 - - [23/Mar/2026:12:10:48] "GET /login/?next=/" 200 5186
+10.103.32.129:56574 - - [23/Mar/2026:12:10:50] "GET /favicon.ico" 404 6852
+10.103.28.17:53148 - - [24/Mar/2026:11:12:53] "GET /favicon.ico" 404 6852
+10.103.28.17:54607 - - [24/Mar/2026:14:32:39] "POST /login/?next=/requests/" 302 -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:54607 - - [24/Mar/2026:14:34:15] "GET /requests/" 200 335504
+10.103.28.17:54625 - - [24/Mar/2026:14:34:35] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54607 - - [24/Mar/2026:14:34:35] "GET /favicon.ico" 404 6852
+10.103.28.17:54625 - - [24/Mar/2026:14:34:35] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54625 - - [24/Mar/2026:17:02:39] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58979 - - [25/Mar/2026:09:23:31] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58979 - - [25/Mar/2026:09:23:32] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56529 - - [25/Mar/2026:09:25:15] "GET /" 200 91482
+10.103.28.17:58979 - - [25/Mar/2026:09:25:16] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:56106 - - [25/Mar/2026:09:25:16] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56106 - - [25/Mar/2026:09:25:16] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56529 - - [25/Mar/2026:09:25:16] "GET /favicon.ico" 404 6852
+10.103.28.17:56106 - - [25/Mar/2026:13:12:16] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:49956 - - [26/Mar/2026:12:28:08] "GET /" 302 -
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.28.17:49956 - - [26/Mar/2026:12:28:08] "GET /login/?next=/" 200 5186
+10.103.28.17:49956 - - [26/Mar/2026:12:28:08] "GET /favicon.ico" 404 6852
+10.103.28.17:58621 - - [26/Mar/2026:15:12:32] "GET /favicon.ico" 404 6852
+10.103.28.17:55012 - - [30/Mar/2026:08:58:21] "GET /favicon.ico" 404 6852
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.28.17:52208 - - [30/Mar/2026:12:18:36] "GET /login/?next=/" 200 5186
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.28.17:60145 - - [31/Mar/2026:14:28:22] "GET /login/?next=/" 200 5186
+2026-03-31 17:40:18,050 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-03-31 17:40:18,051 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-03-31 17:40:18,051 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-03-31 17:40:18,051 INFO     Listening on TCP address 0.0.0.0:8000
+2026-03-31 17:41:39,437 WARNING  Application instance <Task pending name='Task-11' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-14' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7fee38997650 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-03-31 17:41:40,440 WARNING  Application instance <Task cancelling name='Task-11' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7fee38997650 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-03-31 17:41:49,002 WARNING  Application instance <Task pending name='Task-21' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-24' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7fee3881c6d0 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-03-31 17:41:50,004 WARNING  Application instance <Task cancelling name='Task-21' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7fee3881c6d0 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+Not Found: /favicon.ico
+2026-03-31 17:42:03,557 WARNING  Not Found: /favicon.ico
+2026-03-31 17:43:10,294 WARNING  Application instance <Task pending name='Task-75' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-78' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7fee3872e5d0 method=GET uri=/requests/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-03-31 17:43:11,297 WARNING  Application instance <Task cancelling name='Task-75' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7fee3872e5d0 method=GET uri=/requests/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-03-31 17:48:22,602 INFO     Killed 3 pending application instances
+2026-03-31 17:49:54,237 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-03-31 17:49:54,239 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-03-31 17:49:54,239 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-03-31 17:49:54,240 INFO     Listening on TCP address 0.0.0.0:8000
+2026-03-31 17:51:19,331 WARNING  Application instance <Task pending name='Task-57' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-60' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f015a276e50 method=GET uri=/requests/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-03-31 17:51:20,336 WARNING  Application instance <Task cancelling name='Task-57' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f015a276e50 method=GET uri=/requests/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:38:28,563 INFO     Killed 1 pending application instances
+10.103.28.17:59591 - - [31/Mar/2026:17:49:54] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:63377 - - [31/Mar/2026:17:49:54] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:59591 - - [31/Mar/2026:17:49:54] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63377 - - [31/Mar/2026:17:49:54] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56216 - - [31/Mar/2026:17:50:18] "GET /" 200 91505
+10.103.28.17:63377 - - [31/Mar/2026:17:50:18] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:50050 - - [31/Mar/2026:17:50:18] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:50050 - - [31/Mar/2026:17:50:18] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56216 - - [31/Mar/2026:17:50:21] "GET /" 200 91505
+10.103.28.17:50050 - - [31/Mar/2026:17:50:21] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:52144 - - [31/Mar/2026:17:50:21] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52144 - - [31/Mar/2026:17:50:21] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56216 - - [31/Mar/2026:17:50:22] "GET /" 200 91505
+10.103.28.17:52144 - - [31/Mar/2026:17:50:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:50202 - - [31/Mar/2026:17:50:22] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:50202 - - [31/Mar/2026:17:50:22] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56216 - - [31/Mar/2026:17:50:24] "GET /" 200 91505
+10.103.28.17:50202 - - [31/Mar/2026:17:50:24] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:52094 - - [31/Mar/2026:17:50:24] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52094 - - [31/Mar/2026:17:50:24] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:57894 - - [31/Mar/2026:17:51:44] "GET /" 200 91403
+10.103.28.17:52094 - - [31/Mar/2026:17:51:44] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:65107 - - [31/Mar/2026:17:51:45] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65107 - - [31/Mar/2026:17:51:45] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:59591 - - [31/Mar/2026:18:07:18] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:65107 - - [31/Mar/2026:18:07:18] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:55428 - - [31/Mar/2026:18:07:27] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:63781 - - [31/Mar/2026:18:07:27] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55428 - - [31/Mar/2026:18:07:27] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63781 - - [31/Mar/2026:18:07:28] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63781 - - [31/Mar/2026:18:09:52] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:55428 - - [31/Mar/2026:18:09:52] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61891 - - [31/Mar/2026:18:11:26] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55806 - - [31/Mar/2026:18:11:26] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61891 - - [31/Mar/2026:18:11:26] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:55806 - - [31/Mar/2026:18:11:26] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:55806 - - [31/Mar/2026:18:26:51] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61891 - - [31/Mar/2026:18:26:51] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61323 - - [31/Mar/2026:18:28:55] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52105 - - [31/Mar/2026:18:28:55] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61323 - - [31/Mar/2026:18:28:55] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:52105 - - [31/Mar/2026:18:28:55] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:52105 - - [31/Mar/2026:18:31:20] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61323 - - [31/Mar/2026:18:31:20] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:52092 - - [31/Mar/2026:18:31:35] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:64287 - - [31/Mar/2026:18:31:35] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52092 - - [31/Mar/2026:18:31:35] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:64287 - - [31/Mar/2026:18:31:35] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:64287 - - [31/Mar/2026:18:46:59] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:52092 - - [31/Mar/2026:18:46:59] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61763 - - [31/Mar/2026:18:48:32] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61688 - - [31/Mar/2026:18:48:32] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61763 - - [31/Mar/2026:18:48:32] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:61688 - - [31/Mar/2026:18:48:32] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:61688 - - [31/Mar/2026:18:50:51] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61763 - - [31/Mar/2026:18:50:51] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:56228 - - [01/Apr/2026:09:10:16] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56228 - - [01/Apr/2026:09:10:16] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:51445 - - [01/Apr/2026:09:16:01] "GET /" 200 91590
+10.103.28.17:56228 - - [01/Apr/2026:09:16:01] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:57608 - - [01/Apr/2026:09:16:01] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57608 - - [01/Apr/2026:09:16:01] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:51445 - - [01/Apr/2026:09:17:50] "GET /requests/" 200 333877
+10.103.28.17:57608 - - [01/Apr/2026:09:17:50] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:60263 - - [01/Apr/2026:09:17:50] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:60263 - - [01/Apr/2026:09:17:50] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:60263 - - [01/Apr/2026:09:21:36] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:65123 - - [01/Apr/2026:09:21:42] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65123 - - [01/Apr/2026:09:21:42] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:55874 - - [01/Apr/2026:09:22:57] "GET /" 200 91609
+10.103.28.17:65123 - - [01/Apr/2026:09:22:57] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:62824 - - [01/Apr/2026:09:22:58] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:62824 - - [01/Apr/2026:09:22:58] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:62824 - - [01/Apr/2026:09:48:06] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:49454 - - [01/Apr/2026:09:48:30] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:49454 - - [01/Apr/2026:09:48:30] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:49454 - - [01/Apr/2026:10:03:55] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:56039 - - [01/Apr/2026:10:05:07] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56039 - - [01/Apr/2026:10:05:08] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56039 - - [01/Apr/2026:10:07:31] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:64675 - - [01/Apr/2026:10:07:56] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:64675 - - [01/Apr/2026:10:07:56] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:64675 - - [01/Apr/2026:10:10:34] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:59182 - - [01/Apr/2026:10:12:37] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:59182 - - [01/Apr/2026:10:12:37] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:59182 - - [01/Apr/2026:10:14:49] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:52011 - - [01/Apr/2026:10:15:14] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52011 - - [01/Apr/2026:10:15:14] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:52011 - - [01/Apr/2026:10:17:38] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:64535 - - [01/Apr/2026:10:18:39] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:64535 - - [01/Apr/2026:10:18:39] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:64535 - - [01/Apr/2026:10:21:03] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:60464 - - [01/Apr/2026:10:21:19] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:60464 - - [01/Apr/2026:10:21:19] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:60464 - - [01/Apr/2026:10:23:44] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:59514 - - [01/Apr/2026:12:14:47] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:59514 - - [01/Apr/2026:12:14:47] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:59514 - - [01/Apr/2026:12:38:28] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-01 12:38:31,839 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-01 12:38:31,840 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-01 12:38:31,841 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-01 12:38:31,842 INFO     Listening on TCP address 0.0.0.0:8000
+2026-04-01 12:38:35,623 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:09,809 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:10,543 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:10,737 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:10,927 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:11,108 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:11,259 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:11,767 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:12,183 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:12,398 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:12,619 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:15,074 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:39:22,574 ERROR    Internal Server Error: /
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1079, in get_connection
+    connection = self._available_connections.pop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from empty list
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 555, in thread_handler
+    raise exc_info[1]
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/current_thread_executor.py", line 40, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/apps/dashboard/views.py", line 133, in index
+    cached = cache.get('dashboard:index_context')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 188, in get
+    return self._cache.get(key, default)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/cache/backends/redis.py", line 100, in get
+    value = client.get(key)
+            ^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/commands/core.py", line 1829, in get
+    return self.execute_command("GET", name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1081, in get_connection
+    connection = self.make_connection()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 1121, in make_connection
+    return self.connection_class(**self.connection_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/redis/connection.py", line 581, in __init__
+    super().__init__(**kwargs)
+TypeError: AbstractConnection.__init__() got an unexpected keyword argument 'MAX_ENTRIES'
+2026-04-01 12:41:32,760 INFO     Killed 0 pending application instances
+10.103.28.17:65085 - - [01/Apr/2026:12:38:32] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65085 - - [01/Apr/2026:12:38:32] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56639 - - [01/Apr/2026:12:38:35] "GET /" 500 145
+10.103.28.17:65085 - - [01/Apr/2026:12:38:35] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:56639 - - [01/Apr/2026:12:39:09] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:10] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:10] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:10] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:11] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:11] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:11] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:12] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:12] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:12] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:15] "GET /" 500 145
+10.103.28.17:56639 - - [01/Apr/2026:12:39:22] "GET /" 500 145
+2026-04-01 12:41:34,305 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-01 12:41:34,306 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-01 12:41:34,306 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-01 12:41:34,307 INFO     Listening on TCP address 0.0.0.0:8000
+2026-04-01 12:42:24,354 WARNING  Application instance <Task pending name='Task-1' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-4' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f2f11b4fad0 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:42:25,357 WARNING  Application instance <Task cancelling name='Task-1' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f2f11b4fad0 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:42:51,869 WARNING  Application instance <Task pending name='Task-6' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-9' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f2f105f7510 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:42:52,872 WARNING  Application instance <Task cancelling name='Task-6' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f2f105f7510 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:43:27,431 INFO     Killed 1 pending application instances
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:55891 - - [01/Apr/2026:12:42:51] "GET /" 302 -
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.28.17:55891 - - [01/Apr/2026:12:42:51] "GET /login/?next=/" 200 5186
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:55891 - - [01/Apr/2026:12:43:16] "POST /login/?next=/" 302 -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:55891 - - [01/Apr/2026:12:43:16] "GET /" 200 92182
+10.103.28.17:62706 - - [01/Apr/2026:12:43:17] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:62706 - - [01/Apr/2026:12:43:17] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:62706 - - [01/Apr/2026:12:43:27] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-01 12:43:28,899 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-01 12:43:28,899 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-01 12:43:28,900 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-01 12:43:28,901 INFO     Listening on TCP address 0.0.0.0:8000
+2026-04-01 12:44:43,370 WARNING  Application instance <Task pending name='Task-12' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-15' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f9779538e90 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:44:44,373 WARNING  Application instance <Task cancelling name='Task-12' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f9779538e90 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+Not Found: /favicon.ico
+2026-04-01 12:46:13,947 WARNING  Not Found: /favicon.ico
+Forbidden (CSRF token from POST incorrect.): /login/
+2026-04-01 12:46:50,580 WARNING  Forbidden (CSRF token from POST incorrect.): /login/
+2026-04-01 12:47:00,699 WARNING  Application instance <Task pending name='Task-55' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-58' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f9772451590 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:47:01,701 WARNING  Application instance <Task cancelling name='Task-55' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f9772451590 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:47:30,838 WARNING  Application instance <Task pending name='Task-70' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-73' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f97713a3550 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:47:31,840 WARNING  Application instance <Task cancelling name='Task-70' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f97713a3550 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:49:40,588 WARNING  Application instance <Task pending name='Task-137' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-140' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f97724d7710 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 12:49:41,590 WARNING  Application instance <Task cancelling name='Task-137' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f97724d7710 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 14:31:07,939 WARNING  Application instance <Task pending name='Task-260' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-263' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f975f4d01d0 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 14:31:08,942 WARNING  Application instance <Task cancelling name='Task-260' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f975f4d01d0 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 14:31:08,942 WARNING  Application instance <Task pending name='Task-265' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<Task cancelling name='Task-268' coro=<ASGIHandler.handle.<locals>.process_request() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/core/handlers/asgi.py:186> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/lib64/python3.11/asyncio/futures.py:387, Task.task_wakeup()]> cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f975f4f9410 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+2026-04-01 14:31:43,319 WARNING  Application instance <Task cancelling name='Task-265' coro=<ProtocolTypeRouter.__call__() running at /var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py:62> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()]>> for connection <WebRequest at 0x7f975f4f9410 method=GET uri=/ clientproto=HTTP/1.1> took too long to shut down and was killed.
+10.103.28.17:55042 - - [01/Apr/2026:12:43:29] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55042 - - [01/Apr/2026:12:43:29] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:54368 - - [01/Apr/2026:12:44:45] "GET /" 200 91539
+10.103.28.17:49428 - - [01/Apr/2026:12:44:45] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:49428 - - [01/Apr/2026:12:44:45] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:52115 - - [01/Apr/2026:12:45:56] "GET /requests/" 200 333894
+10.103.28.17:55042 - - [01/Apr/2026:12:45:56] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58367 - - [01/Apr/2026:12:45:57] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58367 - - [01/Apr/2026:12:45:57] "WSCONNECT /ws/dashboard/" - -
+10.103.28.33:52596 - - [01/Apr/2026:12:46:13] "GET /" 302 -
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.28.33:52596 - - [01/Apr/2026:12:46:13] "GET /login/?next=/" 200 5186
+10.103.28.33:52596 - - [01/Apr/2026:12:46:13] "GET /favicon.ico" 404 6852
+10.103.28.33:52596 - - [01/Apr/2026:12:46:24] "POST /login/?next=/" 302 -
+10.103.28.33:60877 - - [01/Apr/2026:12:46:50] "POST /login/?next=/" 403 2503
+10.103.28.33:60877 - - [01/Apr/2026:12:46:56] "GET /login/?next=/" 302 -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.33:51245 - - [01/Apr/2026:12:47:20] "GET /login/" 302 -
+10.103.28.33:51512 - - [01/Apr/2026:12:47:20] "GET /" 200 92317
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.33:51512 - - [01/Apr/2026:12:47:21] "GET /" 200 92317
+10.103.28.33:57104 - - [01/Apr/2026:12:47:21] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.33:57104 - - [01/Apr/2026:12:47:21] "WSCONNECT /ws/dashboard/" - -
+10.103.28.33:59602 - - [01/Apr/2026:12:47:21] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.33:59602 - - [01/Apr/2026:12:47:21] "WSCONNECT /ws/dashboard/" - -
+10.103.28.33:59602 - - [01/Apr/2026:12:47:24] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.33:51512 - - [01/Apr/2026:12:47:28] "GET /requests/" 200 333983
+10.103.28.33:59289 - - [01/Apr/2026:12:47:28] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.33:59289 - - [01/Apr/2026:12:47:28] "WSCONNECT /ws/dashboard/" - -
+10.103.28.33:57104 - - [01/Apr/2026:12:47:28] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.33:51512 - - [01/Apr/2026:12:48:30] "GET /analytics/" 200 76362
+10.103.28.33:59289 - - [01/Apr/2026:12:48:30] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.33:64478 - - [01/Apr/2026:12:48:30] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.33:64478 - - [01/Apr/2026:12:48:30] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.33:51512 - - [01/Apr/2026:12:48:56] "GET /requests/" 200 334242
+10.103.28.33:60044 - - [01/Apr/2026:12:48:56] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.33:60044 - - [01/Apr/2026:12:48:56] "WSCONNECT /ws/dashboard/" - -
+10.103.28.33:64478 - - [01/Apr/2026:12:48:56] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.33:62891 - - [01/Apr/2026:12:49:32] "GET /requests/" 200 334340
+10.103.28.33:60044 - - [01/Apr/2026:12:49:32] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.33:55644 - - [01/Apr/2026:12:49:32] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.33:55644 - - [01/Apr/2026:12:49:32] "WSCONNECT /ws/dashboard/" - -
+10.103.28.33:62891 - - [01/Apr/2026:12:49:35] "GET /logout/" 302 -
+RBAC Context: user=AnonymousUser, is_admin=False, is_operator=False
+10.103.28.33:62891 - - [01/Apr/2026:12:49:35] "GET /login/" 200 5495
+10.103.28.33:55644 - - [01/Apr/2026:12:49:35] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58367 - - [01/Apr/2026:13:00:11] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:49428 - - [01/Apr/2026:13:00:11] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:57699 - - [01/Apr/2026:13:00:29] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54307 - - [01/Apr/2026:13:00:29] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57699 - - [01/Apr/2026:13:00:29] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54307 - - [01/Apr/2026:13:00:29] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54307 - - [01/Apr/2026:13:02:53] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:57699 - - [01/Apr/2026:13:02:53] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58269 - - [01/Apr/2026:13:03:17] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58269 - - [01/Apr/2026:13:03:17] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:58334 - - [01/Apr/2026:13:03:18] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58334 - - [01/Apr/2026:13:03:18] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:58334 - - [01/Apr/2026:13:05:42] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58269 - - [01/Apr/2026:13:05:42] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58142 - - [01/Apr/2026:13:05:57] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:59602 - - [01/Apr/2026:13:05:57] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58142 - - [01/Apr/2026:13:05:57] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:59602 - - [01/Apr/2026:13:05:57] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:59602 - - [01/Apr/2026:13:21:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58142 - - [01/Apr/2026:13:21:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:59780 - - [01/Apr/2026:13:21:58] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:63993 - - [01/Apr/2026:13:21:58] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:59780 - - [01/Apr/2026:13:21:58] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63993 - - [01/Apr/2026:13:21:58] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63993 - - [01/Apr/2026:13:24:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:59780 - - [01/Apr/2026:13:24:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:52174 - - [01/Apr/2026:13:24:38] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56407 - - [01/Apr/2026:13:24:38] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52174 - - [01/Apr/2026:13:24:38] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56407 - - [01/Apr/2026:13:24:38] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56407 - - [01/Apr/2026:13:27:02] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:52174 - - [01/Apr/2026:13:27:02] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:57639 - - [01/Apr/2026:13:27:22] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54531 - - [01/Apr/2026:13:27:22] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57639 - - [01/Apr/2026:13:27:22] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54531 - - [01/Apr/2026:13:27:22] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54531 - - [01/Apr/2026:13:29:42] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:57639 - - [01/Apr/2026:13:29:42] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58381 - - [01/Apr/2026:13:29:58] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65183 - - [01/Apr/2026:13:29:58] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58381 - - [01/Apr/2026:13:29:58] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:65183 - - [01/Apr/2026:13:29:58] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:65183 - - [01/Apr/2026:13:45:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58381 - - [01/Apr/2026:13:45:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61690 - - [01/Apr/2026:14:27:15] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61690 - - [01/Apr/2026:14:27:15] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54361 - - [01/Apr/2026:14:30:38] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54361 - - [01/Apr/2026:14:30:38] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54361 - - [01/Apr/2026:14:30:58] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:60183 - - [01/Apr/2026:16:58:26] "GET /" 200 91530
+Not Found: /favicon.ico
+2026-04-02 10:26:24,447 WARNING  Not Found: /favicon.ico
+Not Found: /favicon.ico
+2026-04-06 09:11:24,870 WARNING  Not Found: /favicon.ico

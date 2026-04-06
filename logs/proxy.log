@@ -5263,4 +5263,23 @@ Starting proxy server on 0.0.0.0:8088
 [BLOCKLIST ERROR] (1040, 'Too many connections')
 [BLOCKLIST ERROR] (1040, 'Too many connections')
 [BLOCKLIST ERROR] (1040, 'Too many connections')
-[BLOCKLIST ERROR] (1040, 'Too many connections')
+[BLOCKLIST ERROR] (1040, 'Too many connections')System check identified some issues:
+
+WARNINGS:
+?: (staticfiles.W004) The directory '/var/www/html/proxy_monitor/static' in the STATICFILES_DIRS setting does not exist.
+System check identified some issues:
+
+WARNINGS:
+?: (staticfiles.W004) The directory '/var/www/html/proxy_monitor/static' in the STATICFILES_DIRS setting does not exist.
+System check identified some issues:
+
+WARNINGS:
+?: (staticfiles.W004) The directory '/var/www/html/proxy_monitor/static' in the STATICFILES_DIRS setting does not exist.
+System check identified some issues:
+
+WARNINGS:
+?: (staticfiles.W004) The directory '/var/www/html/proxy_monitor/static' in the STATICFILES_DIRS setting does not exist.
+System check identified some issues:
+
+WARNINGS:
+?: (staticfiles.W004) The directory '/var/www/html/proxy_monitor/static' in the STATICFILES_DIRS setting does not exist.
