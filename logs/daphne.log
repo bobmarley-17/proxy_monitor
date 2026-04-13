@@ -100901,3 +100901,632 @@ RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
 2026-04-13 17:19:23,294 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
 2026-04-13 17:19:23,295 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
 2026-04-13 17:19:23,295 INFO     Listening on TCP address 0.0.0.0:8000
+10.103.28.17:55053 - - [13/Apr/2026:17:19:23] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:59881 - - [13/Apr/2026:17:19:23] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55053 - - [13/Apr/2026:17:19:23] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:59881 - - [13/Apr/2026:17:19:23] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:19:33] "GET /" 200 92103
+10.103.28.17:55053 - - [13/Apr/2026:17:19:33] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:50479 - - [13/Apr/2026:17:19:33] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:50479 - - [13/Apr/2026:17:19:33] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:19:35] "GET /analytics/" 200 74421
+10.103.28.17:55095 - - [13/Apr/2026:17:19:35] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55095 - - [13/Apr/2026:17:19:35] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:50479 - - [13/Apr/2026:17:19:35] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:53230 - - [13/Apr/2026:17:19:44] "GET /api/resolve/?ip=10.103.28.17" 200 130
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:19:53] "GET /" 200 92103
+10.103.28.17:56686 - - [13/Apr/2026:17:19:53] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56686 - - [13/Apr/2026:17:19:53] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:55095 - - [13/Apr/2026:17:19:53] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:19:58] "GET /requests/" 200 173957
+10.103.28.17:57916 - - [13/Apr/2026:17:19:58] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57916 - - [13/Apr/2026:17:19:58] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56686 - - [13/Apr/2026:17:19:58] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:19:59] "GET /analytics/" 200 74421
+10.103.28.17:52691 - - [13/Apr/2026:17:19:59] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52691 - - [13/Apr/2026:17:19:59] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:57916 - - [13/Apr/2026:17:19:59] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:20:00] "GET /blocklist/" 200 78055
+10.103.28.17:61760 - - [13/Apr/2026:17:20:00] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52691 - - [13/Apr/2026:17:20:00] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61760 - - [13/Apr/2026:17:20:00] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:20:01] "GET /users/" 200 53153
+10.103.28.17:61923 - - [13/Apr/2026:17:20:01] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:61760 - - [13/Apr/2026:17:20:01] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:61923 - - [13/Apr/2026:17:20:01] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:20:02] "GET /audit-logs/" 200 236033
+10.103.28.17:61923 - - [13/Apr/2026:17:20:02] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:54313 - - [13/Apr/2026:17:20:02] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54313 - - [13/Apr/2026:17:20:02] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:53230 - - [13/Apr/2026:17:20:03] "GET /" 200 92103
+10.103.28.17:51206 - - [13/Apr/2026:17:20:03] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51206 - - [13/Apr/2026:17:20:03] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54313 - - [13/Apr/2026:17:20:03] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:26] "GET /analytics/" 200 74421
+10.103.28.17:59881 - - [13/Apr/2026:17:22:26] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:63976 - - [13/Apr/2026:17:22:27] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:63976 - - [13/Apr/2026:17:22:27] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56110 - - [13/Apr/2026:17:22:30] "GET /api/resolve/?ip=10.103.28.17" 200 127
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:30] "GET /" 200 92103
+10.103.28.17:52773 - - [13/Apr/2026:17:22:31] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52773 - - [13/Apr/2026:17:22:31] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63976 - - [13/Apr/2026:17:22:31] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:32] "GET /requests/" 200 173976
+10.103.28.17:51605 - - [13/Apr/2026:17:22:32] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51605 - - [13/Apr/2026:17:22:32] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:52773 - - [13/Apr/2026:17:22:32] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:33] "GET /analytics/" 200 74421
+10.103.28.17:51755 - - [13/Apr/2026:17:22:33] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51755 - - [13/Apr/2026:17:22:33] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:51605 - - [13/Apr/2026:17:22:33] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:34] "GET /blocklist/" 200 78055
+10.103.28.17:64097 - - [13/Apr/2026:17:22:34] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:64097 - - [13/Apr/2026:17:22:34] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:51755 - - [13/Apr/2026:17:22:34] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:35] "GET /users/" 200 53153
+10.103.28.17:50048 - - [13/Apr/2026:17:22:35] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:50048 - - [13/Apr/2026:17:22:35] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:64097 - - [13/Apr/2026:17:22:35] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:36] "GET /blocklist/" 200 78055
+10.103.28.17:55363 - - [13/Apr/2026:17:22:36] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55363 - - [13/Apr/2026:17:22:36] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:50048 - - [13/Apr/2026:17:22:36] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:39] "GET /audit-logs/" 200 236033
+10.103.28.17:52727 - - [13/Apr/2026:17:22:39] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:52727 - - [13/Apr/2026:17:22:39] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:55363 - - [13/Apr/2026:17:22:39] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:22:40] "GET /" 200 92103
+10.103.28.17:57288 - - [13/Apr/2026:17:22:40] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57288 - - [13/Apr/2026:17:22:40] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:52727 - - [13/Apr/2026:17:22:40] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:23:24] "GET /analytics/" 200 74421
+10.103.28.17:56024 - - [13/Apr/2026:17:23:25] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56024 - - [13/Apr/2026:17:23:25] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:57288 - - [13/Apr/2026:17:23:25] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:23:41] "GET /requests/" 200 173768
+10.103.28.17:58955 - - [13/Apr/2026:17:23:41] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58955 - - [13/Apr/2026:17:23:41] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56024 - - [13/Apr/2026:17:23:41] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:23:42] "GET /" 200 92103
+10.103.28.17:62409 - - [13/Apr/2026:17:23:42] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:62409 - - [13/Apr/2026:17:23:42] "WSCONNECT /ws/dashboard/" - -
+Forbidden: /api/dns-cache/
+2026-04-13 17:24:04,603 WARNING  Forbidden: /api/dns-cache/
+Forbidden: /api/dns-cache/
+2026-04-13 17:24:05,821 WARNING  Forbidden: /api/dns-cache/
+Not Found: /favicon.ico
+2026-04-13 17:27:40,319 WARNING  Not Found: /favicon.ico
+2026-04-13 17:27:53,976 INFO     Killed 2 pending application instances
+10.103.28.17:58955 - - [13/Apr/2026:17:23:42] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:23:48] "GET /" 200 92103
+10.103.28.17:62409 - - [13/Apr/2026:17:23:48] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:65080 - - [13/Apr/2026:17:23:48] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65080 - - [13/Apr/2026:17:23:48] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:23:57] "GET /" 200 92103
+10.103.28.17:65080 - - [13/Apr/2026:17:23:57] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:49821 - - [13/Apr/2026:17:23:57] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:49821 - - [13/Apr/2026:17:23:57] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:24:01] "GET /requests/" 200 173768
+10.103.28.17:65396 - - [13/Apr/2026:17:24:01] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65396 - - [13/Apr/2026:17:24:01] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:49821 - - [13/Apr/2026:17:24:01] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:24:01] "GET /analytics/" 200 74421
+10.103.28.17:49816 - - [13/Apr/2026:17:24:01] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:49816 - - [13/Apr/2026:17:24:01] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:65396 - - [13/Apr/2026:17:24:01] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:56110 - - [13/Apr/2026:17:24:02] "GET /api/resolve/?ip=10.103.28.17" 200 127
+10.103.28.17:56110 - - [13/Apr/2026:17:24:04] "DELETE /api/dns-cache/" 403 45
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:24:04] "GET /analytics/" 200 74421
+10.103.28.17:49816 - - [13/Apr/2026:17:24:04] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:57187 - - [13/Apr/2026:17:24:04] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57187 - - [13/Apr/2026:17:24:04] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:56110 - - [13/Apr/2026:17:24:05] "DELETE /api/dns-cache/" 403 45
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:24:05] "GET /analytics/" 200 74421
+10.103.28.17:57187 - - [13/Apr/2026:17:24:05] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:62653 - - [13/Apr/2026:17:24:06] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:62653 - - [13/Apr/2026:17:24:06] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:24:09] "GET /" 200 92103
+10.103.28.17:51429 - - [13/Apr/2026:17:24:09] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51429 - - [13/Apr/2026:17:24:09] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:62653 - - [13/Apr/2026:17:24:10] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56110 - - [13/Apr/2026:17:25:09] "GET /analytics/" 200 74421
+10.103.28.17:50630 - - [13/Apr/2026:17:25:10] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:50630 - - [13/Apr/2026:17:25:10] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:51429 - - [13/Apr/2026:17:25:10] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:49782 - - [13/Apr/2026:17:27:39] "GET /analytics/" 200 74421
+10.103.28.17:50630 - - [13/Apr/2026:17:27:39] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:65008 - - [13/Apr/2026:17:27:40] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65008 - - [13/Apr/2026:17:27:40] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:49782 - - [13/Apr/2026:17:27:40] "GET /favicon.ico" 404 6852
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:49782 - - [13/Apr/2026:17:27:41] "GET /" 200 92103
+10.103.28.17:57957 - - [13/Apr/2026:17:27:41] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57957 - - [13/Apr/2026:17:27:41] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:65008 - - [13/Apr/2026:17:27:41] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:49782 - - [13/Apr/2026:17:27:43] "GET /" 200 92103
+10.103.28.17:57957 - - [13/Apr/2026:17:27:43] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:62348 - - [13/Apr/2026:17:27:43] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:62348 - - [13/Apr/2026:17:27:43] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:62348 - - [13/Apr/2026:17:27:53] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:51206 - - [13/Apr/2026:17:27:53] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-13 17:27:56,477 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:27:56,477 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-13 17:27:56,477 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:27:56,478 INFO     Listening on TCP address 0.0.0.0:8000
+2026-04-13 17:28:58,037 INFO     Killed 2 pending application instances
+10.103.28.17:53399 - - [13/Apr/2026:17:27:56] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:53020 - - [13/Apr/2026:17:27:56] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:53399 - - [13/Apr/2026:17:27:57] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:53020 - - [13/Apr/2026:17:27:57] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:59078 - - [13/Apr/2026:17:28:02] "GET /" 200 91958
+10.103.28.17:53020 - - [13/Apr/2026:17:28:02] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:51255 - - [13/Apr/2026:17:28:02] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51255 - - [13/Apr/2026:17:28:02] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:59078 - - [13/Apr/2026:17:28:05] "GET /" 200 91958
+10.103.28.17:51255 - - [13/Apr/2026:17:28:05] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:55804 - - [13/Apr/2026:17:28:05] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55804 - - [13/Apr/2026:17:28:05] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:59078 - - [13/Apr/2026:17:28:06] "GET /" 200 91958
+10.103.28.17:55804 - - [13/Apr/2026:17:28:06] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:53363 - - [13/Apr/2026:17:28:06] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:53363 - - [13/Apr/2026:17:28:06] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:53399 - - [13/Apr/2026:17:28:58] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:53363 - - [13/Apr/2026:17:28:58] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-13 17:28:59,447 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:28:59,448 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-13 17:28:59,448 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:28:59,449 INFO     Listening on TCP address 0.0.0.0:8000
+2026-04-13 17:29:03,919 INFO     Killed 2 pending application instances
+10.103.28.17:51969 - - [13/Apr/2026:17:28:59] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:63845 - - [13/Apr/2026:17:28:59] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51969 - - [13/Apr/2026:17:29:00] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63845 - - [13/Apr/2026:17:29:00] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:51969 - - [13/Apr/2026:17:29:03] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:63845 - - [13/Apr/2026:17:29:03] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-13 17:29:05,763 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:29:05,764 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-13 17:29:05,765 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:29:05,770 INFO     Listening on TCP address 0.0.0.0:8000
+2026-04-13 17:29:06,766 ERROR    Exception inside application: (2002, "Can't connect to local server through socket '/var/lib/mysql/mysql.sock' (2)")
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 244, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/__init__.py", line 121, in Connect
+    return Connection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/connections.py", line 193, in __init__
+    super().__init__(*args, **kwargs2)
+MySQLdb.OperationalError: (2002, "Can't connect to local server through socket '/var/lib/mysql/mysql.sock' (2)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py", line 62, in __call__
+    return await application(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/sessions.py", line 47, in __call__
+    return await self.inner(dict(scope, cookies=cookies), receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/sessions.py", line 263, in __call__
+    return await self.inner(wrapper.scope, receive, wrapper.send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 183, in __call__
+    await self.resolve_scope(scope)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 176, in resolve_scope
+    scope["user"]._wrapped = await get_user(scope)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/db.py", line 13, in thread_handler
+    return super().thread_handler(loop, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 38, in get_user
+    user_id = _get_user_session_key(session)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 145, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(session[SESSION_KEY])
+                                               ~~~~~~~^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 55, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 249, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 55, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 631, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 368, in __len__
+    self._fetch_all()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/sql/compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 320, in cursor
+    return self._cursor()
+           ^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/__init__.py", line 121, in Connect
+    return Connection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/connections.py", line 193, in __init__
+    super().__init__(*args, **kwargs2)
+django.db.utils.OperationalError: (2002, "Can't connect to local server through socket '/var/lib/mysql/mysql.sock' (2)")
+2026-04-13 17:29:06,954 ERROR    Exception inside application: (2002, "Can't connect to local server through socket '/var/lib/mysql/mysql.sock' (2)")
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 244, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/__init__.py", line 121, in Connect
+    return Connection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/connections.py", line 193, in __init__
+    super().__init__(*args, **kwargs2)
+MySQLdb.OperationalError: (2002, "Can't connect to local server through socket '/var/lib/mysql/mysql.sock' (2)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/routing.py", line 62, in __call__
+    return await application(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/sessions.py", line 47, in __call__
+    return await self.inner(dict(scope, cookies=cookies), receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/sessions.py", line 263, in __call__
+    return await self.inner(wrapper.scope, receive, wrapper.send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 183, in __call__
+    await self.resolve_scope(scope)
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 176, in resolve_scope
+    scope["user"]._wrapped = await get_user(scope)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 504, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/db.py", line 13, in thread_handler
+    return super().thread_handler(loop, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/asgiref/sync.py", line 559, in thread_handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 38, in get_user
+    user_id = _get_user_session_key(session)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/channels/auth.py", line 145, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(session[SESSION_KEY])
+                                               ~~~~~~~^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 55, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 249, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 55, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 631, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 368, in __len__
+    self._fetch_all()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/models/sql/compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 320, in cursor
+    return self._cursor()
+           ^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/__init__.py", line 121, in Connect
+    return Connection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/proxy_monitor/venv311/lib64/python3.11/site-packages/MySQLdb/connections.py", line 193, in __init__
+    super().__init__(*args, **kwargs2)
+django.db.utils.OperationalError: (2002, "Can't connect to local server through socket '/var/lib/mysql/mysql.sock' (2)")
+Not Found: /favicon.ico
+2026-04-13 17:29:25,101 WARNING  Not Found: /favicon.ico
+Forbidden: /api/dns-cache/
+2026-04-13 17:30:03,312 WARNING  Forbidden: /api/dns-cache/
+Not Found: /favicon.ico
+2026-04-13 17:32:18,544 WARNING  Not Found: /favicon.ico
+2026-04-13 17:32:22,598 INFO     Killed 2 pending application instances
+10.103.28.17:55422 - - [13/Apr/2026:17:29:05] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:49343 - - [13/Apr/2026:17:29:05] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55422 - - [13/Apr/2026:17:29:06] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:49343 - - [13/Apr/2026:17:29:06] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:53889 - - [13/Apr/2026:17:29:09] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65127 - - [13/Apr/2026:17:29:09] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:53889 - - [13/Apr/2026:17:29:09] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:65127 - - [13/Apr/2026:17:29:09] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:29:24] "GET /" 200 91974
+10.103.28.17:65127 - - [13/Apr/2026:17:29:24] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:53748 - - [13/Apr/2026:17:29:24] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:53748 - - [13/Apr/2026:17:29:24] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:58638 - - [13/Apr/2026:17:29:25] "GET /favicon.ico" 404 6852
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:29:31] "GET /analytics/" 200 74421
+10.103.28.17:57376 - - [13/Apr/2026:17:29:31] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57376 - - [13/Apr/2026:17:29:31] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:53748 - - [13/Apr/2026:17:29:31] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:29:34] "GET /" 200 91974
+10.103.28.17:51982 - - [13/Apr/2026:17:29:34] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:51982 - - [13/Apr/2026:17:29:34] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:57376 - - [13/Apr/2026:17:29:34] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:29:35] "GET /requests/" 200 173680
+10.103.28.17:57329 - - [13/Apr/2026:17:29:35] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57329 - - [13/Apr/2026:17:29:36] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:51982 - - [13/Apr/2026:17:29:36] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:29:56] "GET /analytics/" 200 74421
+10.103.28.17:56456 - - [13/Apr/2026:17:29:56] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56456 - - [13/Apr/2026:17:29:56] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:57329 - - [13/Apr/2026:17:29:56] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58638 - - [13/Apr/2026:17:30:03] "DELETE /api/dns-cache/" 403 45
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:30:03] "GET /analytics/" 200 74421
+10.103.28.17:56456 - - [13/Apr/2026:17:30:03] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:49696 - - [13/Apr/2026:17:30:03] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:49696 - - [13/Apr/2026:17:30:03] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:30:11] "GET /" 200 91974
+10.103.28.17:55669 - - [13/Apr/2026:17:30:11] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55669 - - [13/Apr/2026:17:30:11] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:49696 - - [13/Apr/2026:17:30:11] "WSDISCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:30:12] "GET /" 200 91974
+10.103.28.17:55669 - - [13/Apr/2026:17:30:12] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:54450 - - [13/Apr/2026:17:30:13] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54450 - - [13/Apr/2026:17:30:13] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:30:14] "GET /" 200 91974
+10.103.28.17:54450 - - [13/Apr/2026:17:30:14] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:58608 - - [13/Apr/2026:17:30:14] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:58608 - - [13/Apr/2026:17:30:14] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:58638 - - [13/Apr/2026:17:30:14] "GET /" 200 91974
+10.103.28.17:58608 - - [13/Apr/2026:17:30:14] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:63003 - - [13/Apr/2026:17:30:14] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:63003 - - [13/Apr/2026:17:30:14] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:63757 - - [13/Apr/2026:17:32:17] "GET /" 200 91974
+10.103.28.17:63003 - - [13/Apr/2026:17:32:17] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:56207 - - [13/Apr/2026:17:32:18] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:56207 - - [13/Apr/2026:17:32:18] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:63757 - - [13/Apr/2026:17:32:18] "GET /favicon.ico" 404 6852
+10.103.28.17:53889 - - [13/Apr/2026:17:32:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:56207 - - [13/Apr/2026:17:32:22] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-13 17:32:24,006 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:32:24,007 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-13 17:32:24,007 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:32:24,008 INFO     Listening on TCP address 0.0.0.0:8000
+Not Found: /favicon.ico
+2026-04-13 17:32:26,801 WARNING  Not Found: /favicon.ico
+2026-04-13 17:32:44,457 INFO     Killed 2 pending application instances
+10.103.28.17:65440 - - [13/Apr/2026:17:32:24] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54041 - - [13/Apr/2026:17:32:24] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65440 - - [13/Apr/2026:17:32:24] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:54041 - - [13/Apr/2026:17:32:24] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:62094 - - [13/Apr/2026:17:32:26] "GET /" 200 92160
+10.103.28.17:54041 - - [13/Apr/2026:17:32:26] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:55864 - - [13/Apr/2026:17:32:26] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:55864 - - [13/Apr/2026:17:32:26] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:62094 - - [13/Apr/2026:17:32:26] "GET /favicon.ico" 404 6852
+10.103.28.17:65440 - - [13/Apr/2026:17:32:44] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:55864 - - [13/Apr/2026:17:32:44] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-13 17:32:45,993 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:32:46,000 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-13 17:32:46,001 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:32:46,001 INFO     Listening on TCP address 0.0.0.0:8000
+2026-04-13 17:33:22,731 INFO     Killed 2 pending application instances
+10.103.28.17:54717 - - [13/Apr/2026:17:32:46] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57439 - - [13/Apr/2026:17:32:46] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:54717 - - [13/Apr/2026:17:32:46] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:57439 - - [13/Apr/2026:17:32:46] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:64463 - - [13/Apr/2026:17:32:56] "GET /" 200 92132
+10.103.28.17:54717 - - [13/Apr/2026:17:32:56] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:62966 - - [13/Apr/2026:17:32:56] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:62966 - - [13/Apr/2026:17:32:56] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:52107 - - [13/Apr/2026:17:33:18] "GET /" 200 92132
+10.103.28.17:57439 - - [13/Apr/2026:17:33:18] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:59260 - - [13/Apr/2026:17:33:18] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:59260 - - [13/Apr/2026:17:33:18] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:59260 - - [13/Apr/2026:17:33:22] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:62966 - - [13/Apr/2026:17:33:22] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-13 17:33:25,604 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:33:25,608 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-13 17:33:25,609 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:33:25,610 INFO     Listening on TCP address 0.0.0.0:8000
+Not Found: /favicon.ico
+2026-04-13 17:34:50,433 WARNING  Not Found: /favicon.ico
+2026-04-13 17:34:53,202 INFO     Killed 2 pending application instances
+10.103.28.17:56063 - - [13/Apr/2026:17:33:26] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:57619 - - [13/Apr/2026:17:33:26] "WSCONNECTING /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:56063 - - [13/Apr/2026:17:33:26] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:57619 - - [13/Apr/2026:17:33:26] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:50831 - - [13/Apr/2026:17:33:26] "GET /" 200 91784
+10.103.28.17:56063 - - [13/Apr/2026:17:33:26] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:64589 - - [13/Apr/2026:17:33:26] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:64589 - - [13/Apr/2026:17:33:26] "WSCONNECT /ws/dashboard/" - -
+RBAC Context: user=krishnamurala, is_admin=True, is_operator=True
+10.103.28.17:62706 - - [13/Apr/2026:17:34:49] "GET /" 200 91784
+10.103.28.17:57619 - - [13/Apr/2026:17:34:49] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:65106 - - [13/Apr/2026:17:34:50] "WSCONNECTING /ws/dashboard/" - -
+10.103.28.17:65106 - - [13/Apr/2026:17:34:50] "WSCONNECT /ws/dashboard/" - -
+10.103.28.17:62706 - - [13/Apr/2026:17:34:50] "GET /favicon.ico" 404 6852
+10.103.28.17:64589 - - [13/Apr/2026:17:34:53] "WSDISCONNECT /ws/dashboard/" - -
+10.103.28.17:65106 - - [13/Apr/2026:17:34:53] "WSDISCONNECT /ws/dashboard/" - -
+2026-04-13 17:34:54,583 INFO     Starting server at tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:34:54,584 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2026-04-13 17:34:54,584 INFO     Configuring endpoint tcp:port=8000:interface=0.0.0.0
+2026-04-13 17:34:54,585 INFO     Listening on TCP address 0.0.0.0:8000

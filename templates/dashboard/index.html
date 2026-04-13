@@ -64,7 +64,8 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Active Clients</p>
-                <p class="text-3xl font-bold text-purple-400 mt-2">{{ unique_clients|default:0 }}</p>
+                <p class="text-3xl font-bold text-purple-400 mt-2">{{ active_clients|default:0 }}</p>
+
                 <p class="text-xs font-medium text-gray-500 mt-2">
                     Unique IPs today
                 </p>

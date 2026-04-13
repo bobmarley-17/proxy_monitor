@@ -227,10 +227,13 @@ def index(request):
         'total_requests': domain_totals['total_requests'] or 0,
         'blocked_requests': domain_totals['blocked_requests'] or 0,
         'total_bytes': domain_totals['total_bytes'] or 0,
+        'total_bytes_formatted': format_bytes(domain_totals['total_bytes'] or 0),  # ADD
+        'today_bytes_formatted': format_bytes(stats_today['bytes'] or 0),          # ADD
         'requests_24h': stats_24h['count'] or 0,
         'blocked_24h': stats_24h['blocked'] or 0,
         'today_requests': stats_today['count'] or 0,
         'today_blocked': stats_today['blocked'] or 0,
+        'active_clients': stats_24h['unique_clients'] or 0,
 
         # data
         'recent_requests': list(recent_requests),
