@@ -79,7 +79,9 @@ if 'mysql' in DB_ENGINE:
                 'charset': 'utf8mb4',
                 'connect_timeout': 10,
             },
-            'CONN_MAX_AGE': 0,
+            # OPTIMIZED: Keep MariaDB connections alive for 5 minutes 
+            # to prevent the 5-second DNS lookup delay on every page load.
+            'CONN_MAX_AGE': 300,
         }
     }
 else:
@@ -87,6 +89,14 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+            'OPTIONS': {
+                'timeout': 20,
+                'pragmas': {
+                    'journal_mode': 'wal',
+                    'synchronous': 'NORMAL',
+                    'cache_size': -64000,
+                }
+            }
         }
     }
 
@@ -105,7 +115,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [os.getenv('REDIS_URL', 'redis://localhost:6379/0')],
+            'hosts': [os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0')],
         },
     },
 }

@@ -54,6 +54,7 @@ class ProxyRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
     
     method = models.CharField(max_length=10, default='GET')
+
     url = models.TextField(blank=True, default='')
     hostname = models.CharField(max_length=255, db_index=True)
     status_code = models.IntegerField(default=0)
@@ -75,6 +76,11 @@ class ProxyRequest(models.Model):
         indexes = [
             models.Index(fields=['-timestamp', 'blocked']),
             models.Index(fields=['hostname', '-timestamp']),
+
+            models.Index(fields=['-timestamp', 'method']),
+            models.Index(fields=['-timestamp', 'status_code']),
+            models.Index(fields=['source_ip', '-timestamp']),
+            models.Index(fields=['content_length']),
         ]
 
     def __str__(self):

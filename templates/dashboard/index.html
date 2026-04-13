@@ -240,8 +240,8 @@
 
 {% block extra_js %}
 <script>
-    const hourlyData = {{ hourly_data|safe }};
-    const methodData = {{ method_stats|safe }};
+    const hourlyData = JSON.parse('{{ hourly_data|escapejs }}');
+    const methodData = JSON.parse('{{ methods|escapejs }}');
     const isDark = document.documentElement.classList.contains('dark');
 
     // Chart colors

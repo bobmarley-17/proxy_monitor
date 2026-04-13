@@ -6,6 +6,8 @@ import os
 import django
 import select
 import ipaddress
+import uuid
+from collections import defaultdict
 from django.db.models import F
 from django.db import close_old_connections
 
@@ -27,6 +29,59 @@ IDLE_TUNNEL_TIMEOUT = 120
 
 _active_connections = 0
 _conn_lock = threading.Lock()
+
+# =========================================================
+# BUFFERED DATABASE LOGGING (Performance Fix)
+# =========================================================
+_log_buffer = []
+_log_lock = threading.Lock()
+FLUSH_INTERVAL = 3.0  # seconds
+
+def _log_flusher():
+    """Background thread that flushes buffered logs to the database in bulk."""
+    while True:
+        time.sleep(FLUSH_INTERVAL)
+        
+        with _log_lock:
+            if not _log_buffer:
+                continue
+            batch = _log_buffer[:]
+            _log_buffer.clear()
+            
+        try:
+            close_old_connections()
+            
+            requests_to_create = []
+            domain_stats_updates = defaultdict(lambda: {'count': 0, 'blocked': 0, 'bytes': 0})
+            
+            # Prepare bulk insert and aggregate domain stats in memory
+            for item in batch:
+                kwargs = item['db_kwargs']
+                requests_to_create.append(ProxyRequest(**kwargs))
+                
+                host = kwargs['hostname']
+                domain_stats_updates[host]['count'] += 1
+                if kwargs['blocked']:
+                    domain_stats_updates[host]['blocked'] += 1
+                domain_stats_updates[host]['bytes'] += (kwargs['content_length'] or 0)
+                
+            # 1. Bulk Create all requests in one hit
+            ProxyRequest.objects.bulk_create(requests_to_create)
+            
+            # 2. Update DomainStats in minimal queries
+            for host, stats in domain_stats_updates.items():
+                DomainStats.objects.update_or_create(
+                    hostname=host,
+                    defaults={}
+                )
+                DomainStats.objects.filter(hostname=host).update(
+                    request_count=F('request_count') + stats['count'],
+                    blocked_count=F('blocked_count') + stats['blocked'],
+                    total_bytes=F('total_bytes') + stats['bytes']
+                )
+                
+        except Exception as e:
+            print(f"[FLUSH ERROR] {e}")
 
 
 # =========================================================
@@ -122,69 +177,59 @@ def check_blocklist(hostname, src_ip=None, dest_ip=None, src_port=None, dest_por
 
 
 # =========================================================
-# Database logging
+# Database logging (Modified for buffering)
 # =========================================================
 def log_request(method, hostname, url, src_ip, src_port, dest_ip, dest_port,
                 status_code, content_length, response_time, blocked,
                 block_reason=None, block_type=None):
-    """Log request to database and broadcast via WebSocket."""
+    """Buffer request for DB insertion and broadcast via WebSocket."""
+    
+    req_id = uuid.uuid4()
+    
+    # 1. Add to the in-memory write buffer
+    db_kwargs = {
+        'id': req_id,
+        'method': method,
+        'hostname': hostname,
+        'url': url or hostname,
+        'source_ip': src_ip,
+        'source_port': src_port,
+        'destination_ip': dest_ip or '',
+        'destination_port': dest_port or 0,
+        'status_code': status_code,
+        'content_length': content_length or 0,
+        'response_time': round(response_time, 3),
+        'blocked': blocked,
+        'block_reason': block_reason or '',
+        'block_type': block_type or '',
+    }
+    
+    with _log_lock:
+        _log_buffer.append({'db_kwargs': db_kwargs})
+
+    # 2. Broadcast via WebSocket IMMEDIATELY so the dashboard feels perfectly real-time
     try:
-        close_old_connections()
-
-        req = ProxyRequest.objects.create(
-            method=method,
-            hostname=hostname,
-            url=url or hostname,
-            source_ip=src_ip,
-            source_port=src_port,
-            destination_ip=dest_ip or '',
-            destination_port=dest_port or 0,
-            status_code=status_code,
-            content_length=content_length or 0,
-            response_time=round(response_time, 3),
-            blocked=blocked,
-            block_reason=block_reason or '',
-            block_type=block_type or '',
-        )
-
-        # Update domain stats
-        DomainStats.objects.update_or_create(
-            hostname=hostname,
-            defaults={}
-        )
-        stats_update = {'request_count': F('request_count') + 1}
-        if blocked:
-            stats_update['blocked_count'] = F('blocked_count') + 1
-        if content_length:
-            stats_update['total_bytes'] = F('total_bytes') + content_length
-        DomainStats.objects.filter(hostname=hostname).update(**stats_update)
-
-        # Broadcast via WebSocket
-        try:
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                'proxy_updates',
-                {
-                    'type': 'proxy_request',
-                    'data': {
-                        'id': str(req.id),
-                        'method': method,
-                        'hostname': hostname,
-                        'url': url or hostname,
-                        'status_code': status_code,
-                        'blocked': blocked,
-                        'block_reason': block_reason or '',
-                        'response_time': round(response_time, 3),
-                        'source_ip': src_ip,
-                        'timestamp': req.timestamp.isoformat() if req.timestamp else '',
-                    }
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            'proxy_updates',
+            {
+                'type': 'proxy_request',
+                'data': {
+                    'id': str(req_id),
+                    'method': method,
+                    'hostname': hostname,
+                    'url': url or hostname,
+                    'status_code': status_code,
+                    'blocked': blocked,
+                    'block_reason': block_reason or '',
+                    'response_time': round(response_time, 3),
+                    'source_ip': src_ip,
+                    'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
                 }
-            )
-        except Exception:
-            pass
-
-    except Exception as e:
-        print(f"[LOG ERROR] {e}")
+            }
+        )
+    except Exception:
+        pass
 
 
 # =========================================================
@@ -197,6 +242,9 @@ class ProxyServer:
         self.channel_layer = get_channel_layer()
 
     def start(self):
+        # Start the background DB flusher thread
+        threading.Thread(target=_log_flusher, daemon=True).start()
+        
         srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         srv.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
@@ -209,6 +257,7 @@ class ProxyServer:
         print(f"  Listening on: {self.host}:{self.port}")
         print(f"  Blocklist enforcement: ENABLED")
         print(f"  Max connections: {MAX_CONNECTIONS}")
+        print(f"  Buffered DB writes: ENABLED")
         print(f"{'='*60}\n")
 
         # Show blocklist stats on startup

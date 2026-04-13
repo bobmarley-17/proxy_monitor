@@ -127,8 +127,9 @@ def logout_view(request):
 
 @login_required
 def index(request):
-    """Main dashboard - cached for 30 seconds."""
-    CACHE_TTL = 30
+    """Main dashboard - optimized + working charts"""
+
+    CACHE_TTL = 600
 
     cached = cache.get('dashboard:index_context')
     if cached:
@@ -138,33 +139,24 @@ def index(request):
     last_24h = now - timedelta(hours=24)
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # ---- Single aggregation for all-time totals ----
-    totals = ProxyRequest.objects.aggregate(
-        total_requests=Count('id'),
-        blocked_requests=Count('id', filter=Q(blocked=True)),
-        total_bytes=Sum('content_length'),
+    # ✅ Use DomainStats for all-time totals (much faster than scanning ProxyRequest)
+    domain_totals = cache.get_or_set(
+        'dashboard:domain_totals',
+        lambda: DomainStats.objects.aggregate(total_bytes=Sum('total_bytes'), total_requests=Sum('request_count'), blocked_requests=Sum('blocked_count')),
+        300
     )
-    total_requests = totals['total_requests'] or 0
-    blocked_requests = totals['blocked_requests'] or 0
-    total_bytes = totals['total_bytes'] or 0
 
-    # ---- Single aggregation for last 24h ----
-    stats_24h = ProxyRequest.objects.filter(
-        timestamp__gte=last_24h
-    ).aggregate(
+    # ✅ Base queryset (last 24h only)
+    base_qs = ProxyRequest.objects.filter(timestamp__gte=last_24h)
+
+    stats_24h = base_qs.aggregate(
         count=Count('id'),
         blocked=Count('id', filter=Q(blocked=True)),
         bytes=Sum('content_length'),
         avg_response=Avg('response_time'),
         unique_clients=Count('source_ip', distinct=True),
     )
-    requests_24h = stats_24h['count'] or 0
-    blocked_24h = stats_24h['blocked'] or 0
-    bytes_24h = stats_24h['bytes'] or 0
-    avg_response = stats_24h['avg_response'] or 0
-    unique_clients = stats_24h['unique_clients'] or 0
 
-    # ---- Single aggregation for today ----
     stats_today = ProxyRequest.objects.filter(
         timestamp__gte=today_start
     ).aggregate(
@@ -172,97 +164,78 @@ def index(request):
         blocked=Count('id', filter=Q(blocked=True)),
         bytes=Sum('content_length'),
     )
-    today_requests = stats_today['count'] or 0
-    today_blocked = stats_today['blocked'] or 0
-    today_bytes = stats_today['bytes'] or 0
 
-    # ---- Recent requests (single query, only needed fields) ----
-    recent_requests = list(
-        ProxyRequest.objects.order_by('-timestamp').values(
-            'id', 'method', 'hostname', 'url', 'status_code', 'blocked',
-            'response_time', 'source_ip', 'source_port', 'timestamp',
-            'content_length', 'destination_ip', 'destination_port',
-            'block_reason', 'block_type',
-        )[:20]
-    )
+    # ✅ Recent requests
+    recent_requests = base_qs.order_by('-timestamp').values(
+        'id', 'method', 'hostname', 'url',
+        'status_code', 'blocked',
+        'response_time', 'source_ip', 'timestamp'
+    )[:20]
 
-    # ---- Top domains ----
-    top_domains = list(DomainStats.objects.order_by('-request_count')[:10])
-
-    # ---- Hourly data: ONE query instead of 24 ----
+    # =============================
+    # 🔥 TRAFFIC OVERVIEW (FIXED)
+    # =============================
+    # Ensure we use the same timezone-aware range for the graph as the stats
+    #graph_qs = ProxyRequest.objects.filter(timestamp__gte=last_24h)
+    
     hourly_qs = (
-        ProxyRequest.objects
-        .filter(timestamp__gte=last_24h)
-        .annotate(hour=TruncHour('timestamp'))
-        .values('hour')
-        .annotate(
+        base_qs.annotate(hour=TruncHour('timestamp')).values('hour').annotate(
             total=Count('id'),
             blocked=Count('id', filter=Q(blocked=True)),
         )
         .order_by('hour')
     )
-    hourly_map = {row['hour']: row for row in hourly_qs}
+
+    # Convert hours to strings to avoid Aware vs Naive mismatch
+    hourly_map = {}
+    for row in hourly_qs:
+        hour_val = row['hour']
+        if hour_val:
+            hour_str = hour_val.strftime('%Y-%m-%d %H:00')
+            hourly_map[hour_str] = row
 
     hourly_data = []
     for i in range(23, -1, -1):
         hour_key = (now - timedelta(hours=i)).replace(
             minute=0, second=0, microsecond=0
         )
-        row = hourly_map.get(hour_key, {'total': 0, 'blocked': 0})
+        
+        # Match using the string format
+        hour_str = hour_key.strftime('%Y-%m-%d %H:00')
+        row = hourly_map.get(hour_str, {'total': 0, 'blocked': 0})
+
         hourly_data.append({
             'hour': hour_key.strftime('%H:00'),
             'total': row['total'],
             'blocked': row['blocked'],
-            'allowed': row['total'] - row['blocked'],
         })
 
-    # ---- Method stats ----
-    method_stats = list(
-        ProxyRequest.objects.filter(timestamp__gte=last_24h)
-        .values('method')
+    # =============================
+    # 🔥 METHODS (FIXED)
+    # =============================
+    methods_data = list(
+        base_qs.values('method')
         .annotate(count=Count('id'))
         .order_by('-count')
-    )
-    if not method_stats:
-        method_stats = list(
-            ProxyRequest.objects.values('method')
-            .annotate(count=Count('id'))
-            .order_by('-count')
-        )
+    ) or [{'method': 'GET', 'count': 0}]
 
-    # ---- Status stats ----
-    status_stats = list(
-        ProxyRequest.objects.filter(timestamp__gte=last_24h)
-        .values('status_code')
-        .annotate(count=Count('id'))
-        .order_by('-count')[:20]
-    )
-
+    # =============================
+    # FINAL CONTEXT
+    # =============================
     context = {
         'page': 'dashboard',
-        'total_requests': total_requests,
-        'blocked_requests': blocked_requests,
-        'total_bytes': total_bytes,
-        'total_bytes_formatted': format_bytes(total_bytes),
-        'requests_24h': requests_24h,
-        'blocked_24h': blocked_24h,
-        'bytes_24h': bytes_24h,
-        'bytes_24h_formatted': format_bytes(bytes_24h),
-        'today_requests': today_requests,
-        'today_blocked': today_blocked,
-        'today_bytes': today_bytes,
-        'today_bytes_formatted': format_bytes(today_bytes),
-        'avg_response_time': round(avg_response, 2),
-        'unique_clients': unique_clients,
-        'recent_requests': recent_requests,
-        'top_domains': top_domains,
-        'hourly_data': json.dumps(hourly_data),
-        'method_stats': json.dumps(method_stats),
-        'status_stats': json.dumps(status_stats),
-        'block_rate': round(
-            (blocked_requests / total_requests * 100)
-            if total_requests > 0 else 0, 1
-        ),
+        'total_requests': domain_totals['total_requests'] or 0,
+        'blocked_requests': domain_totals['blocked_requests'] or 0,
+        'total_bytes': domain_totals['total_bytes'] or 0,
+        'requests_24h': stats_24h['count'] or 0,
+        'blocked_24h': stats_24h['blocked'] or 0,
+        'today_requests': stats_today['count'] or 0,
+        'today_blocked': stats_today['blocked'] or 0,
+
+        # data
+        'recent_requests': list(recent_requests),
+        'hourly_data': json.dumps(hourly_data),   # ✅ matches your frontend
+        'methods': json.dumps(methods_data),      # ✅ matches your frontend
     }
 
     cache.set('dashboard:index_context', context, CACHE_TTL)
@@ -271,80 +244,69 @@ def index(request):
 
 @login_required
 def requests_view(request):
-    """Request log with filtering and pagination."""
+    """Optimized request listing"""
+
     filter_hostname = request.GET.get('hostname', '').strip()
     filter_source_ip = request.GET.get('source_ip', '').strip()
     filter_method = request.GET.get('method', '').strip()
     filter_status = request.GET.get('status', '').strip()
     page_num = int(request.GET.get('page', 1))
-    per_page = 100
 
-    # Build queryset with filters
-    requests_qs = ProxyRequest.objects.all()
+    per_page = 50
+
+    # 🚀 LIMIT DATA
+    last_24h = timezone.now() - timedelta(hours=24)
+    qs = ProxyRequest.objects.filter(timestamp__gte=last_24h)
 
     if filter_hostname:
-        requests_qs = requests_qs.filter(hostname__icontains=filter_hostname)
+        qs = qs.filter(hostname__icontains=filter_hostname)
     if filter_source_ip:
-        requests_qs = requests_qs.filter(source_ip__icontains=filter_source_ip)
+        qs = qs.filter(source_ip__icontains=filter_source_ip)
     if filter_method:
-        requests_qs = requests_qs.filter(method=filter_method)
+        qs = qs.filter(method=filter_method)
     if filter_status:
         if filter_status == 'blocked':
-            requests_qs = requests_qs.filter(blocked=True)
+            qs = qs.filter(blocked=True)
         elif filter_status == 'success':
-            requests_qs = requests_qs.filter(
-                blocked=False, status_code__gte=200, status_code__lt=400
-            )
+            qs = qs.filter(blocked=False, status_code__lt=400)
         elif filter_status == 'error':
-            requests_qs = requests_qs.filter(
-                blocked=False, status_code__gte=400
-            )
+            qs = qs.filter(status_code__gte=400)
 
-    # Pagination
-    total_count = requests_qs.count()
+    # 🚀 SAFE COUNT
+
+    count_cache_key = f'requests:count:{filter_hostname}:{filter_source_ip}:{filter_method}:{filter_status}'
+    total_count = cache.get(count_cache_key)
+    if total_count is None:
+        total_count = min(qs.count(), 10000)
+        cache.set(count_cache_key, total_count, 60)  # cache 60s
+
     total_pages = max(1, (total_count + per_page - 1) // per_page)
     page_num = max(1, min(page_num, total_pages))
 
     start = (page_num - 1) * per_page
+
+    qs = qs.order_by('-timestamp')
+
     requests_list = list(
-        requests_qs.order_by('-timestamp')
-        .values(
-            'id', 'method', 'hostname', 'url', 'status_code', 'blocked',
-            'response_time', 'source_ip', 'source_port', 'timestamp',
-            'content_length', 'destination_ip', 'destination_port',
-            'block_reason', 'block_type',
+        qs.values(
+            'id', 'method', 'hostname', 'url', 'status_code',
+            'blocked', 'source_ip', 'timestamp'
         )[start:start + per_page]
     )
 
-    # Cache methods list for filter dropdown
-    methods = cache.get('filter:methods')
-    if methods is None:
-        methods = list(
-            ProxyRequest.objects.values_list('method', flat=True).distinct()
-        )
-        cache.set('filter:methods', methods, 300)
-
-    context = {
-        'page': 'requests',
+    return render(request, 'dashboard/requests.html', {
         'requests': requests_list,
         'total_count': total_count,
+        'page': page_num,
         'total_pages': total_pages,
-        'current_page': page_num,
-        'per_page': per_page,
-        'filter_hostname': filter_hostname,
-        'filter_source_ip': filter_source_ip,
-        'filter_method': filter_method,
-        'filter_status': filter_status,
-        'methods': methods,
-    }
-
-    return render(request, 'dashboard/requests.html', context)
+    })
 
 
 @login_required
 def analytics_view(request):
-    """Analytics page - cached for 60 seconds."""
-    CACHE_TTL = 60
+    """Optimized analytics"""
+
+    CACHE_TTL = 600
 
     cached = cache.get('dashboard:analytics_context')
     if cached:
@@ -354,67 +316,42 @@ def analytics_view(request):
     last_24h = now - timedelta(hours=24)
     dns_server = DNS_SERVERS[0] if DNS_SERVERS else '8.8.8.8'
 
-    # Single aggregation for totals
-    totals = ProxyRequest.objects.aggregate(
+    base_qs = ProxyRequest.objects.filter(timestamp__gte=last_24h)
+
+    totals = base_qs.aggregate(
         total_requests=Count('id'),
         total_bytes=Sum('content_length'),
         avg_response_time=Avg('response_time'),
     )
 
-    # Top clients - single query
     top_clients = list(
-        ProxyRequest.objects.filter(timestamp__gte=last_24h)
-        .values('source_ip')
-        .annotate(
-            count=Count('id'),
-            blocked=Count('id', filter=Q(blocked=True)),
-            bytes=Sum('content_length'),
-        )
-        .order_by('-count')[:15]
+        base_qs.values('source_ip')
+        .annotate(count=Count('id'))
+        .order_by('-count')[:10]
+    )
+    
+    top_domains = list(
+        DomainStats.objects.order_by('-request_count')[:15]
     )
 
-    if not top_clients:
-        top_clients = list(
-            ProxyRequest.objects.values('source_ip')
-            .annotate(
-                count=Count('id'),
-                blocked=Count('id', filter=Q(blocked=True)),
-                bytes=Sum('content_length'),
-            )
-            .order_by('-count')[:15]
-        )
-
-    # Batch-fetch hostnames from in-memory cache
-    ips = [c['source_ip'] for c in top_clients]
-    hostname_keys = [f'hostname:{ip}' for ip in ips]
-    cached_hostnames = cache.get_many(hostname_keys)
-
-    for client in top_clients:
-        key = f"hostname:{client['source_ip']}"
-        hostname = cached_hostnames.get(key)
-        if hostname == '__NONE__':
-            hostname = None
-        elif hostname is None:
-            hostname = get_cached_hostname(client['source_ip'])
-        client['hostname'] = hostname
-        client['dns_server'] = dns_server
-
-    top_domains = list(DomainStats.objects.order_by('-request_count')[:15])
     top_blocked = list(
         DomainStats.objects.filter(blocked_count__gt=0)
         .order_by('-blocked_count')[:10]
     )
 
     methods = list(
-        ProxyRequest.objects.values('method')
+        base_qs.values('method')
         .annotate(count=Count('id'))
-        .order_by('-count')
+    
     )
     status_codes = list(
-        ProxyRequest.objects.values('status_code')
+        base_qs.exclude(status_code=0)
+        .values('status_code')
         .annotate(count=Count('id'))
         .order_by('-count')[:20]
     )
+    max_status_count = max((row['count'] for row in status_codes), default=1) or 1
+    #max_status_count = max((row['count'] for row in status_codes), default=1)
 
     context = {
         'page': 'analytics',
@@ -422,12 +359,25 @@ def analytics_view(request):
         'total_requests': totals['total_requests'] or 0,
         'total_bytes': totals['total_bytes'] or 0,
         'avg_response_time': round(totals['avg_response_time'] or 0, 2),
+
         'top_clients': top_clients,
+
+        # 🔥 ADD THESE
         'top_domains': top_domains,
         'top_blocked': top_blocked,
+
         'methods': json.dumps(methods),
-        'status_codes': status_codes,
+        'status_codes': status_codes,          # plain list for template loop
+        'status_codes_json': json.dumps(status_codes),  # keep JSON if needed elsewhere
+        'max_status_count': max_status_count,
     }
+    #context = {
+    #    'total_requests': totals['total_requests'] or 0,
+    #    'total_bytes': totals['total_bytes'] or 0,
+    #    'avg_response_time': totals['avg_response_time'] or 0,
+    #    'top_clients': top_clients,
+    #    'methods': json.dumps(methods),
+    #}
 
     cache.set('dashboard:analytics_context', context, CACHE_TTL)
     return render(request, 'dashboard/analytics.html', context)
@@ -676,14 +626,15 @@ def api_stats(request):
     if cached:
         return Response(cached)
 
-    totals = ProxyRequest.objects.aggregate(
-        total_requests=Count('id'),
-        blocked_requests=Count('id', filter=Q(blocked=True)),
-        total_bytes=Sum('content_length'),
+    # ---- OPTIMIZED: Aggregation for all-time totals using DomainStats ----
+    domain_totals = DomainStats.objects.aggregate(
+        total_bytes=Sum('total_bytes'),
+        total_requests=Sum('request_count'),
+        blocked_requests=Sum('blocked_count')
     )
-    total_requests = totals['total_requests'] or 0
-    blocked_requests = totals['blocked_requests'] or 0
-    total_bytes = totals['total_bytes'] or 0
+    total_bytes = domain_totals['total_bytes'] or 0
+    total_requests = domain_totals['total_requests'] or 0
+    blocked_requests = domain_totals['blocked_requests'] or 0
 
     data = {
         'total_requests': total_requests,
